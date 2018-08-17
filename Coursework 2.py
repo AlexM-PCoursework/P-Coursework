@@ -30,6 +30,11 @@ class Player(pygame.sprite.Sprite):
        if keystate[pygame.K_RIGHT]:
             self.speedx= 5
        self.rect.x += self.speedx
+       if self.rect.right > WIDTH:
+          self.rect.right = WIDTH
+       if self.rect.left <0:
+          self.rect.left = 0
+       
 
 # Open a new window
 size = (1024, 500)
