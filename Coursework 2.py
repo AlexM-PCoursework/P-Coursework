@@ -17,6 +17,9 @@ size = (1024, 500)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("GAME")
 
+all_sprites = pygame.sprite.Group()
+
+
 # Loop until the user clicks the close button.
 done = False
  
@@ -31,12 +34,13 @@ while not done:
             done = True
 
     #Update
-
+    all_sprites.update()
    
    
  
     # --- Drawing code 
     screen.fill(WHITE)
+    all_sprites.draw(screen)
    
     # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
