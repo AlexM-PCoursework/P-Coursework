@@ -12,12 +12,23 @@ BLUE = (0,0,255)
 WIDTH = 1024
 HEIGHT = 500
 
+#player sprite
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((50,50))
+        self.image.fill(BLUE)
+        self.rect = self.image.get.rect()
+        self.rect.center = (25,HEIGHT - 25)
+
 # Open a new window
 size = (1024, 500)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("GAME")
 
 all_sprites = pygame.sprite.Group()
+player = Player()
+all_sprites.add(player)
 
 
 # Loop until the user clicks the close button.
