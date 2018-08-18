@@ -27,7 +27,8 @@ class Game:
 
     def new(self):
         #starts new game
-        all_sprites = pg.sprite.Group()
+        self.all_sprites = pg.sprite.Group()
+        self.run()
         
     def run(self):
         #game loop
@@ -37,7 +38,7 @@ class Game:
          self.events()
          self.update()
          self.draw()
-         self.run()
+        
          
     def update(self):
         #game loop - update
@@ -55,6 +56,7 @@ class Game:
         #game loop - draw
          self.screen.fill(WHITE)
          self.all_sprites.draw(screen)
+         #Flip display after drawing
          pg.display.flip()
     def show_start_screen(self):
         #game start screen
@@ -63,16 +65,8 @@ class Game:
         #game over or continue
         pass
 
-g = Game()
-g.show_start_screen()
-while g.running:
-    g.new()
-    g.show_go_screen()
-
-pg.quit()
-
 #player sprite
-class Player(pg.sprite.Sprite):
+"""class Player(pg.sprite.Sprite):
     def __init__(self):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((50,50))
@@ -99,37 +93,23 @@ class Player(pg.sprite.Sprite):
        if self.rect.right > WIDTH:
           self.rect.right = WIDTH
        if self.rect.left <0:
-          self.rect.left = 0
+          self.rect.left = 0 """
           
+
+g = Game()
+"""player = Player()
+all_sprites.add(player)"""
+g.show_start_screen()
+while g.running:
+    g.new()
+    g.show_go_screen()
+    
+
+pg.quit()
+
+
        
 
-# Open a new window
-size = (1024, 500)
 
 
-player = Player()
-all_sprites.add(player)
 
-
-# Loop until the user clicks the close button.
-done = False
- 
-# Used to manage how fast the screen updates
-
-# -------- Main Program Loop -----------
-
-    # --- Main event loop
-   
-
-    #Update
-  
-   
-   
- 
-    # --- Drawing code 
-   
- 
-    # --- Limit to 60 frames per second
-   
- 
-pg.quit()
