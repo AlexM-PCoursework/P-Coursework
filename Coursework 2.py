@@ -18,8 +18,9 @@ TITLE="Game"
 
 class Game:
     def__init(self):
-        #temporary
-        pass
+        #intialises game window etc
+        self.running = True
+        
     def run(self):
         #game loop
         pass
@@ -32,10 +33,16 @@ class Game:
     def draw(self):
         #game loop - draw
         pass
+    def show_start_screen(self):
+        #game start screen
+        pass
+    def show_go_screen(self)
+        #game over or continue
+        pass
 
 g = Game()
 g.show_start_screen()
-while:
+while g.running:
     g.new()
     g.show_go_screen()
 
