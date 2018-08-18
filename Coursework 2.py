@@ -17,7 +17,7 @@ HEIGHT = 500
 TITLE="Game"
 
 class Game:
-    def__init(self)
+    def__init__(self):
         #intialises game window etc
         pygame.init()
         self.screen = pygame.display.set_mode(size)
@@ -52,7 +52,9 @@ class Game:
              
     def draw(self):
         #game loop - draw
-        pass
+         self.screen.fill(WHITE)
+         self.all_sprites.draw(screen)
+         pg.display.flip()
     def show_start_screen(self):
         #game start screen
         pass
@@ -124,11 +126,7 @@ done = False
    
  
     # --- Drawing code 
-    screen.fill(WHITE)
-    all_sprites.draw(screen)
    
-    # --- Go ahead and update the screen with what we've drawn.
-    pygame.display.flip()
  
     # --- Limit to 60 frames per second
    
