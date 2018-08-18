@@ -54,7 +54,7 @@ class Player(pg.sprite.Sprite):
        self.vel += self.acc
        self.pos += self.vel + (0.5 * self.acc)
 
-       self.rect.center = self.pos
+       self.rect.midbottom = self.pos
 
        
        
