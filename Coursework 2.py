@@ -1,7 +1,9 @@
 # Import the pygame library and initialise the game engine
 import pygame
+import random
 pygame.init()
 
+#settings
 # Define some colors (for now)
 BLACK = ( 0, 0, 0)
 WHITE = ( 255, 255, 255)
@@ -12,6 +14,24 @@ BLUE = (0,0,255)
 WIDTH = 1024
 HEIGHT = 500
 
+TITLE="Game"
+
+class Game:
+    def__init(self):
+        #temporary
+        pass
+    def run(self):
+        #game loop
+        pass
+    def update(self):
+        #game loop - update
+        pass
+    def events(self):
+        #game loop - events
+        pass
+    def draw(self):
+        #game loop - draw
+        pass
 
 #player sprite
 class Player(pygame.sprite.Sprite):
@@ -48,8 +68,7 @@ class Player(pygame.sprite.Sprite):
 # Open a new window
 size = (1024, 500)
 screen = pygame.display.set_mode(size)
-pygame.display.set_caption("GAME")
-
+pygame.display.set_caption(TITLE)
 all_sprites = pygame.sprite.Group()
 player = Player()
 all_sprites.add(player)
