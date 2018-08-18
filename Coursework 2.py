@@ -36,16 +36,20 @@ class Player(pg.sprite.Sprite):
        self.vel = vector(0,0)
        keystate = pg.key.get_pressed()
        if keystate[pg.K_LEFT]:
-            self.acc.x = -0.1
+            self.acc.x = -2
        if keystate[pg.K_RIGHT]:
-            self.acc.x= 0.1
+            self.acc.x= 2
        if keystate[pg.K_UP]:
            self.vel.y = -5
        if keystate[pg.K_DOWN]:
            self.vel.y = 5
 
-       self.rect.y += self.vel.y    
-       self.rect.x += self.vel.x
+       self.vel += self.acc
+       self.pos += self.vel + (0.5 * self.acc)
+
+       self.rect.center = self.pos
+
+       
        
        if self.rect.right > WIDTH:
           self.rect.right = WIDTH
