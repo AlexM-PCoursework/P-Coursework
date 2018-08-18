@@ -39,9 +39,7 @@ class Player(pg.sprite.Sprite):
 
     def jump(self):
         #Jump allowed if on a platform
-        self.rect.x += 1
         contacts = pg.sprite.spritecollide(self,self.game.platforms,False)
-        self.rect.x -= 1
         if contacts:
 
             self.vel.y = -15
