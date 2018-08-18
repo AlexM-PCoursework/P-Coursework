@@ -26,8 +26,9 @@ GRAVITY = 0.4
 
 #player sprite
 class Player(pg.sprite.Sprite):
-    def __init__(self):
+    def __init__(self,game):
         pg.sprite.Sprite.__init__(self)
+        self.game = game
         self.image = pg.Surface((50,50))
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
@@ -35,6 +36,10 @@ class Player(pg.sprite.Sprite):
         self.pos = vector(WIDTH/2,0)
         self.vel = vector(0,0)
         self.acc = vector(0,0)
+
+    def jump(self):
+        #Jump allowed if on a platform
+        self.vel.y = -15
                           
 
     def update(self):
@@ -45,11 +50,7 @@ class Player(pg.sprite.Sprite):
             self.acc.x = -PLAYER_ACC
        if keystate[pg.K_RIGHT]:
             self.acc.x= PLAYER_ACC
-      # if keystate[pg.K_UP]:
-        #   self.vel.y = -5
-       #if keystate[pg.K_DOWN]:
-        #   self.vel.y = 5
-        
+
       #equations of motion
        self.acc.x += self.vel.x * PLAYER_FRICTION  
        self.vel += self.acc
@@ -86,7 +87,7 @@ class Game:
         #starts new game
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
-        self.player = Player()
+        self.player = Player(self)
         self.all_sprites.add(self.player)
         platform1 = Platform(0,HEIGHT - 30, WIDTH, 30)
         self.all_sprites.add(platform1)
