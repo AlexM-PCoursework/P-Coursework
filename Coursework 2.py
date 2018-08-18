@@ -61,7 +61,16 @@ class Player(pg.sprite.Sprite):
        if self.pos.x > WIDTH:
           self.pos.x = 0
        if self.pos.x <0:
-          self.pos.x = WIDTH 
+          self.pos.x = WIDTH
+
+class Platform(pg.sprite.Sprite):
+    def__init__(self,x,y,width,height):
+        pg.sprite.Sprite.__init(self)
+        self.image = pg.Surface((width,height))
+        self.image.fill(BLACK)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
 class Game:
     def __init__(self):
