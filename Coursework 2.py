@@ -20,8 +20,8 @@ vector = pg.math.Vector2
 
 #Player Properties
 
-PLAYER_ACC = 0.5
-PLAYER_FRICTION = 0.15
+PLAYER_ACC = 0.7
+PLAYER_FRICTION = -0.15
 
 #player sprite
 class Player(pg.sprite.Sprite):
@@ -48,7 +48,9 @@ class Player(pg.sprite.Sprite):
         #   self.vel.y = -5
        #if keystate[pg.K_DOWN]:
         #   self.vel.y = 5
-
+        
+      #equations of motion
+       self.acc += self.vel * PLAYER_FRICTION  
        self.vel += self.acc
        self.pos += self.vel + (0.5 * self.acc)
 
@@ -56,10 +58,10 @@ class Player(pg.sprite.Sprite):
 
        
        
-       if self.rect.right > WIDTH:
-          self.rect.right = WIDTH
-       if self.rect.left <0:
-          self.rect.left = 0 
+       if self.pos.x > WIDTH:
+          self.pos.x = 0
+       if self.pos.x <0:
+          self.pos.x = WIDTH 
 
 class Game:
     def __init__(self):
