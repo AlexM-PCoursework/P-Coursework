@@ -24,6 +24,14 @@ PLAYER_ACC = 0.7
 PLAYER_FRICTION = -0.15
 GRAVITY = 0.4
 
+#Starting Platforms
+
+PLATFORM_LIST = [(0,HEIGHT - 30, WIDTH, 30),
+                 (WIDTH/2,HEIGHT/2,150,30),
+                 (40,HEIGHT *3/4,50,30),
+                 (300,HEIGHT - 150,90,30),
+                 (900,HEIGHT-400,200,30),]
+
 #player sprite
 class Player(pg.sprite.Sprite):
     def __init__(self,game):
@@ -93,12 +101,12 @@ class Game:
         self.platforms = pg.sprite.Group()
         self.player = Player(self)
         self.all_sprites.add(self.player)
-        platform1 = Platform(0,HEIGHT - 30, WIDTH, 30)
-        self.all_sprites.add(platform1)
-        self.platforms.add(platform1)
-        platform2 = Platform(WIDTH/2,HEIGHT/2,150,30)
-        self.platforms.add(platform2)
-        self.all_sprites.add(platform2)
+        for plat in PLATFORM_LIST:
+            platf = Platform(*plat)
+            self.all_sprites.add(platf)
+            self.platforms.add(platf)
+            
+       
         self.run()
         
     def run(self):
@@ -114,10 +122,12 @@ class Game:
     def update(self):
         #game loop - update
         self.all_sprites.update()
-        contacts = pg.sprite.spritecollide(self.player,self.platforms,False)
-        if contacts:
-            self.player.pos.y = contacts[0].rect.top + 1
-            self.player.vel.y = 0
+        # Check if player hits platform iff falling
+        if self.player.vel.y > 0:
+            contacts = pg.sprite.spritecollide(self.player,self.platforms,False)
+            if contacts:
+                self.player.pos.y = contacts[0].rect.top + 1
+                self.player.vel.y = 0
     
     def events(self):
         #game loop - events
