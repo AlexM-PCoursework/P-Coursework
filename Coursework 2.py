@@ -46,7 +46,7 @@ class Game:
     def events(self):
         #game loop - events
         for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+         if event.type == pygame.QUIT:
             if self.playing:
                 self.playing = False
             self.running = False
@@ -59,7 +59,7 @@ class Game:
     def show_start_screen(self):
         #game start screen
         pass
-    def show_go_screen(self)
+    def show_go_screen(self):
         #game over or continue
         pass
 
