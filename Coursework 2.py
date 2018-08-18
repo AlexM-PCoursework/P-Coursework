@@ -108,6 +108,7 @@ class Game:
         contacts = pg.sprite.spritecollide(self.player,self.platforms,False)
         if contacts:
             self.player.pos.y = contacts[0].rect.top + 1
+            self.player.vel.y = 0
     
     def events(self):
         #game loop - events
