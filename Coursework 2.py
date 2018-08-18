@@ -33,16 +33,16 @@ class Player(pg.sprite.Sprite):
 
     def update(self):
        self.acc = vector(0,0)
-       self.vel = vector(0,0)
+       #self.vel = vector(0,0)
        keystate = pg.key.get_pressed()
        if keystate[pg.K_LEFT]:
-            self.acc.x = -2
+            self.acc.x = -0.04
        if keystate[pg.K_RIGHT]:
-            self.acc.x= 2
-       if keystate[pg.K_UP]:
-           self.vel.y = -5
-       if keystate[pg.K_DOWN]:
-           self.vel.y = 5
+            self.acc.x= 0.04
+      # if keystate[pg.K_UP]:
+        #   self.vel.y = -5
+       #if keystate[pg.K_DOWN]:
+        #   self.vel.y = 5
 
        self.vel += self.acc
        self.pos += self.vel + (0.5 * self.acc)
