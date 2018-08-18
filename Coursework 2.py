@@ -22,6 +22,7 @@ vector = pg.math.Vector2
 
 PLAYER_ACC = 0.7
 PLAYER_FRICTION = -0.15
+GRAVITY = 0.4
 
 #player sprite
 class Player(pg.sprite.Sprite):
@@ -37,7 +38,7 @@ class Player(pg.sprite.Sprite):
                           
 
     def update(self):
-       self.acc = vector(0,0.4)
+       self.acc = vector(0,GRAVITY)
        #self.vel = vector(0,0)
        keystate = pg.key.get_pressed()
        if keystate[pg.K_LEFT]:
