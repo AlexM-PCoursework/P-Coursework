@@ -16,6 +16,38 @@ HEIGHT = 500
 
 TITLE="Game"
 
+#player sprite
+class Player(pg.sprite.Sprite):
+    def __init__(self):
+        pg.sprite.Sprite.__init__(self)
+        self.image = pg.Surface((50,50))
+        self.image.fill(BLUE)
+        self.rect = self.image.get_rect()
+        self.rect.center = (25,HEIGHT - 25)
+        self.speedx = 0
+        self.speedy = 0
+
+    def update(self):
+       self.speedx = 0
+       self.speedy = 0
+       keystate = pg.key.get_pressed()
+       if keystate[pg.K_LEFT]:
+            self.speedx = -5
+       if keystate[pg.K_RIGHT]:
+            self.speedx= 5
+       if keystate[pg.K_UP]:
+           self.speedy = -5
+       if keystate[pg.K_DOWN]:
+           self.speedy = 5
+
+       self.rect.y += self.speedy     
+       self.rect.x += self.speedx
+       
+       if self.rect.right > WIDTH:
+          self.rect.right = WIDTH
+       if self.rect.left <0:
+          self.rect.left = 0 
+
 class Game:
     def __init__(self):
         #intialises game window etc
@@ -28,6 +60,8 @@ class Game:
     def new(self):
         #starts new game
         self.all_sprites = pg.sprite.Group()
+        self.player = Player()
+        self.all_sprites.add(self.player)
         self.run()
         
     def run(self):
@@ -65,35 +99,7 @@ class Game:
         #game over or continue
         pass
 
-#player sprite
-"""class Player(pg.sprite.Sprite):
-    def __init__(self):
-        pg.sprite.Sprite.__init__(self)
-        self.image = pg.Surface((50,50))
-        self.image.fill(BLUE)
-        self.rect = self.image.get_rect()
-        self.rect.center = (25,HEIGHT - 25)
 
-    def update(self):
-       self.speedx = 0
-       self.speedy = 0
-       keystate = pg.key.get_pressed()
-       if keystate[pg.K_LEFT]:
-            self.speedx = -5
-       if keystate[pg.K_RIGHT]:
-            self.speedx= 5
-       if keystate[pg.K_UP]:
-           self.speedy = -5
-       if keystate[pg.K_DOWN]:
-           self.speedy = 5
-
-       self.rect.y += self.speedy     
-       self.rect.x += self.speedx
-       
-       if self.rect.right > WIDTH:
-          self.rect.right = WIDTH
-       if self.rect.left <0:
-          self.rect.left = 0 """
           
 
 g = Game()
