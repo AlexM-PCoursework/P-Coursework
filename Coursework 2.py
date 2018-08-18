@@ -30,8 +30,8 @@ class Player(pg.sprite.Sprite):
         self.image = pg.Surface((50,50))
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH/2,HEIGHT/2)
-        self.pos = vector(WIDTH/2,HEIGHT/2)
+        self.rect.center = (WIDTH/2,0)
+        self.pos = vector(WIDTH/2,0)
         self.vel = vector(0,0)
         self.acc = vector(0,0)
                           
@@ -90,6 +90,9 @@ class Game:
         platform1 = Platform(0,HEIGHT - 30, WIDTH, 30)
         self.all_sprites.add(platform1)
         self.platforms.add(platform1)
+        platform2 = Platform(WIDTH/2,HEIGHT/2,150,30)
+        self.platforms.add(platform2)
+        self.all_sprites.add(platform2)
         self.run()
         
     def run(self):
