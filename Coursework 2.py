@@ -30,8 +30,8 @@ class Player(pg.sprite.Sprite):
         self.image = pg.Surface((50,50))
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
-        self.rect.center = (25,HEIGHT - 25)
-        self.pos = vector(25,HEIGHT - 25)
+        self.rect.center = (WIDTH/2,HEIGHT/2)
+        self.pos = vector(WIDTH/2,HEIGHT/2)
         self.vel = vector(0,0)
         self.acc = vector(0,0)
                           
