@@ -64,7 +64,7 @@ class Player(pg.sprite.Sprite):
           self.pos.x = WIDTH
 
 class Platform(pg.sprite.Sprite):
-    def__init__(self,x,y,width,height):
+    def __init__(self,x,y,width,height):
         pg.sprite.Sprite.__init(self)
         self.image = pg.Surface((width,height))
         self.image.fill(BLACK)
@@ -84,8 +84,11 @@ class Game:
     def new(self):
         #starts new game
         self.all_sprites = pg.sprite.Group()
+        self.platforms = pg.sprite.Group()
         self.player = Player()
         self.all_sprites.add(self.player)
+        platform = Platform(0,HEIGHT - 30, WIDTH, 30)
+        self.platforms.add(platform)
         self.run()
         
     def run(self):
