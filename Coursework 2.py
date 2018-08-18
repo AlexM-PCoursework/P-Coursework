@@ -37,7 +37,7 @@ class Player(pg.sprite.Sprite):
                           
 
     def update(self):
-       self.acc = vector(0,0)
+       self.acc = vector(0,0.4)
        #self.vel = vector(0,0)
        keystate = pg.key.get_pressed()
        if keystate[pg.K_LEFT]:
@@ -50,7 +50,7 @@ class Player(pg.sprite.Sprite):
         #   self.vel.y = 5
         
       #equations of motion
-       self.acc += self.vel * PLAYER_FRICTION  
+       self.acc.x += self.vel.x * PLAYER_FRICTION  
        self.vel += self.acc
        self.pos += self.vel + (0.5 * self.acc)
 
