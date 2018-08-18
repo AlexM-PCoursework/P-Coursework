@@ -20,14 +20,14 @@ class Game:
     def __init__(self):
         #intialises game window etc
         pg.init()
-        self.screen = pygame.display.set_mode(size)
-        pygame.display.set_caption(TITLE)
-        self.clock = pygame.time.Clock()
+        self.screen = pg.display.set_mode((WIDTH,HEIGHT))
+        pg.display.set_caption(TITLE)
+        self.clock = pg.time.Clock()
         self.running = True
 
     def new(self):
         #starts new game
-        all_sprites = pygame.sprite.Group()
+        all_sprites = pg.sprite.Group()
         
     def run(self):
         #game loop
@@ -45,8 +45,8 @@ class Game:
     
     def events(self):
         #game loop - events
-        for event in pygame.event.get():
-         if event.type == pygame.QUIT:
+        for event in pg.event.get():
+         if event.type == pg.QUIT:
             if self.playing:
                 self.playing = False
             self.running = False
@@ -72,10 +72,10 @@ while g.running:
 pg.quit()
 
 #player sprite
-class Player(pygame.sprite.Sprite):
+class Player(pg.sprite.Sprite):
     def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((50,50))
+        pg.sprite.Sprite.__init__(self)
+        self.image = pg.Surface((50,50))
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
         self.rect.center = (25,HEIGHT - 25)
@@ -83,14 +83,14 @@ class Player(pygame.sprite.Sprite):
     def update(self):
        self.speedx = 0
        self.speedy = 0
-       keystate = pygame.key.get_pressed()
-       if keystate[pygame.K_LEFT]:
+       keystate = pg.key.get_pressed()
+       if keystate[pg.K_LEFT]:
             self.speedx = -5
-       if keystate[pygame.K_RIGHT]:
+       if keystate[pg.K_RIGHT]:
             self.speedx= 5
-       if keystate[pygame.K_UP]:
+       if keystate[pg.K_UP]:
            self.speedy = -5
-       if keystate[pygame.K_DOWN]:
+       if keystate[pg.K_DOWN]:
            self.speedy = 5
 
        self.rect.y += self.speedy     
@@ -132,4 +132,4 @@ done = False
     # --- Limit to 60 frames per second
    
  
-pygame.quit()
+pg.quit()
