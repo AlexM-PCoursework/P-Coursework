@@ -17,23 +17,39 @@ HEIGHT = 500
 TITLE="Game"
 
 class Game:
-    def__init(self):
+    def__init(self)
         #intialises game window etc
         pygame.init()
         self.screen = pygame.display.set_mode(size)
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
         self.running = True
+
+    def new(self):
+        #starts new game
+        all_sprites = pygame.sprite.Group()
         
     def run(self):
         #game loop
-        pass
+        self.playing = True
+        while self.playing:
+         self.clock.tick(60)
+         self.events()
+         self.update()
+         self.draw()
+         
     def update(self):
         #game loop - update
         pass
+    
     def events(self):
         #game loop - events
-        pass
+        for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            if self.playing:
+                self.playing = False
+            self.running = False
+             
     def draw(self):
         #game loop - draw
         pass
@@ -87,7 +103,7 @@ class Player(pygame.sprite.Sprite):
 # Open a new window
 size = (1024, 500)
 
-all_sprites = pygame.sprite.Group()
+
 player = Player()
 all_sprites.add(player)
 
@@ -98,11 +114,9 @@ done = False
 # Used to manage how fast the screen updates
 
 # -------- Main Program Loop -----------
-while not done:
+
     # --- Main event loop
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            done = True
+   
 
     #Update
     all_sprites.update()
@@ -117,6 +131,6 @@ while not done:
     pygame.display.flip()
  
     # --- Limit to 60 frames per second
-    clock.tick(60)
+   
  
 pygame.quit()
