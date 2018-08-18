@@ -17,9 +17,9 @@ HEIGHT = 500
 TITLE="Game"
 
 class Game:
-    def__init__(self):
+    def __init__(self):
         #intialises game window etc
-        pygame.init()
+        pg.init()
         self.screen = pygame.display.set_mode(size)
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
@@ -37,6 +37,7 @@ class Game:
          self.events()
          self.update()
          self.draw()
+         self.run()
          
     def update(self):
         #game loop - update
