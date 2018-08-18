@@ -40,7 +40,7 @@ class Game:
          
     def update(self):
         #game loop - update
-        pass
+        self.all_sprites.update()
     
     def events(self):
         #game loop - events
@@ -119,7 +119,7 @@ done = False
    
 
     #Update
-    all_sprites.update()
+  
    
    
  
