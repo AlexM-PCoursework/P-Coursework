@@ -16,6 +16,8 @@ HEIGHT = 500
 
 TITLE="Game"
 
+vector = pg.math.Vector2
+
 #player sprite
 class Player(pg.sprite.Sprite):
     def __init__(self):
@@ -24,24 +26,26 @@ class Player(pg.sprite.Sprite):
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
         self.rect.center = (25,HEIGHT - 25)
-        self.speedx = 0
-        self.speedy = 0
+        self.pos = vector(25,HEIGHT - 25)
+        self.vel = vector(0,0)
+        self.acc = vector(0,0)
+                          
 
     def update(self):
-       self.speedx = 0
-       self.speedy = 0
+       self.acc = vector(0,0)
+       self.vel = vector(0,0)
        keystate = pg.key.get_pressed()
        if keystate[pg.K_LEFT]:
-            self.speedx = -5
+            self.acc.x = -0.1
        if keystate[pg.K_RIGHT]:
-            self.speedx= 5
+            self.acc.x= 0.1
        if keystate[pg.K_UP]:
-           self.speedy = -5
+           self.vel.y = -5
        if keystate[pg.K_DOWN]:
-           self.speedy = 5
+           self.vel.y = 5
 
-       self.rect.y += self.speedy     
-       self.rect.x += self.speedx
+       self.rect.y += self.vel.y    
+       self.rect.x += self.vel.x
        
        if self.rect.right > WIDTH:
           self.rect.right = WIDTH
