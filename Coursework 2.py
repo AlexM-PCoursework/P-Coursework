@@ -20,9 +20,9 @@ class Game:
     def__init(self):
         #intialises game window etc
         pygame.init()
-        screen = pygame.display.set_mode(size)
+        self.screen = pygame.display.set_mode(size)
         pygame.display.set_caption(TITLE)
-        clock = pygame.time.Clock()
+        self.clock = pygame.time.Clock()
         self.running = True
         
     def run(self):
