@@ -18,6 +18,11 @@ TITLE="Game"
 
 vector = pg.math.Vector2
 
+#Player Properties
+
+PLAYER_ACC = 0.5
+PLAYER_FRICTION = 0.15
+
 #player sprite
 class Player(pg.sprite.Sprite):
     def __init__(self):
@@ -36,9 +41,9 @@ class Player(pg.sprite.Sprite):
        #self.vel = vector(0,0)
        keystate = pg.key.get_pressed()
        if keystate[pg.K_LEFT]:
-            self.acc.x = -0.04
+            self.acc.x = -PLAYER_ACC
        if keystate[pg.K_RIGHT]:
-            self.acc.x= 0.04
+            self.acc.x= PLAYER_ACC
       # if keystate[pg.K_UP]:
         #   self.vel.y = -5
        #if keystate[pg.K_DOWN]:
