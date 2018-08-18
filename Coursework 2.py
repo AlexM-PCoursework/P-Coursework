@@ -1,5 +1,5 @@
 # Import the pygame library and initialise the game engine
-import pygame
+import pygame as pg
 import random
 pygame.init()
 
@@ -35,7 +35,11 @@ class Game:
 
 g = Game()
 g.show_start_screen()
+while:
+    g.new()
+    g.show_go_screen()
 
+pg.quit()
 
 #player sprite
 class Player(pygame.sprite.Sprite):
