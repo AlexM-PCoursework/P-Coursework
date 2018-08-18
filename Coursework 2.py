@@ -105,6 +105,9 @@ class Game:
     def update(self):
         #game loop - update
         self.all_sprites.update()
+        contacts = pg.sprite.spritecollide(self.player,self.platforms,False)
+        if contacts:
+            self.player.pos.y = contacts[0].rect.top + 1
     
     def events(self):
         #game loop - events
