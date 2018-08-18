@@ -55,7 +55,7 @@ class Game:
     def draw(self):
         #game loop - draw
          self.screen.fill(WHITE)
-         self.all_sprites.draw(screen)
+         self.all_sprites.draw(self.screen)
          #Flip display after drawing
          pg.display.flip()
     def show_start_screen(self):
