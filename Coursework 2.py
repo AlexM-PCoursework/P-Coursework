@@ -121,6 +121,9 @@ class Game:
             if self.playing:
                 self.playing = False
             self.running = False
+         if event.type ==pg.KEYDOWN:
+             if even.key == pg.K_UP:
+                 self.player.jump()
              
     def draw(self):
         #game loop - draw
