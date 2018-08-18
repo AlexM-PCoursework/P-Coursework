@@ -1,7 +1,7 @@
 # Import the pygame library and initialise the game engine
 import pygame as pg
 import random
-pygame.init()
+
 
 #settings
 # Define some colors (for now)
@@ -19,6 +19,10 @@ TITLE="Game"
 class Game:
     def__init(self):
         #intialises game window etc
+        pygame.init()
+        screen = pygame.display.set_mode(size)
+        pygame.display.set_caption(TITLE)
+        clock = pygame.time.Clock()
         self.running = True
         
     def run(self):
@@ -82,8 +86,7 @@ class Player(pygame.sprite.Sprite):
 
 # Open a new window
 size = (1024, 500)
-screen = pygame.display.set_mode(size)
-pygame.display.set_caption(TITLE)
+
 all_sprites = pygame.sprite.Group()
 player = Player()
 all_sprites.add(player)
@@ -93,7 +96,6 @@ all_sprites.add(player)
 done = False
  
 # Used to manage how fast the screen updates
-clock = pygame.time.Clock()
 
 # -------- Main Program Loop -----------
 while not done:
@@ -117,5 +119,4 @@ while not done:
     # --- Limit to 60 frames per second
     clock.tick(60)
  
-# Close the window and quit.
 pygame.quit()
