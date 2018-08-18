@@ -39,7 +39,13 @@ class Player(pg.sprite.Sprite):
 
     def jump(self):
         #Jump allowed if on a platform
-        self.vel.y = -15
+        self.rect.x += 1
+        contacts = pg.sprite.spritecollide(self,self.game.platforms,False)
+        self.rect.x -= 1
+        if contacts:
+
+            self.vel.y = -15
+        
                           
 
     def update(self):
@@ -123,7 +129,7 @@ class Game:
                 self.playing = False
             self.running = False
          if event.type ==pg.KEYDOWN:
-             if even.key == pg.K_UP:
+             if event.key == pg.K_UP:
                  self.player.jump()
              
     def draw(self):
