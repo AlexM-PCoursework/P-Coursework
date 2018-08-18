@@ -87,8 +87,9 @@ class Game:
         self.platforms = pg.sprite.Group()
         self.player = Player()
         self.all_sprites.add(self.player)
-        platform = Platform(0,HEIGHT - 30, WIDTH, 30)
-        self.platforms.add(platform)
+        platform1 = Platform(0,HEIGHT - 30, WIDTH, 30)
+        self.all_sprites.add(platform1)
+        self.platforms.add(platform1)
         self.run()
         
     def run(self):
