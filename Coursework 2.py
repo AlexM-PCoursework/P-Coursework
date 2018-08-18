@@ -33,6 +33,10 @@ class Game:
         #game loop - draw
         pass
 
+g = Game()
+g.show_start_screen()
+
+
 #player sprite
 class Player(pygame.sprite.Sprite):
     def __init__(self):
