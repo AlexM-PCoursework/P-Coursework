@@ -129,10 +129,15 @@ class Game:
                 self.player.pos.y = contacts[0].rect.top + 1
                 self.player.vel.y = 0
 
-        if self.player.rect.top <= Height / 4:
+        if self.player.rect.top <= HEIGHT / 4:
             self.player.pos.y += abs(self.player.vel.y)
             for plat in self.platforms:
                 plat.rect.y += abs(self.player.vel.y)
+
+        if self.player.rect.bottom >= (HEIGHT * 3/4):
+            self.player.pos.y += self.player.vel.y
+            for plat in self.platforms:
+                plat.rect.y += self.player.vel.y
     
     def events(self):
         #game loop - events
