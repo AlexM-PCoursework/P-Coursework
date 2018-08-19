@@ -20,7 +20,7 @@ vector = pg.math.Vector2
 
 #Player Properties
 
-PLAYER_ACC = 0.7
+PLAYER_ACC = 0.9
 PLAYER_FRICTION = -0.15
 GRAVITY = 0.4
 
@@ -50,7 +50,7 @@ class Player(pg.sprite.Sprite):
         contacts = pg.sprite.spritecollide(self,self.game.platforms,False)
         if contacts:
 
-            self.vel.y = -15
+            self.vel.y = -12
         
                           
 
@@ -128,6 +128,11 @@ class Game:
             if contacts:
                 self.player.pos.y = contacts[0].rect.top + 1
                 self.player.vel.y = 0
+
+        if self.player.rect.top <= Height / 4:
+            self.player.pos.y += abs(self.player.vel.y)
+            for plat in self.platforms:
+                plat.rect.y += abs(self.player.vel.y)
     
     def events(self):
         #game loop - events
@@ -139,6 +144,7 @@ class Game:
          if event.type ==pg.KEYDOWN:
              if event.key == pg.K_UP:
                  self.player.jump()
+            
              
     def draw(self):
         #game loop - draw
