@@ -135,9 +135,9 @@ class Game:
                 plat.rect.y += abs(self.player.vel.y)
 
         if self.player.rect.bottom >= (HEIGHT * 3/4):
-            self.player.pos.y += self.player.vel.y
+            self.player.pos.y -= self.player.vel.y
             for plat in self.platforms:
-                plat.rect.y += self.player.vel.y
+                plat.rect.y -= self.player.vel.y
     
     def events(self):
         #game loop - events
