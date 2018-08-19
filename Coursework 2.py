@@ -40,8 +40,8 @@ class Player(pg.sprite.Sprite):
         self.image = pg.Surface((50,50))
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH/2,0)
-        self.pos = vector(WIDTH/2,0)
+        self.rect.center = (WIDTH/2,HEIGHT/2)
+        self.pos = vector(WIDTH/2,HEIGHT/2)
         self.vel = vector(0,0)
         self.acc = vector(0,0)
 
@@ -106,6 +106,7 @@ class Game:
             self.all_sprites.add(platf)
             self.platforms.add(platf)
             
+            
        
         self.run()
         
@@ -130,14 +131,27 @@ class Game:
                 self.player.vel.y = 0
 
         if self.player.rect.top <= HEIGHT / 4:
+            
             self.player.pos.y += abs(self.player.vel.y)
             for plat in self.platforms:
                 plat.rect.y += abs(self.player.vel.y)
+            for n in range (5):
+              width = random.randrange(20,120)
+              plat = Platform(random.randrange(0,WIDTH-width),
+                            random.randrange(-75,-20),
+                            width,30)
+              self.platforms.add(plat)
+              self.all_sprites.add(plat)
+                
+              
 
         if self.player.rect.bottom >= (HEIGHT * 3/4):
             self.player.pos.y -= self.player.vel.y
             for plat in self.platforms:
                 plat.rect.y -= self.player.vel.y
+
+        
+            
     
     def events(self):
         #game loop - events
