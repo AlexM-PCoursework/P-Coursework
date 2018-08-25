@@ -129,23 +129,17 @@ class Game:
             if contacts:
                 self.player.pos.y = contacts[0].rect.top + 1
                 self.player.vel.y = 0
-
-        if self.player.rect.top <= HEIGHT / 4:
+                
+        # Vertical Scroll
+        if self.player.rect.top <= (HEIGHT / 8):
             
             self.player.pos.y += abs(self.player.vel.y)
             for plat in self.platforms:
                 plat.rect.y += abs(self.player.vel.y)
-            for n in range (5):
-              width = random.randrange(20,120)
-              plat = Platform(random.randrange(0,WIDTH-width),
-                            random.randrange(-75,-20),
-                            width,30)
-              self.platforms.add(plat)
-              self.all_sprites.add(plat)
-                
+         
               
 
-        if self.player.rect.bottom >= (HEIGHT * 3/4):
+        if self.player.rect.bottom >= (HEIGHT *3/8):
             self.player.pos.y -= self.player.vel.y
             for plat in self.platforms:
                 plat.rect.y -= self.player.vel.y
