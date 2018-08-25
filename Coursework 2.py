@@ -26,7 +26,7 @@ GRAVITY = 0.4
 
 #Starting Platforms
 
-PLATFORM_LIST = [(0,HEIGHT - 30, WIDTH, 30),
+PLATFORM_LIST = [(-5*WIDTH,HEIGHT - 30, WIDTH*10, 30),
                  (WIDTH/2,HEIGHT/2,150,30),
                  (40,HEIGHT *3/4,50,30),
                  (300,HEIGHT - 150,90,30),
@@ -132,17 +132,27 @@ class Game:
                 
         # Vertical Scroll
         if self.player.rect.top <= (HEIGHT / 8):
-            
             self.player.pos.y += abs(self.player.vel.y)
             for plat in self.platforms:
-                plat.rect.y += abs(self.player.vel.y)
-         
-              
+                plat.rect.y += abs(self.player.vel.y)              
 
         if self.player.rect.bottom >= (HEIGHT *3/8):
             self.player.pos.y -= self.player.vel.y
             for plat in self.platforms:
                 plat.rect.y -= self.player.vel.y
+
+        #horizontal scroll
+
+        if self.player.rect.left <= (WIDTH/ 4):
+            self.player.pos.x -= self.player.vel.x
+            for plat in self.platforms:
+                plat.rect.x -= self.player.vel.x
+
+        if self.player.rect.right >= (WIDTH *3/4):
+            self.player.pos.x -= self.player.vel.x
+            for plat in self.platforms:
+                plat.rect.x -= self.player.vel.x
+            
 
         
             
