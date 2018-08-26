@@ -27,43 +27,7 @@ GRAVITY = 0.4
 
 #Starting Platforms
 
-PLATFORM_LIST =[
-    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-    (-5*WIDTH,HEIGHT - 30, WIDTH*10, 30),
-                 (WIDTH/2,HEIGHT/2,150,30),
-                 (40,HEIGHT *3/4,50,30),
-                 (300,HEIGHT - 150,90,30),
-                 (900,HEIGHT-400,200,30),]
+
 
 #player sprite
 class Player(pg.sprite.Sprite):
@@ -73,8 +37,8 @@ class Player(pg.sprite.Sprite):
         self.image = pg.Surface((50,50))
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH/2,HEIGHT/2)
-        self.pos = vector(WIDTH/2,HEIGHT/2)
+        self.rect.center = (40,40)
+        self.pos = vector(40,40)
         self.vel = vector(0,0)
         self.acc = vector(0,0)
 
@@ -136,22 +100,65 @@ class Game:
         self.all_sprites.add(self.player)
 
         x = y = 0
+
+        PLATFORM_LIST =[
+    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P              PPPPPPPPPPPPPPPPPPPPPP               P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
+
+
+    
+    
         for row in PLATFORM_LIST:
-            for col in row:
-                if col =="P":
-                    p = Platform(32,32)
-                    self.all_sprites.add(p)
-                    self.platforms.add(p)
-            x += 32
-        y += 32
+          for col in row:
+            if col =="P":
+                P = Platform(x,y,40,40)
+                self.all_sprites.add(P)
+                self.platforms.add(P)
+          x += 40
+        y += 40
         x = 0
 
+        
+        """(-5*WIDTH,HEIGHT - 30, WIDTH*10, 30),
+                 (WIDTH/2,HEIGHT/2,150,30),
+                 (40,HEIGHT *3/4,50,30),
+                 (300,HEIGHT - 150,90,30),
+                 (900,HEIGHT-400,200,30),"""
 
 
-        """for plat in PLATFORM_LIST:
+        """ for plat in PLATFORM_LIST:
             platf = Platform(*plat)
             self.all_sprites.add(platf)
-            self.platforms.add(platf)"""
+            self.platforms.add(platf) """
             
             
        
