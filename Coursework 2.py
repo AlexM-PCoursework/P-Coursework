@@ -1,6 +1,7 @@
 # Import the pygame library and initialise the game engine
 import pygame as pg
 import random
+from pygame import *
 
 
 #settings
@@ -26,7 +27,39 @@ GRAVITY = 0.4
 
 #Starting Platforms
 
-PLATFORM_LIST = [(-5*WIDTH,HEIGHT - 30, WIDTH*10, 30),
+PLATFORM_LIST =[
+    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "P                                                   P",
+    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+    (-5*WIDTH,HEIGHT - 30, WIDTH*10, 30),
                  (WIDTH/2,HEIGHT/2,150,30),
                  (40,HEIGHT *3/4,50,30),
                  (300,HEIGHT - 150,90,30),
@@ -101,10 +134,24 @@ class Game:
         self.platforms = pg.sprite.Group()
         self.player = Player(self)
         self.all_sprites.add(self.player)
-        for plat in PLATFORM_LIST:
+
+        x = y = 0
+        for row in PLATFORM_LIST:
+            for col in row:
+                if col =="P":
+                    p = Platform(32,32)
+                    self.all_sprites.add(p)
+                    self.platforms.add(p)
+            x += 32
+        y += 32
+        x = 0
+
+
+
+        """for plat in PLATFORM_LIST:
             platf = Platform(*plat)
             self.all_sprites.add(platf)
-            self.platforms.add(platf)
+            self.platforms.add(platf)"""
             
             
        
