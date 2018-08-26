@@ -143,9 +143,9 @@ class Game:
                 P = Platform(x,y,40,40)
                 self.all_sprites.add(P)
                 self.platforms.add(P)
-          x += 40
-        y += 40
-        x = 0
+            x += 40
+          y += 40
+          x = 0
 
         
         """(-5*WIDTH,HEIGHT - 30, WIDTH*10, 30),
