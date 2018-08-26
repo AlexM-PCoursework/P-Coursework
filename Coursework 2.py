@@ -155,8 +155,11 @@ class Game:
             x += 40
           y += 40
           x = 0
-        for i in range 15:
-            PLAT = Platform(random.randrange(40,map_length-40
+        for plat in range (15):
+            plat = Platform(random.randrange(40,map_length-40,1),random.randrange(40,map_width - 40, 1),40,40)
+            self.all_sprites.add(plat)
+            self.platforms.add(plat)
+        
 
         
         """(-5*WIDTH,HEIGHT - 30, WIDTH*10, 30),
