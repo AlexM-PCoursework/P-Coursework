@@ -37,8 +37,8 @@ class Player(pg.sprite.Sprite):
         self.image = pg.Surface((50,50))
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
-        self.rect.center = (40,40)
-        self.pos = vector(40,40)
+        self.rect.center = (800,100)
+        self.pos = vector(800,100)
         self.vel = vector(0,0)
         self.acc = vector(0,0)
 
@@ -102,41 +102,50 @@ class Game:
         x = y = 0
 
         PLATFORM_LIST =[
-    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P              PPPPPPPPPPPPPPPPPPPPPP               P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "P                                                   P",
-    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
+    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "P                                                                                                        P",
+    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
 
 
     
-    
+        map_length = len(PLATFORM_LIST[0]) * 40
+        map_width = len(PLATFORM_LIST) * 40
         for row in PLATFORM_LIST:
           for col in row:
             if col =="P":
@@ -146,6 +155,8 @@ class Game:
             x += 40
           y += 40
           x = 0
+        for i in range 15:
+            PLAT = Platform(random.randrange(40,map_length-40
 
         
         """(-5*WIDTH,HEIGHT - 30, WIDTH*10, 30),
