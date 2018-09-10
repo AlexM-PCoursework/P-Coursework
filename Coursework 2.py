@@ -95,6 +95,7 @@ class Game:
 
     def new(self):
         #starts new game
+        self.score = 0
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.player = Player(self)
@@ -236,6 +237,7 @@ class Game:
         #game loop - draw
          self.screen.fill(WHITE)
          self.all_sprites.draw(self.screen)
+         self.draw_text(str(self.score),20,BLACK,30,30)
          #Flip display after drawing
          pg.display.flip()
     def show_start_screen(self):
