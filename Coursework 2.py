@@ -16,6 +16,7 @@ WIDTH = 1024
 HEIGHT = 500
 
 TITLE="Game"
+FONT_NAME ="arial"
 
 vector = pg.math.Vector2
 
@@ -92,6 +93,7 @@ class Game:
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         self.running = True
+        self.font_name = pg.font.match_font(FONT_NAME)
 
     def new(self):
         #starts new game
@@ -246,6 +248,11 @@ class Game:
     def show_go_screen(self):
         #game over or continue
         pass
+
+    def draw_text(self,text,size,colour,x,y):
+        font = pg.font.Font(self.font_name,size)
+        text_surface = font.render(text,True,colour)
+    
 
 
           
