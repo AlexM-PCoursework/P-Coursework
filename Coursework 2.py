@@ -11,6 +11,8 @@ WHITE = ( 255, 255, 255)
 GREEN = ( 0, 255, 0)
 RED = ( 255, 0, 0)
 BLUE = (0,0,255)
+WATERM = 253,91,120
+BG_COLOUR = 48,191,191
 
 WIDTH = 1024
 HEIGHT = 500
@@ -80,7 +82,7 @@ class Platform(pg.sprite.Sprite):
     def __init__(self,x,y,width,height):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((width,height))
-        self.image.fill(BLACK)
+        self.image.fill(WATERM)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -237,7 +239,7 @@ class Game:
              
     def draw(self):
         #game loop - draw
-         self.screen.fill(WHITE)
+         self.screen.fill(BG_COLOUR)
          self.all_sprites.draw(self.screen)
          self.draw_text(str(self.score),50,RED,30,30)
          #Flip display after drawing
