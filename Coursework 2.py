@@ -239,7 +239,7 @@ class Game:
         #game loop - draw
          self.screen.fill(WHITE)
          self.all_sprites.draw(self.screen)
-         self.draw_text(str(self.score),20,BLACK,30,30)
+         self.draw_text(str(self.score),50,RED,30,30)
          #Flip display after drawing
          pg.display.flip()
     def show_start_screen(self):
