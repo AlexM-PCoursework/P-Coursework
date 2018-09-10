@@ -247,7 +247,9 @@ class Game:
     def show_start_screen(self):
         #game start screen
         self.screen.fil(BG_COLOUR)
-        self.draw_text("My Game")
+        self.draw_text(TITLE,50,RED,WIDTH/2,HEIGHT/3)
+        self.draw_text("Use arrows to move, UP arrow to jump",30, RED,WIDTH/2,HEIGHT/2)
+        self.draw_text("Press any key to play"),20,GREEN, WIDTH/2,HEIGHT*2/3)
     
     def show_go_screen(self):
         #game over or continue
