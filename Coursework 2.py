@@ -246,7 +246,9 @@ class Game:
          pg.display.flip()
     def show_start_screen(self):
         #game start screen
-        pass
+        self.screen.fil(BG_COLOUR)
+        self.draw_text("My Game")
+    
     def show_go_screen(self):
         #game over or continue
         pass
