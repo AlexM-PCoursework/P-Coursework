@@ -42,7 +42,7 @@ class Player(pg.sprite.Sprite):
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
         self.rect.center = (800,100)
-        self.pos = vector(800,100)
+        self.pos = vector(800.2,100)
         self.vel = vector(0,0)
         self.acc = vector(0,0)
 
@@ -200,9 +200,9 @@ class Game:
                 
         # Vertical Scroll
         if self.player.rect.top <= (HEIGHT / 8):
-            self.player.pos.y += abs(self.player.vel.y)
+            self.player.pos.y -= self.player.vel.y
             for plat in self.platforms:
-                plat.rect.y += abs(self.player.vel.y)              
+                plat.rect.y -= self.player.vel.y            
 
         if self.player.rect.bottom >= (HEIGHT *3/8):
             self.player.pos.y -= self.player.vel.y
@@ -239,17 +239,18 @@ class Game:
              
     def draw(self):
         #game loop - draw
-         self.screen.fill(BG_COLOUR)
+         self.screen.fill(WHITE)
          self.all_sprites.draw(self.screen)
          self.draw_text(str(self.score),50,RED,30,30)
          #Flip display after drawing
          pg.display.flip()
     def show_start_screen(self):
         #game start screen
-        self.screen.fil(BG_COLOUR)
+        self.screen.fill(BG_COLOUR)
         self.draw_text(TITLE,50,RED,WIDTH/2,HEIGHT/3)
         self.draw_text("Use arrows to move, UP arrow to jump",30, RED,WIDTH/2,HEIGHT/2)
-        self.draw_text("Press any key to play"),20,GREEN, WIDTH/2,HEIGHT*2/3)
+        self.draw_text("Press any key to play",20,GREEN, WIDTH/2,HEIGHT* 2/3)
+        pg.display.flip()
     
     def show_go_screen(self):
         #game over or continue
@@ -261,6 +262,18 @@ class Game:
         text_rect = text_surface.get_rect()
         text_rect.topleft = (x,y)
         self.screen.blit(text_surface,text_rect)
+
+    def key_press(self):
+        not_pressed = True
+        while not_pressed:
+            self.clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    not_pressed = False
+                    self.running = False
+                if event.type == pg.KEYUP:
+                    not_pressed = False
+        
     
 
 
