@@ -3,6 +3,7 @@ import pygame as pg
 import random
 from pygame import *
 from os import path
+from random import choice,randrange
 
 
 #settings
@@ -72,6 +73,8 @@ class Player(pg.sprite.Sprite):
        
        self.acc.x += self.vel.x * PLAYER_FRICTION
        self.vel += self.acc
+       if abs(self.vel.x) < 0.1:
+           self.vel.x = 0
        self.pos += self.vel + (0.5 * self.acc)
 
        self.rect.midbottom = self.pos
@@ -91,6 +94,8 @@ class Platform(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        if randrange (100) < 15:
+            Coin(self.game,self)
 
 class Coin(pg.sprite.Sprite):
     def __init__(self,game, plat):
@@ -103,8 +108,9 @@ class Coin(pg.sprite.Sprite):
         self.rect.centerx = self.plat.rect.centerx
         self.rect.bottom = self.plat.rect.top - 5
 
-    def update(self)
+    def update(self):
      self.rect.bottom = self.plat.rect.top - 5
+       
 
 class Game:
     def __init__(self):
@@ -131,6 +137,7 @@ class Game:
         self.score = 0
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
+        self.coin = pg.sprite.Group()
         self.player = Player(self)
         self.all_sprites.add(self.player)
         self.round = 1
