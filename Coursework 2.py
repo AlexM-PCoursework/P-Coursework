@@ -27,7 +27,7 @@ vector = pg.math.Vector2
 PLAYER_ACC = 0.9
 PLAYER_FRICTION = -0.15
 GRAVITY = 0.4
-PLAYER_JUMP = 12
+PLAYER_JUMP = 9
 
 #Starting Platforms
 
@@ -248,13 +248,19 @@ class Game:
         #game start screen
         self.screen.fill(BG_COLOUR)
         self.draw_text(TITLE,50,RED,WIDTH/2,HEIGHT/3)
-        self.draw_text("Use arrows to move, UP arrow to jump",30, RED,WIDTH/2,HEIGHT/2)
+        self.draw_text("Use arrows to move, UP arrow to jump",30, RED,WIDTH/3,HEIGHT/2)
         self.draw_text("Press any key to play",20,GREEN, WIDTH/2,HEIGHT* 2/3)
         pg.display.flip()
+        self.key_press()
     
     def show_go_screen(self):
         #game over or continue
-        pass
+        self.screen.fill(BG_COLOUR)
+        self.draw_text("GAME OVER",50,RED,WIDTH/2,HEIGHT/3)
+        self.draw_text("Your score was " + str(self.score),30, RED,WIDTH/3,HEIGHT/2)
+        self.draw_text("Press any key to play",20,GREEN, WIDTH/2,HEIGHT* 2/3)
+        pg.display.flip()
+        self.key_pres()
 
     def draw_text(self,text,size,colour,x,y):
         font = pg.font.Font(self.font_name,size)
@@ -266,7 +272,7 @@ class Game:
     def key_press(self):
         not_pressed = True
         while not_pressed:
-            self.clock.tick(FPS)
+            self.clock.tick(60)
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     not_pressed = False
