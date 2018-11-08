@@ -3,7 +3,7 @@ import pygame as pg
 import random
 from pygame import *
 from os import path
-from random import choice,randrange
+from random import randrange
 
 
 #settings
@@ -41,7 +41,8 @@ PLAYER_JUMP = 9
 #player sprite
 class Player(pg.sprite.Sprite):
     def __init__(self,game):
-        pg.sprite.Sprite.__init__(self)
+        self.groups=game.all_sprites
+        pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
         self.image = pg.Surface((30,30))
         self.image.fill(BLUE)
@@ -87,8 +88,10 @@ class Player(pg.sprite.Sprite):
           self.pos.x = WIDTH
 
 class Platform(pg.sprite.Sprite):
-    def __init__(self,x,y,width,height):
-        pg.sprite.Sprite.__init__(self)
+    def __init__(self,game,x,y,width,height):
+        self.groups = game.all_sprites,game.platforms
+        pg.sprite.Sprite.__init__(self,self.groups)
+        self.game = game
         self.image = pg.Surface((width,height))
         self.image.fill(WATERM)
         self.rect = self.image.get_rect()
@@ -98,11 +101,12 @@ class Platform(pg.sprite.Sprite):
             Coin(self.game,self)
 
 class Coin(pg.sprite.Sprite):
-    def __init__(self,game, plat):
-        pg.sprite.Sprite.__init__(self)
+    def __init__(self,game,plat):
+        self.groups = game.all_sprites, game.coins
+        pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
         self.plat = plat
-        self.image = pg.Surface((width,height))
+        self.image = pg.Surface((15,15))
         self.image.fill(GOLD)
         self.rect = self.image.get_rect()
         self.rect.centerx = self.plat.rect.centerx
@@ -137,7 +141,7 @@ class Game:
         self.score = 0
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
-        self.coin = pg.sprite.Group()
+        self.coins = pg.sprite.Group()
         self.player = Player(self)
         self.all_sprites.add(self.player)
         self.round = 1
@@ -189,9 +193,8 @@ class Game:
         for row in PLATFORM_LIST:
           for col in row:
             if col =="P":
-                P = Platform(x,y,50,40)
-                self.all_sprites.add(P)
-                self.platforms.add(P)
+                Platform(self,x,y,50,40)
+                
             x += 50
           y += 40
           x = 0
