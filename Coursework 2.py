@@ -246,6 +246,7 @@ class Game:
          self.screen.fill(WHITE)
          self.all_sprites.draw(self.screen)
          self.draw_text(str(self.score),50,RED,30,30)
+         self.draw_text("ROUND: "+str(self.round),30,BLACK,WIDTH - 150 ,20)
          #Flip display after drawing
          pg.display.flip()
     def show_start_screen(self):
@@ -263,7 +264,7 @@ class Game:
             return
         self.screen.fill(BG_COLOUR)
         self.draw_text("GAME OVER",50,RED,WIDTH/2,HEIGHT/3)
-        self.draw_text("Your score was " + str(self.score),30, RED,WIDTH/3,HEIGHT/2)
+        self.draw_text("You got to round " + str(self.round),30, RED,WIDTH/3,HEIGHT/2)
         self.draw_text("Press any key to play again",20,GREEN, WIDTH/2,HEIGHT* 2/3)
         pg.display.flip()
         self.key_press()
