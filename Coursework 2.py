@@ -209,8 +209,13 @@ class Game:
         if self.player.vel.y > 0:
             contacts = pg.sprite.spritecollide(self.player,self.platforms,False)
             if contacts:
-                self.player.pos.y = contacts[0].rect.top + 1
-                self.player.vel.y = 0
+                lowest = contacts[0]
+                for contact in contacts:
+                    if contact.rect.bottom > lowest.rect.bottom:
+                        lowest = contact
+                if self.player.pos.y < lowest.rect.bottom:
+                  self.player.pos.y = lowest.rect.top + 1
+                  self.player.vel.y = 0
                 
         # Vertical Scroll
         if self.player.rect.top <= (HEIGHT / 8):
@@ -234,6 +239,8 @@ class Game:
             self.player.pos.x -= self.player.vel.x
             for plat in self.platforms:
                 plat.rect.x -= self.player.vel.x
+
+        
 
         
             
