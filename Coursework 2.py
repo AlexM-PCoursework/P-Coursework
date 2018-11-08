@@ -14,6 +14,7 @@ RED = ( 255, 0, 0)
 BLUE = (0,0,255)
 WATERM = 253,91,120
 BG_COLOUR = 48,191,191
+GOLD = 255,215,0
 
 WIDTH = 1024
 HEIGHT = 500
@@ -90,6 +91,20 @@ class Platform(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
+class Coin(pg.sprite.Sprite):
+    def __init__(self,game, plat):
+        pg.sprite.Sprite.__init__(self)
+        self.game = game
+        self.plat = plat
+        self.image = pg.Surface((width,height))
+        self.image.fill(GOLD)
+        self.rect = self.image.get_rect()
+        self.rect.centerx = self.plat.rect.centerx
+        self.rect.bottom = self.plat.rect.top - 5
+
+    def update(self)
+     self.rect.bottom = self.plat.rect.top - 5
 
 class Game:
     def __init__(self):
@@ -212,9 +227,10 @@ class Game:
             if contacts:
                 lowest = contacts[0]
                 for contact in contacts:
-                    if contact.rect.bottom > lowest.rect.centery:
+                    if contact.rect.bottom > lowest.rect.bottom:
                         lowest = contact
-                if self.player.pos.y < lowest.rect.bottom:
+                    
+                if self.player.pos.y < lowest.rect.centery:
                   self.player.pos.y = lowest.rect.top + 1
                   self.player.vel.y = 0
                 
