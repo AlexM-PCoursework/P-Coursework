@@ -68,7 +68,8 @@ class Player(pg.sprite.Sprite):
             self.acc.x= PLAYER_ACC
 
       #equations of motion
-       self.acc.x += self.vel.x * PLAYER_FRICTION  
+       
+       self.acc.x += self.vel.x * PLAYER_FRICTION
        self.vel += self.acc
        self.pos += self.vel + (0.5 * self.acc)
 
@@ -166,11 +167,11 @@ class Game:
         for row in PLATFORM_LIST:
           for col in row:
             if col =="P":
-                P = Platform(x,y,50,50)
+                P = Platform(x,y,50,40)
                 self.all_sprites.add(P)
                 self.platforms.add(P)
             x += 50
-          y += 50
+          y += 40
           x = 0
         
         
@@ -211,7 +212,7 @@ class Game:
             if contacts:
                 lowest = contacts[0]
                 for contact in contacts:
-                    if contact.rect.bottom > lowest.rect.bottom:
+                    if contact.rect.bottom > lowest.rect.centery:
                         lowest = contact
                 if self.player.pos.y < lowest.rect.bottom:
                   self.player.pos.y = lowest.rect.top + 1
