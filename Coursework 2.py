@@ -93,7 +93,7 @@ class Platform(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
         self.image = pg.Surface((width,height))
-        self.image.fill(WATERM)
+        self.image.fill(BLACK)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -263,7 +263,9 @@ class Game:
 
         # check if player hits coins
 
-        coin_contact = pg.sprite
+        coin_contact = pg.sprite.spritecollide(self.player,self.coins,True)
+        for coin in coin_contact:
+            self.score += 1
             
 
 
