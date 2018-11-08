@@ -2,6 +2,7 @@
 import pygame as pg
 import random
 from pygame import *
+from os import path
 
 
 #settings
@@ -19,6 +20,8 @@ HEIGHT = 500
 
 TITLE="Game"
 FONT_NAME ="arial"
+
+hs_file = "hs.txt"
 
 vector = pg.math.Vector2
 
@@ -104,6 +107,7 @@ class Game:
         self.platforms = pg.sprite.Group()
         self.player = Player(self)
         self.all_sprites.add(self.player)
+        self.round = 1
 
         x = y = 0
 
@@ -255,12 +259,14 @@ class Game:
     
     def show_go_screen(self):
         #game over or continue
+        if not self.running:
+            return
         self.screen.fill(BG_COLOUR)
         self.draw_text("GAME OVER",50,RED,WIDTH/2,HEIGHT/3)
         self.draw_text("Your score was " + str(self.score),30, RED,WIDTH/3,HEIGHT/2)
-        self.draw_text("Press any key to play",20,GREEN, WIDTH/2,HEIGHT* 2/3)
+        self.draw_text("Press any key to play again",20,GREEN, WIDTH/2,HEIGHT* 2/3)
         pg.display.flip()
-        self.key_pres()
+        self.key_press()
 
     def draw_text(self,text,size,colour,x,y):
         font = pg.font.Font(self.font_name,size)
