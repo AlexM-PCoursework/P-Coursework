@@ -103,7 +103,7 @@ class Game:
 
     def data(self):
         #load highest Round
-        self.dir = path.dirname(__dirname__)
+        self.dir = path.dirname(__file__)
         with open(path.join(self.dir,hs_file),'w') as file:
             try:
                 self.highscore = int(file.read())
