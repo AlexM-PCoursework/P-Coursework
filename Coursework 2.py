@@ -99,6 +99,16 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = True
         self.font_name = pg.font.match_font(FONT_NAME)
+        self.data()
+
+    def data(self):
+        #load highest Round
+        self.dir = path.dirname(__dirname__)
+        with open(path.join(self.dir,hs_file),'w') as file:
+            try:
+                self.highscore = int(file.read())
+            except:
+                self.highscore = 0
 
     def new(self):
         #starts new game
@@ -255,6 +265,7 @@ class Game:
         self.draw_text(TITLE,50,RED,WIDTH/2,HEIGHT/3)
         self.draw_text("Use arrows to move, UP arrow to jump",30, RED,WIDTH/3,HEIGHT/2)
         self.draw_text("Press any key to play",20,GREEN, WIDTH/2,HEIGHT* 2/3)
+        self.draw_text("Highest Round: " + str(self.highscore),20,RED, WIDTH/3,HEIGHT *3/4)
         pg.display.flip()
         self.key_press()
     
