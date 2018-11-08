@@ -248,12 +248,24 @@ class Game:
         if self.player.rect.top <= (HEIGHT / 8):
             self.player.pos.y -= self.player.vel.y
             for plat in self.platforms:
-                plat.rect.y -= self.player.vel.y            
+                plat.rect.y -= self.player.vel.y
+            for coin in self.coins:
+                coin.rect.y -=self.player.vel.y
+            
+
 
         if self.player.rect.bottom >= (HEIGHT *3/8):
             self.player.pos.y -= self.player.vel.y
             for plat in self.platforms:
                 plat.rect.y -= self.player.vel.y
+            for coin in self.coins:
+                coin.rect.y -=self.player.vel.y
+
+        # check if player hits coins
+
+        coin_contact = pg.sprite
+            
+
 
         #horizontal scroll
 
@@ -261,11 +273,20 @@ class Game:
             self.player.pos.x -= self.player.vel.x
             for plat in self.platforms:
                 plat.rect.x -= self.player.vel.x
+            for coin in self.coins:
+                coin.rect.x -=self.player.vel.x
+            
 
         if self.player.rect.right >= (WIDTH *3/4):
             self.player.pos.x -= self.player.vel.x
             for plat in self.platforms:
                 plat.rect.x -= self.player.vel.x
+            for coin in self.coins:
+                coin.rect.x -=self.player.vel.x
+
+   
+            
+
 
         
 
