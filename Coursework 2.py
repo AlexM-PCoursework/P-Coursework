@@ -234,6 +234,8 @@ class Game:
             self.player.pos.x -= self.player.vel.x
             for plat in self.platforms:
                 plat.rect.x -= self.player.vel.x
+
+        
             
 
         
@@ -277,6 +279,13 @@ class Game:
         self.draw_text("GAME OVER",50,RED,WIDTH/2,HEIGHT/3)
         self.draw_text("You got to round " + str(self.round),30, RED,WIDTH/3,HEIGHT/2)
         self.draw_text("Press any key to play again",20,GREEN, WIDTH/2,HEIGHT* 2/3)
+        if self.score > self.highscore:
+            self.highscore = self.score
+            self.draw_text("NEW HIGH ROUND!", 30, WHITE, WIDTH/2,HEIGHT/4)
+            with open(path.join(self.dir,hs_file),'w') as file:
+                file.write(str(self.score))
+        else:
+           self.draw_text("Highest Round: " + str(self.highscore),20,RED, WIDTH/3,HEIGHT *3/4)
         pg.display.flip()
         self.key_press()
 
