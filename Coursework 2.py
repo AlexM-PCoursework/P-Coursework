@@ -271,12 +271,12 @@ class Game:
 
         #horizontal scroll
 
-        if self.player.rect.left <= (WIDTH/ 4):
-            self.player.pos.x -= self.player.vel.x
+        if self.player.rect.left <= (WIDTH/ 3):
+            self.player.pos.x += max(abs(self.player.vel.x),2)
             for plat in self.platforms:
-                plat.rect.x -= self.player.vel.x
+                plat.rect.right += max(abs(self.player.vel.x),2)
             for coin in self.coins:
-                coin.rect.x -=self.player.vel.x
+                coin.rect.x +=max(abs(self.player.vel.x),2)
             
 
         if self.player.rect.right >= 2*WIDTH/3:
