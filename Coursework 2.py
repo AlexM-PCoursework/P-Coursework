@@ -29,10 +29,10 @@ vector = pg.math.Vector2
 
 #Player Properties
 
-PLAYER_ACC = 0.9
-PLAYER_FRICTION = -0.15
-GRAVITY = 0.4
-PLAYER_JUMP = 9
+PLAYER_ACC = 1
+PLAYER_FRICTION = -0.25
+GRAVITY = 0.5
+PLAYER_JUMP = 10
 
 #Starting Platforms
 
@@ -47,8 +47,8 @@ class Player(pg.sprite.Sprite):
         self.image = pg.Surface((30,30))
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
-        self.rect.center = (800,100)
-        self.pos = vector(800.2,100)
+        self.rect.center = (WIDTH/2,100)
+        self.pos = vector(WIDTH/2,100)
         self.vel = vector(0,0)
         self.acc = vector(0,0)
 
@@ -152,9 +152,9 @@ class Game:
       "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
     "P                                            P                                                           P",
     "P                                            PPPPPPPPPPPPPPPPPPP                                          P",
-    "P                                            P                                                           P",
+    "P    PPPPPPP                              P                                                           P",
     "P                                            P                                                            P",
-    "P            PPPPPPPPPPPPP                   P                PPPPPP                      PPPPP           P",
+    "P            PPPPPPPPPPPPPP                  P                PPPPPP                      PPPPP           P",
     "P            P                                                                               P           P",
     "P            P              PPPP                                                             P           P",
     "P            P                      PPPP                               PPPPPP                P           P",
@@ -279,12 +279,12 @@ class Game:
                 coin.rect.x -=self.player.vel.x
             
 
-        if self.player.rect.right >= (WIDTH *3/4):
-            self.player.pos.x -= self.player.vel.x
+        if self.player.rect.right >= 2*WIDTH/3:
+            self.player.pos.x -= max(abs(self.player.vel.x),2)
             for plat in self.platforms:
-                plat.rect.x -= self.player.vel.x
+                plat.rect.right -= max(abs(self.player.vel.x),2)
             for coin in self.coins:
-                coin.rect.x -=self.player.vel.x
+                coin.rect.x -= max(abs(self.player.vel.x),2)
 
    
             
@@ -314,7 +314,7 @@ class Game:
         #game loop - draw
          self.screen.fill(WHITE)
          self.all_sprites.draw(self.screen)
-         self.draw_text(str(self.score),50,RED,30,30)
+         self.draw_text("BANK: " + str(self.score),20,GOLD,20,20)
          self.draw_text("ROUND: "+str(self.round),30,BLACK,WIDTH - 150 ,20)
          #Flip display after drawing
          pg.display.flip()
