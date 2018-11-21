@@ -34,6 +34,9 @@ PLAYER_FRICTION = -0.25
 GRAVITY = 0.5
 PLAYER_JUMP = 12
 
+BULLET_SPEED = 500
+BULLET_LIFETIME = 1000
+
 class bullet(pg.sprite.Sprite):
     def __init__(self,game,pos,dir):
         self.groups = game.all_sprites, game.bullets
