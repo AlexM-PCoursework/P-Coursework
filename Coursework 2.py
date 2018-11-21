@@ -47,10 +47,13 @@ class bullet(pg.sprite.Sprite):
         self.rect.center = pos
         self.pos = pos
         self.vel = dir * BULLET_SPEED
-        
+        self.spawn_time = pg.time.get_ticks()
 
-#Starting Platforms
-
+    def update(self):
+        self.pos += self.vel
+        self.rect.center = self.pos
+        if pg.time.get_ticks() - self.spawn_time > BULLET_LIFETIME:
+            self.kill()
 
 
 #player sprite
