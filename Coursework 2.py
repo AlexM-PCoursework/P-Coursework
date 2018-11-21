@@ -46,6 +46,8 @@ class bullet(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
         self.pos = pos
+        self.vel = dir * BULLET_SPEED
+        
 
 #Starting Platforms
 
@@ -283,6 +285,10 @@ class Game:
                     self.player.pos.x = block.rect.right + 17
                     self.player.vel.x = 0
                     self.player.vel.y = 0
+
+
+
+
 
 
         # check if player hits coins
