@@ -38,11 +38,12 @@ BULLET_SPEED = 500
 BULLET_LIFETIME = 1000
 BULLET_RATE = 150
 
-class bullet(pg.sprite.Sprite):
+class Bullet(pg.sprite.Sprite):
     def __init__(self,game,pos,dir):
         self.groups = game.all_sprites, game.bullets
         pg.sprite.Sprite.__init__(self,self.groups)
         self.image = pg.Surface((10,10))
+        self.game = game
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
         self.rect.center = pos
@@ -70,6 +71,7 @@ class Player(pg.sprite.Sprite):
         self.pos = vector(WIDTH/2,100)
         self.vel = vector(0,0)
         self.acc = vector(0,0)
+        self.last_shot = 0
 
     def jump(self):
         #Jump allowed if on a platform
@@ -92,6 +94,8 @@ class Player(pg.sprite.Sprite):
            now = pg.time.get_ticks()
            if now - self.last_shot > BULLET_RATE:
                self.last_shot = now
+               dir = vector(1,0)
+               Bullet(self.game,self.pos,dir)
 
 
       #equations of motion
