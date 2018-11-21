@@ -110,6 +110,12 @@ class Enemy_1 (pg.sprite.Sprite):
         self.pos = vec(x,y)
         self.rect.center = self.pos
 
+class Camera:
+    def __init__(self,width,height):
+        self.camera = pg.Rect(0,0,width,height)
+        self.width = width
+        self.height = height
+
 
 class Platform(pg.sprite.Sprite):
     def __init__(self,game,x,y,width,height):
