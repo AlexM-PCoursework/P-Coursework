@@ -100,6 +100,17 @@ class Player(pg.sprite.Sprite):
        if self.pos.x <0:
           self.pos.x = WIDTH
 
+class Enemy_1 (pg.sprite.Sprite):
+    def __init__ (self,game,x,y):
+        self.groups = game.all_sprites, game.enemy1s
+        pg.sprite.Sprite.__init__(self,self.groups)
+        self.image = pg.Surface((30,30))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.pos = vec(x,y)
+        self.rect.center = self.pos
+
+
 class Platform(pg.sprite.Sprite):
     def __init__(self,game,x,y,width,height):
         self.groups = game.all_sprites,game.platforms
