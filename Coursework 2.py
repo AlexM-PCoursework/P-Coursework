@@ -307,7 +307,9 @@ class Game:
     def draw(self):
         #game loop - draw
          self.screen.fill(WHITE)
-         self.all_sprites.draw(self.screen)
+
+         for sprite in self.all_sprites:
+            self.screen.blit(sprite.image, self.camera.apply(sprite))
          self.draw_text("BANK: " + str(self.score),20,GOLD,20,20)
          self.draw_text("ROUND: "+str(self.round),30,BLACK,WIDTH - 150 ,20)
          #Flip display after drawing
