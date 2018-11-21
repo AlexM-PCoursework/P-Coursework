@@ -36,6 +36,7 @@ PLAYER_JUMP = 12
 
 BULLET_SPEED = 500
 BULLET_LIFETIME = 1000
+BULLET_RATE = 150
 
 class bullet(pg.sprite.Sprite):
     def __init__(self,game,pos,dir):
@@ -87,6 +88,11 @@ class Player(pg.sprite.Sprite):
             self.acc.x = -PLAYER_ACC
        if keystate[pg.K_RIGHT]:
             self.acc.x= PLAYER_ACC
+       if keystate[pg.K_SPACE]:
+           now = pg.time.get_ticks()
+           if now - self.last_shot > BULLET_RATE:
+               self.last_shot = now
+
 
       #equations of motion
        
