@@ -172,6 +172,7 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.coins = pg.sprite.Group()
+        self.enemy1s = pg.sprite.Group()
         self.player = Player(self)
         self.all_sprites.add(self.player)
         self.round = 1
