@@ -34,7 +34,7 @@ PLAYER_FRICTION = -0.25
 GRAVITY = 0.5
 PLAYER_JUMP = 12
 
-BULLET_SPEED = 500
+BULLET_SPEED = 50
 BULLET_LIFETIME = 1000
 BULLET_RATE = 150
 
@@ -47,13 +47,14 @@ class Bullet(pg.sprite.Sprite):
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
         self.rect.center = pos
-        self.pos = pos
+        self.pos = vector(pos)
         self.vel = dir * BULLET_SPEED
         self.spawn_time = pg.time.get_ticks()
 
     def update(self):
         self.pos += self.vel
         self.rect.center = self.pos
+        if pg.sprite
         if pg.time.get_ticks() - self.spawn_time > BULLET_LIFETIME:
             self.kill()
 
@@ -200,6 +201,7 @@ class Game:
         self.platforms = pg.sprite.Group()
         self.coins = pg.sprite.Group()
         self.enemy1s = pg.sprite.Group()
+        self.bullets = pg.sprite.Group()
         self.player = Player(self)
         self.all_sprites.add(self.player)
         self.round = 1
