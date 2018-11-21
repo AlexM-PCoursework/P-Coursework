@@ -116,6 +116,18 @@ class Camera:
         self.width = width
         self.height = height
 
+    def apply(self, entity):
+        return entity.rect.move(self.camera.topleft)
+
+    def update(self, target):
+        x = -target.rect.x + int(WIDTH / 2)
+        y = -target.rect.y + int(HEIGHT / 2)
+        x = min(0, x)
+        y = min(0, y)
+        x = max(-(WIDTH + 3360), x)
+        y = max(-(HEIGHT + 550), y)
+        self.camera = pg.Rect(x, y, self.width, self.height)
+
 
 class Platform(pg.sprite.Sprite):
     def __init__(self,game,x,y,width,height):
@@ -272,44 +284,14 @@ class Game:
                     self.player.vel.x = 0
                     self.player.vel.y = 0
 
-        
+
         # check if player hits coins
 
         coin_contact = pg.sprite.spritecollide(self.player,self.coins,True)
         for coin in coin_contact:
             self.score += 1
-            
 
 
-        #horizontal scroll
-
-        if self.player.rect.left <= (WIDTH/ 3):
-            self.player.pos.x += max(abs(self.player.vel.x),2)
-            for plat in self.platforms:
-                plat.rect.left += max(abs(self.player.vel.x),2)
-            for coin in self.coins:
-                coin.rect.x +=max(abs(self.player.vel.x),2)
-            
-
-        if self.player.rect.right >= 2*WIDTH/3:
-            self.player.pos.x -= max(abs(self.player.vel.x),2)
-            for plat in self.platforms:
-                plat.rect.right -= max(abs(self.player.vel.x),2)
-            for coin in self.coins:
-                coin.rect.x -= max(abs(self.player.vel.x),2)
-
-   
-            
-
-
-        
-
-        
-            
-
-        
-            
-    
     def events(self):
         #game loop - events
         for event in pg.event.get():
