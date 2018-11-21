@@ -219,8 +219,7 @@ class Game:
             "P    PPPPPPP   P                                P  P            PPPPPPPPPPPPPPPPPP  PPP                    P",
             "P              P                      PPP          P                             P  P                      P",
             "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
-        map_length = len(PLATFORM_LIST[0]) * 20
-        map_width = len(PLATFORM_LIST) * 20
+
         for row in PLATFORM_LIST:
           for col in row:
             if col =="P":
@@ -229,21 +228,8 @@ class Game:
             x += 50
           y += 40
           x = 0
-        
-        
 
-        
-        """(-5*WIDTH,HEIGHT - 30, WIDTH*10, 30),
-                 (WIDTH/2,HEIGHT/2,150,30),
-                 (40,HEIGHT *3/4,50,30),
-                 (300,HEIGHT - 150,90,30),
-                 (900,HEIGHT-400,200,30),"""
-
-
-        """ for plat in PLATFORM_LIST:
-            platf = Platform(*plat)
-            self.all_sprites.add(platf)
-            self.platforms.add(platf) """
+        self.camera = Camera(0, 0)
             
             
        
@@ -262,37 +248,31 @@ class Game:
     def update(self):
         #game loop - update
         self.all_sprites.update()
+        self.camera.update(self.player)
         # Check if player hits platform iff falling
-        if self.player.vel.y > 0:
-            contacts = pg.sprite.spritecollide(self.player,self.platforms,False)
-            if contacts:
-                lowest = contacts[0]
-                for contact in contacts:
-                    if contact.rect.bottom > lowest.rect.bottom:
-                        lowest = contact
-                    
-                if self.player.pos.y < lowest.rect.centery:
-                  self.player.pos.y = lowest.rect.top + 1
-                  self.player.vel.y = 0
+        block_hit_list = pg.sprite.spritecollide(self.player, self.platforms, False)
+        for block in block_hit_list:
+            if self.player.vel.y > 0:
+                if self.player.pos.y < block.rect.centery:
+                    self.player.pos.y = block.rect.top + 1
+            #
+            self.player.vel.y = 0
 
-                
-        # Vertical Scroll
-        if self.player.rect.top <= (HEIGHT / 4):
-            self.player.pos.y += max(abs(self.player.vel.y),2)
-            for plat in self.platforms:
-                plat.rect.top += max(abs(self.player.vel.y),2)
-            for coin in self.coins:
-                coin.rect.top += max(abs(self.player.vel.y),2)
-            
+        block_hit_list = pg.sprite.spritecollide(self.player, self.platforms, False)
+        for block in block_hit_list:
+            if self.player.vel.x > 0 and self.player.vel.y == 0 and block.rect.bottom <= self.player.rect.bottom:
+                if self.player.pos.x < block.rect.left:
+                    self.player.pos.x = block.rect.left - 16
+                    self.player.vel.x = 0
+                    self.player.vel.y = 0
 
+            if self.player.vel.x < 0 and self.player.vel.y == 0 and block.rect.bottom <= self.player.rect.bottom:
+                if self.player.pos.x > block.rect.centerx:
+                    self.player.pos.x = block.rect.right + 17
+                    self.player.vel.x = 0
+                    self.player.vel.y = 0
 
-        if self.player.rect.bottom >= (HEIGHT *3/8):
-            self.player.pos.y -= max(abs(self.player.vel.y),2)
-            for plat in self.platforms:
-                plat.rect.bottom -= max(abs(self.player.vel.y),2)
-            for coin in self.coins:
-                coin.rect.bottom -=max(abs(self.player.vel.y),2)
-
+        
         # check if player hits coins
 
         coin_contact = pg.sprite.spritecollide(self.player,self.coins,True)
