@@ -18,9 +18,14 @@ BG_COLOUR = 48,191,191
 GOLD = 255,215,0
 
 WIDTH = 1024
-HEIGHT = 500
+HEIGHT = 768
+FPS = 60
+TITLE = "Game"
 
-TITLE="Game"
+TILESIZE = 32
+GRIDWIDTH = WIDTH/TILESIZE
+GRIDHEIGHT = HEIGHT/ TILESIZE
+
 FONT_NAME ="arial"
 
 hs_file = "hs.txt"
@@ -33,16 +38,6 @@ PLAYER_ACC = 1.2
 PLAYER_FRICTION = -0.25
 GRAVITY = 0.5
 PLAYER_JUMP = 12
-
-class bullet(pg.sprite.Sprite):
-    def __init__(self,game,pos,dir):
-        self.groups = game.all_sprites, game.bullets
-        pg.sprite.Sprite.__init__(self,self.groups)
-        self.image = pg.Surface((10,10))
-        self.image.fill(BLACK)
-        self.rect = self.image.get_rect()
-        self.rect.center = pos
-        self.pos = pos
 
 #Starting Platforms
 
@@ -107,23 +102,9 @@ class Platform(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        if randrange (100) < 15:
-            Coin(self.game,self)
+  #      if randrange (100) < 15:
+#            Coin(self.game,self)
 
-class Coin(pg.sprite.Sprite):
-    def __init__(self,game,plat):
-        self.groups = game.all_sprites, game.coins
-        pg.sprite.Sprite.__init__(self,self.groups)
-        self.game = game
-        self.plat = plat
-        self.image = pg.Surface((15,15))
-        self.image.fill(GOLD)
-        self.rect = self.image.get_rect()
-        self.rect.centerx = self.plat.rect.centerx
-        self.rect.bottom = self.plat.rect.top - 5
-
-    def update(self):
-     self.rect.bottom = self.plat.rect.top - 5
        
 
 class Game:
@@ -145,6 +126,13 @@ class Game:
                 self.highscore = int(file.read())
             except:
                 self.highscore = 0
+        game_folder = path.dirname(__file__)
+        self.map_data = []
+        with open(path.join(game_folder,'platform.txt'),'rt') as f:
+            for line in f:
+                self.map_data.append(line)
+                
+        
 
     def new(self):
         #starts new game
@@ -155,75 +143,12 @@ class Game:
         self.player = Player(self)
         self.all_sprites.add(self.player)
         self.round = 1
+        for row,tiles in enumerate(self.map_data):
+            for col, tile in enumerate(tiles):
+                if tile == "P":
+                    Platform(self,col,row,100,100)
 
-        x = y = 0
-
-        PLATFORM_LIST =[
-      "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-    "P                                            P                                                           P",
-    "P                                            PPPPPPPPPPPPPPPPPPP                                          P",
-    "P    PPPPPPP                              P                                                           P",
-    "P                                            P                                                            P",
-    "P            PPPPPPPPPPPPPP                  P                PPPPPP                      PPPPP           P",
-    "P            P                                                                               P           P",
-    "P            P              PPPP                                                             P           P",
-    "P            P                      PPPP                               PPPPPP                P           P",
-    "P            P                PPPP      PPPP                                PPPPPPPPP        P           P",
-    "P            P                                   PPPPPPPPPPPP                                P           P",
-    "P            P                         PPPPPPPPP                                                     P           P",
-    "PPPPPPPPPP   PPPPP     PPPPPPPPP                                                            P           P",
-    "P            P        P                PPPPPPPP                                           P           P",
-    "P PPPPPPPPPP P        P        PPPP                    PPPPPPPPPPPPPPPPPPPPPPP   P             P           P",
-    "P            P        P             PPPPPP                                             P             P           P",
-    "P       PPPPPP        P   PPPPPPPPPPP                  PPPPPPPPPPPPPPPPPPPPPPP   P             P           P",
-    "P            P        P                                                      P   P             P           P",
-    "P            P    PPPPPPPPPP      PPPPPPPPPPPP              PPPPPPPPPPPP     P   P             P           P",
-    "P            P                                              P                P   P             P          P",
-    "P            P     PPPPPPPPP                                PPPPPPPPP   PPPPPP   PPPPPPPPPPP   P          P",
-    "P            P                                                                                           P",
-    "P                           PPPPPP      P    P                                                           P",
-    "P                                       P    P                 PPPPPP   PPPPPP       PPPPPPPPPPPP        P",
-    "P                                       P    P                                                           P",
-    "P            P     PPPPPPPPPPPPPPPPPPPPPP    PPPPPPPPPPPPPP         PPPPPPPP                 P           P",
-    "P            P                                                                               P           P",
-    "P            P                                                               PPPPPPPPP                   P",
-    "P            PPPPPPPPPPPPPPPP    p    PPPPPPPP                                               P           P",
-    "P            P                   P    P      PPPPP            PPPPPPPPP                      P           P",
-    "PPPPPPPP     P                   P    P  P         PPPP                                       P           P",
-    "P            P        PPPP       P    P  P             PPPP                 PPPPPPP           P           P",
-    "P       PPPPPPPPPP               P    P  P                PPPP                                            P",
-    "P          P           PPPPP     P    P  P                        PPPPPPPP                                P",
-    "PPPPPPPP   P   P                 P    P  P   PPPPPPPPPP                                PPPPP               P",
-    "P          P   P   PPPPPP        P    P  P      P                                    PPPP   P              P",
-    "P    PPPPPPP   P                                P  P            PPPPPPPPPPPPPPPPPP  PPP                    P",
-    "P              P                      PPP          P                             P  P                      P",
-    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
-        map_length = len(PLATFORM_LIST[0]) * 20
-        map_width = len(PLATFORM_LIST) * 20
-        for row in PLATFORM_LIST:
-          for col in row:
-            if col =="P":
-                Platform(self,x,y,50,40)
-                
-            x += 50
-          y += 40
-          x = 0
-        
-        
-
-        
-        """(-5*WIDTH,HEIGHT - 30, WIDTH*10, 30),
-                 (WIDTH/2,HEIGHT/2,150,30),
-                 (40,HEIGHT *3/4,50,30),
-                 (300,HEIGHT - 150,90,30),
-                 (900,HEIGHT-400,200,30),"""
-
-
-        """ for plat in PLATFORM_LIST:
-            platf = Platform(*plat)
-            self.all_sprites.add(platf)
-            self.platforms.add(platf) """
-            
+               
             
        
         self.run()
@@ -274,10 +199,7 @@ class Game:
 
         # check if player hits coins
 
-        coin_contact = pg.sprite.spritecollide(self.player,self.coins,True)
-        for coin in coin_contact:
-            self.score += 1
-            
+
 
 
         #horizontal scroll
@@ -319,12 +241,19 @@ class Game:
          if event.type ==pg.KEYDOWN:
              if event.key == pg.K_UP:
                  self.player.jump()
+
+    def draw_grid(self):
+        for x in range (0,WIDTH, TILESIZE):
+            pg.draw.line(self.screen,BLUE,(x,0),(x,HEIGHT))
+        for y in range (0,HEIGHT, TILESIZE):
+            pg.draw.line(self.screen,BLUE,(0,y),(WIDTH,y))
             
              
     def draw(self):
         #game loop - draw
          self.screen.fill(WHITE)
          self.all_sprites.draw(self.screen)
+         self.draw_grid()
          self.draw_text("BANK: " + str(self.score),20,GOLD,20,20)
          self.draw_text("ROUND: "+str(self.round),30,BLACK,WIDTH - 150 ,20)
          #Flip display after drawing
@@ -381,11 +310,10 @@ class Game:
           
 
 g = Game()
-"""player = Player()
-all_sprites.add(player)"""
 g.show_start_screen()
 while g.running:
     g.new()
+    g.run()
     g.show_go_screen()
     
 
@@ -393,6 +321,8 @@ pg.quit()
 
 
        
+
+
 
 
 

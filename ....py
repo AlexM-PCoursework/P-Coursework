@@ -34,16 +34,6 @@ PLAYER_FRICTION = -0.25
 GRAVITY = 0.5
 PLAYER_JUMP = 12
 
-class bullet(pg.sprite.Sprite):
-    def __init__(self,game,pos,dir):
-        self.groups = game.all_sprites, game.bullets
-        pg.sprite.Sprite.__init__(self,self.groups)
-        self.image = pg.Surface((10,10))
-        self.image.fill(BLACK)
-        self.rect = self.image.get_rect()
-        self.rect.center = pos
-        self.pos = pos
-
 #Starting Platforms
 
 

@@ -18,7 +18,7 @@ BG_COLOUR = 48,191,191
 GOLD = 255,215,0
 
 WIDTH = 1024
-HEIGHT = 500
+HEIGHT = 720
 
 TITLE="Game"
 FONT_NAME ="arial"
@@ -34,6 +34,12 @@ PLAYER_FRICTION = -0.25
 GRAVITY = 0.5
 PLAYER_JUMP = 12
 
+BULLET_SPEED = 500
+BULLET_LIFETIME = 1000
+
+#Starting Platforms
+
+
 class bullet(pg.sprite.Sprite):
     def __init__(self,game,pos,dir):
         self.groups = game.all_sprites, game.bullets
@@ -43,10 +49,9 @@ class bullet(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
         self.pos = pos
-
-#Starting Platforms
-
-
+        
+        
+        
 
 #player sprite
 class Player(pg.sprite.Sprite):
@@ -61,16 +66,21 @@ class Player(pg.sprite.Sprite):
         self.pos = vector(WIDTH/2,100)
         self.vel = vector(0,0)
         self.acc = vector(0,0)
+    
 
     def jump(self):
         #Jump allowed if on a platform
+        self.rect.y += 2
         contacts = pg.sprite.spritecollide(self,self.game.platforms,False)
+        self.rect.y -= 2
         if contacts:
 
             self.vel.y = -PLAYER_JUMP
         
+    
+                 
+        
                           
-
     def update(self):
        self.acc = vector(0,GRAVITY)
        #self.vel = vector(0,0)
@@ -80,6 +90,11 @@ class Player(pg.sprite.Sprite):
        if keystate[pg.K_RIGHT]:
             self.acc.x= PLAYER_ACC
 
+       
+
+    
+            
+       
       #equations of motion
        
        self.acc.x += self.vel.x * PLAYER_FRICTION
@@ -90,12 +105,36 @@ class Player(pg.sprite.Sprite):
 
        self.rect.midbottom = self.pos
 
+
+class Enemy_1 (pg.sprite.Sprite):
+    def __init__ (self,game,x,y):
+        self.groups = game.all_sprites, game.enemy1s
+        pg.sprite.Sprite.__init__(self,self.groups)
+        self.image = pg.Surface((30,30))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.pos = vec(x,y)
+        self.rect.center = self.pos
+
        
-       
-       if self.pos.x > WIDTH:
-          self.pos.x = 0
-       if self.pos.x <0:
-          self.pos.x = WIDTH
+
+class Camera:
+    def __init__(self,width,height):
+        self.camera = pg.Rect(0,0,width,height)
+        self.width = width
+        self.height = height
+
+    def apply(self,entity):
+        return entity.rect.move(self.camera.topleft)
+
+    def update(self,target):
+        x = -target.rect.x + int(WIDTH/2)
+        y = -target.rect.y + int(HEIGHT/2)
+        x = min (0,x)
+        y = min(0,y)
+        x = max(-( WIDTH + 3360),x)
+        y = max(-(HEIGHT+550), y)
+        self.camera = pg.Rect(x,y,self.width,self.height)
 
 class Platform(pg.sprite.Sprite):
     def __init__(self,game,x,y,width,height):
@@ -152,54 +191,56 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.coins = pg.sprite.Group()
+        self.enemy1s = pg.sprite.Group()
         self.player = Player(self)
         self.all_sprites.add(self.player)
         self.round = 1
+        
 
         x = y = 0
 
         PLATFORM_LIST =[
-      "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-    "P                                            P                                                           P",
-    "P                                            PPPPPPPPPPPPPPPPPPP                                          P",
-    "P    PPPPPPP                              P                                                           P",
-    "P                                            P                                                            P",
-    "P            PPPPPPPPPPPPPP                  P                PPPPPP                      PPPPP           P",
-    "P            P                                                                               P           P",
-    "P            P              PPPP                                                             P           P",
-    "P            P                      PPPP                               PPPPPP                P           P",
-    "P            P                PPPP      PPPP                                PPPPPPPPP        P           P",
-    "P            P                                   PPPPPPPPPPPP                                P           P",
-    "P            P                         PPPPPPPPP                                                     P           P",
-    "PPPPPPPPPP   PPPPP     PPPPPPPPP                                                            P           P",
-    "P            P        P                PPPPPPPP                                           P           P",
-    "P PPPPPPPPPP P        P        PPPP                    PPPPPPPPPPPPPPPPPPPPPPP   P             P           P",
-    "P            P        P             PPPPPP                                             P             P           P",
+    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+    "P                                            P                                                             P",
+    "P                                            PPPPPPPPPPPPPPPPPPP                                           P",
+    "P    PPPPPPP                              P                                                                P",
+    "P                                            P                                                             P",
+    "P            PPPPPPPPPPPPPP                  P                PPPPPP                      PPPPP            P",
+    "P            P                                                                               P             P",
+    "P            P              PPPP                                                             P             P",
+    "P            P                      PPPP                               PPPPPP                P             P",
+    "P            P                PPPP      PPPP                                PPPPPPPPP        P             P",
+    "P            P                                   PPPPPPPPPPPP                                P             P",
+    "P            P                         PPPPPPPPP                                             P             P",
+    "PPPPPPPPPPPP PPPPP    PPPPPPPPPP                                                             P             P",
+    "P            P        P                PPPPPPPP                                              P             P",
+    "P PPPPPPPPPPPP        P        PPPP                    PPPPPPPPPPPPPPPPPPPPPPP               P             P",
+    "P            P        P             PPPPPP                                                     P           P",
     "P       PPPPPP        P   PPPPPPPPPPP                  PPPPPPPPPPPPPPPPPPPPPPP   P             P           P",
     "P            P        P                                                      P   P             P           P",
     "P            P    PPPPPPPPPP      PPPPPPPPPPPP              PPPPPPPPPPPP     P   P             P           P",
-    "P            P                                              P                P   P             P          P",
-    "P            P     PPPPPPPPP                                PPPPPPPPP   PPPPPP   PPPPPPPPPPP   P          P",
-    "P            P                                                                                           P",
-    "P                           PPPPPP      P    P                                                           P",
-    "P                                       P    P                 PPPPPP   PPPPPP       PPPPPPPPPPPP        P",
-    "P                                       P    P                                                           P",
-    "P            P     PPPPPPPPPPPPPPPPPPPPPP    PPPPPPPPPPPPPP         PPPPPPPP                 P           P",
-    "P            P                                                                               P           P",
-    "P            P                                                               PPPPPPPPP                   P",
-    "P            PPPPPPPPPPPPPPPP    p    PPPPPPPP                                               P           P",
-    "P            P                   P    P      PPPPP            PPPPPPPPP                      P           P",
-    "PPPPPPPP     P                   P    P  P         PPPP                                       P           P",
-    "P            P        PPPP       P    P  P             PPPP                 PPPPPPP           P           P",
-    "P       PPPPPPPPPP               P    P  P                PPPP                                            P",
-    "P          P           PPPPP     P    P  P                        PPPPPPPP                                P",
+    "P            P                                              P                P   P             P           P",
+    "P            P     PPPPPPPPP                                PPPPPPPPP   PPPPPP   PPPPPPPPPPP   P           P",
+    "P            P                                                                                             P",
+    "P                           PPPPPP      P    P                                                             P",
+    "P                                       P    P                 PPPPPP   PPPPPP       PPPPPPPPPPPP          P",
+    "P                                       P    P                                                             P",
+    "P            P     PPPPPPPPPPPPPPPPPPPPPP    PPPPPPPPPPPPPP         PPPPPPPP                 P             P",
+    "P            P                                                                               P             P",
+    "P            P                                                               PPPPPPPPP                     P",
+    "P            PPPPPPPPPPPPPPPP    p    PPPPPPPP                                               P             P",
+    "P            P                   P    P      PPPPP            PPPPPPPPP                      P             P",
+    "PPPPPPPP     P                   P    P  P         PPPP                                       P            P",
+    "P            P        PPPP       P    P  P             PPPP                 PPPPPPP           P            P",
+    "P       PPPPPPPPPP               P    P  P                PPPP                                             P",
+    "P          P           PPPPP     P    P  P                        PPPPPPPP                                 P",
     "PPPPPPPP   P   P                 P    P  P   PPPPPPPPPP                                PPPPP               P",
     "P          P   P   PPPPPP        P    P  P      P                                    PPPP   P              P",
     "P    PPPPPPP   P                                P  P            PPPPPPPPPPPPPPPPPP  PPP                    P",
     "P              P                      PPP          P                             P  P                      P",
-    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
-        map_length = len(PLATFORM_LIST[0]) * 20
-        map_width = len(PLATFORM_LIST) * 20
+    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
+        #map_length = 1000
+        #map_width = 1000
         for row in PLATFORM_LIST:
           for col in row:
             if col =="P":
@@ -208,21 +249,14 @@ class Game:
             x += 50
           y += 40
           x = 0
+
         
+
+        self.camera= Camera(0, 0)
         
 
         
-        """(-5*WIDTH,HEIGHT - 30, WIDTH*10, 30),
-                 (WIDTH/2,HEIGHT/2,150,30),
-                 (40,HEIGHT *3/4,50,30),
-                 (300,HEIGHT - 150,90,30),
-                 (900,HEIGHT-400,200,30),"""
-
-
-        """ for plat in PLATFORM_LIST:
-            platf = Platform(*plat)
-            self.all_sprites.add(platf)
-            self.platforms.add(platf) """
+       
             
             
        
@@ -241,7 +275,10 @@ class Game:
     def update(self):
         #game loop - update
         self.all_sprites.update()
+        self.camera.update(self.player)
         # Check if player hits platform iff falling
+
+        
         if self.player.vel.y > 0:
             contacts = pg.sprite.spritecollide(self.player,self.platforms,False)
             if contacts:
@@ -251,61 +288,25 @@ class Game:
                         lowest = contact
                     
                 if self.player.pos.y < lowest.rect.centery:
-                  self.player.pos.y = lowest.rect.top + 1
-                  self.player.vel.y = 0
+                    self.player.pos.y = lowest.rect.top + 1
+                    self.player.vel.y = 0
 
-                
-        # Vertical Scroll
-        if self.player.rect.top <= (HEIGHT / 4):
-            self.player.pos.y += max(abs(self.player.vel.y),2)
-            for plat in self.platforms:
-                plat.rect.top += max(abs(self.player.vel.y),2)
-            for coin in self.coins:
-                coin.rect.top += max(abs(self.player.vel.y),2)
+        
             
 
+        
 
-        if self.player.rect.bottom >= (HEIGHT *3/8):
-            self.player.pos.y -= max(abs(self.player.vel.y),2)
-            for plat in self.platforms:
-                plat.rect.bottom -= max(abs(self.player.vel.y),2)
-            for coin in self.coins:
-                coin.rect.bottom -=max(abs(self.player.vel.y),2)
+        
+
+                
+  
 
         # check if player hits coins
 
         coin_contact = pg.sprite.spritecollide(self.player,self.coins,True)
         for coin in coin_contact:
             self.score += 1
-            
-
-
-        #horizontal scroll
-
-        if self.player.rect.left <= (WIDTH/ 3):
-            self.player.pos.x += max(abs(self.player.vel.x),2)
-            for plat in self.platforms:
-                plat.rect.left += max(abs(self.player.vel.x),2)
-            for coin in self.coins:
-                coin.rect.x +=max(abs(self.player.vel.x),2)
-            
-
-        if self.player.rect.right >= 2*WIDTH/3:
-            self.player.pos.x -= max(abs(self.player.vel.x),2)
-            for plat in self.platforms:
-                plat.rect.right -= max(abs(self.player.vel.x),2)
-            for coin in self.coins:
-                coin.rect.x -= max(abs(self.player.vel.x),2)
-
-   
-            
-
-
-        
-
-        
-            
-
+    
         
             
     
@@ -319,12 +320,16 @@ class Game:
          if event.type ==pg.KEYDOWN:
              if event.key == pg.K_UP:
                  self.player.jump()
+        
+       
+
             
              
     def draw(self):
         #game loop - draw
          self.screen.fill(WHITE)
-         self.all_sprites.draw(self.screen)
+         for sprite in self.all_sprites:
+             self.screen.blit(sprite.image,self.camera.apply(sprite))
          self.draw_text("BANK: " + str(self.score),20,GOLD,20,20)
          self.draw_text("ROUND: "+str(self.round),30,BLACK,WIDTH - 150 ,20)
          #Flip display after drawing
