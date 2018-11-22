@@ -47,7 +47,7 @@ class Bullet(pg.sprite.Sprite):
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
         self.rect.center = pos
-        self.pos = vector(pos)
+        self.pos = pos
         self.vel = dir * BULLET_SPEED
         self.spawn_time = pg.time.get_ticks()
 
@@ -97,7 +97,7 @@ class Player(pg.sprite.Sprite):
            if now - self.last_shot > BULLET_RATE:
                self.last_shot = now
                dir = vector(1,0)
-               Bullet(self.game,self.pos,dir)
+               Bullet(self.game,self.pos - (0,15),dir)
 
 
       #equations of motion
