@@ -333,11 +333,11 @@ class Game:
          pg.display.flip()
     def show_start_screen(self):
         #game start screen
-        self.screen.fill(BG_COLOUR)
-        self.draw_text(TITLE,50,RED,WIDTH/2,HEIGHT/3)
-        self.draw_text("Use arrows to move, UP arrow to jump",30, RED,WIDTH/3,HEIGHT/2)
-        self.draw_text("Press any key to play",20,GREEN, WIDTH/2,HEIGHT* 2/3)
-        self.draw_text("Highest Round: " + str(self.highscore),20,RED, WIDTH/3,HEIGHT *3/4)
+        self.screen.fill(BLACK)
+        self.draw_text(TITLE,50,RED,WIDTH/2 - 60,HEIGHT/3)
+        self.draw_text("Use arrows to move, UP arrow to jump",30, RED,WIDTH/2 - 200,HEIGHT/2)
+        self.draw_text("Press any key to play",20,GREEN, WIDTH/2 - 80,HEIGHT* 2/3)
+        self.draw_text("Highest Round: " + str(self.highscore),20,RED, WIDTH/2 - 60,HEIGHT *3/4)
         pg.display.flip()
         self.key_press()
     
@@ -346,7 +346,7 @@ class Game:
         if not self.running:
             return
         self.screen.fill(BG_COLOUR)
-        self.draw_text("GAME OVER",50,RED,WIDTH/2,HEIGHT/3)
+        self.draw_text("GAME OVER",50,RED,WIDTH/2 - 25,HEIGHT/3)
         self.draw_text("You got to round " + str(self.round),30, RED,WIDTH/3,HEIGHT/2)
         self.draw_text("Press any key to play again",20,GREEN, WIDTH/2,HEIGHT* 2/3)
         if self.score > self.highscore:
