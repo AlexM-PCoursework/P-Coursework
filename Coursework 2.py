@@ -74,6 +74,7 @@ class Player(pg.sprite.Sprite):
         self.vel = vector(0,0)
         self.acc = vector(0,0)
         self.last_shot = 0
+        self.aim_dir = "RIGHT"
 
     def jump(self):
         #Jump allowed if on a platform
@@ -90,13 +91,18 @@ class Player(pg.sprite.Sprite):
        keystate = pg.key.get_pressed()
        if keystate[pg.K_LEFT]:
             self.acc.x = -PLAYER_ACC
+            self.aim_dir = "LEFT"
        if keystate[pg.K_RIGHT]:
             self.acc.x= PLAYER_ACC
+            self.aim_dir = "RIGHT"
        if keystate[pg.K_SPACE]:
            now = pg.time.get_ticks()
            if now - self.last_shot > BULLET_RATE:
                self.last_shot = now
-               dir = vector(1,0)
+               if self.aim_dir == "RIGHT":
+                    dir = vector(1,0)
+               else:
+                    dir = vector(-1,0)
                Bullet(self.game,self.pos - (0,15),dir)
 
 
