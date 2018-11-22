@@ -34,7 +34,7 @@ PLAYER_FRICTION = -0.25
 GRAVITY = 0.5
 PLAYER_JUMP = 12
 
-BULLET_SPEED = 50
+BULLET_SPEED = 40
 BULLET_LIFETIME = 1000
 BULLET_RATE = 150
 
@@ -54,7 +54,8 @@ class Bullet(pg.sprite.Sprite):
     def update(self):
         self.pos += self.vel
         self.rect.center = self.pos
-        if pg.sprite
+        if pg.sprite.spritecollideany(self,self.game.platforms):
+            self.kill()
         if pg.time.get_ticks() - self.spawn_time > BULLET_LIFETIME:
             self.kill()
 
@@ -110,11 +111,6 @@ class Player(pg.sprite.Sprite):
        self.rect.midbottom = self.pos
 
        
-       
-       if self.pos.x > WIDTH:
-          self.pos.x = 0
-       if self.pos.x <0:
-          self.pos.x = WIDTH
 
 class Enemy_1 (pg.sprite.Sprite):
     def __init__ (self,game,x,y):
@@ -135,14 +131,14 @@ class Camera:
     def apply(self, entity):
         return entity.rect.move(self.camera.topleft)
 
-    def update(self, target):
-        x = -target.rect.x + int(WIDTH / 2)
-        y = -target.rect.y + int(HEIGHT / 2)
-        x = min(0, x)
-        y = min(0, y)
-        x = max(-(WIDTH + 3360), x)
-        y = max(-(HEIGHT + 550), y)
-        self.camera = pg.Rect(x, y, self.width, self.height)
+    def update(self,target):
+        x = -target.rect.x + int(WIDTH/2)
+        y = -target.rect.y + int(HEIGHT/2)
+        x = min (0,x)
+        y = min(0,y)
+        x = max(-( WIDTH + 3360),x)
+        y = max(-(HEIGHT+550), y)
+        self.camera = pg.Rect(x,y,self.width,self.height)
 
 
 class Platform(pg.sprite.Sprite):
