@@ -305,6 +305,7 @@ class Game:
             #
             self.player.vel.y = 0
 
+         
         block_hit_list = pg.sprite.spritecollide(self.player, self.walls, False)
         for block in block_hit_list:
             if self.player.vel.x > 0:
@@ -317,6 +318,8 @@ class Game:
                 if self.player.pos.x > block.rect.centerx:
                     self.player.pos.x = block.rect.right + 15
                     self.player.vel.x = 0
+
+
 
 
 
@@ -346,6 +349,7 @@ class Game:
     def draw(self):
         #game loop - draw
          self.screen.fill(WHITE)
+         pg.display.set_caption("{:.2f}".format(self.clock.get_fps()))
 
          for sprite in self.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
