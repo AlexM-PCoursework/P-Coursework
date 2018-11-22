@@ -303,19 +303,19 @@ class Game:
             #
             self.player.vel.y = 0
 
-        block_hit_list = pg.sprite.spritecollide(self.player, self.platforms, False)
+        block_hit_list = pg.sprite.spritecollide(self.player, self.walls, False)
         for block in block_hit_list:
-            if self.player.vel.x > 0 and self.player.vel.y == 0 and block.rect.bottom <= self.player.rect.bottom:
+            if self.player.vel.x > 0:
                 if self.player.pos.x < block.rect.left:
-                    self.player.pos.x = block.rect.left - 16
+                    self.player.pos.x = block.rect.left - 15
                     self.player.vel.x = 0
-                    self.player.vel.y = 0
 
-            if self.player.vel.x < 0 and self.player.vel.y == 0 and block.rect.bottom <= self.player.rect.bottom:
+
+            if self.player.vel.x < 0:
                 if self.player.pos.x > block.rect.centerx:
-                    self.player.pos.x = block.rect.right + 17
+                    self.player.pos.x = block.rect.right + 15
                     self.player.vel.x = 0
-                    self.player.vel.y = 0
+
 
 
 
