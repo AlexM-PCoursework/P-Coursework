@@ -54,6 +54,8 @@ class Bullet(pg.sprite.Sprite):
     def update(self):
         self.pos += self.vel
         self.rect.center = self.pos
+        if pg.sprite.spritecollideany(self,self.game.walls):
+            self.kill()
         if pg.sprite.spritecollideany(self,self.game.platforms):
             self.kill()
         if pg.time.get_ticks() - self.spawn_time > BULLET_LIFETIME:
@@ -225,8 +227,8 @@ class Game:
         PLATFORM_LIST =[
             "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
             "W            W                               W                                                             P",
-            "W            W                               PPPPPPPPPPPPPPPPPPP                                           P",
-            "W    PPPPPPPPPPP                             W                                                             P",
+            "W            W                               WPPPPPPPPPPPPPPPPPP                                           P",
+            "W    PPPPPPPPWPP                             W                                                             P",
             "W                                            W                                                             P",
             "W            PPPPPPPPPPPPPP                  W                PPPPPP                      PPPPP            P",
             "W            W                                                                               W             P",
@@ -235,7 +237,7 @@ class Game:
             "W            W                PPPP      PPPP                                PPPPPPPPP        W             P",
             "W            W                                   PPPPPPPPPPPP                                W             P",
             "W            W                         PPPPPPPPP                                             W             P",
-            "WPPPPPPPPPPP PPPPP    PPPPPPPPPP                                                             W             P",
+            "WPPPPPPPPPPP WPPPP    PPPPPPPPPP                                                             W             P",
             "W            W        W                PPPPPPPP                                              W             P",
             "W PPPPPPPPPPPP        W        PPPP                    PPPPPPPPPPPPPPPPPPPPPPP               W             P",
             "W            W        W             PPPPPP                                                     W           P",
@@ -251,15 +253,15 @@ class Game:
             "W                 PPPPPPPPPPPPPPPPPPPPPP    PPPPPPPPPPPPPP         PPPPPPPP                 P             P",
             "W            W                                                                               P             P",
             "W            W                                                               PPPPPPPPP                     P",
-            "W            PPPPPPPPPPPPPPPP    W    PPPPPPPP                                               P             P",
+            "W            WPPPPPPPPPPPPPPP    W    PPPPPPPP                                               P             P",
             "W            W                   W    W      PPPPP            PPPPPPPPP                      P             P",
             "WPPPPPPP     W                   W    W  W         PPPP                                       P            P",
             "W            W        PPPP       W    W  W             PPPP                 PPPPPPP           P            P",
-            "W       PPPPPPPPPP               W    W  W                PPPP                                             P",
+            "W       PPPPPWPPPP               W    W  W                PPPP                                             P",
             "W          W           PPPPP     W    W  W                        PPPPPPPP                                 P",
             "WPPPPPPP   W   W                 W    W  W   PPPPPPPPPP                                PPPPP               P",
             "W          W   W   PPPPPP        W    W  W      W                                    PPPP   P              P",
-            "W    PPPPPPP   W                                W  W            PPPPPPPPPPPPPPPPPP  PPP                    P",
+            "W    PPPPPPW   W                                W  W            PPPPPPPPPPPPPPPPPP  PPP                    P",
             "W              W                      PPP          W                             W  P                      P",
             "WPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
