@@ -147,13 +147,13 @@ class Camera:
         self.camera = pg.Rect(x,y,self.width,self.height)
 
 class Wall(pg.sprite.Sprite):
-    def__init__(self,game,x,y,width,height):
+    def __init__(self,game,x,y,width,height):
         self.groups = game.all_sprites,game.walls
-        pg.sprite.Sprite.__init__(self,self,groups)
+        pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
         self.image = pg.Surface((width,height))
-        self.image.fill(BLACK)
-        self.image = self.image.ret_rect()
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
@@ -212,6 +212,7 @@ class Game:
         self.score = 0
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
+        self.walls = pg.sprite.Group()
         self.coins = pg.sprite.Group()
         self.enemy1s = pg.sprite.Group()
         self.bullets = pg.sprite.Group()
@@ -266,6 +267,8 @@ class Game:
           for col in row:
             if col =="P":
                 Platform(self,x,y,50,40)
+            if col =="W":
+                Wall(self,x,y,50,40)
                 
             x += 50
           y += 40
