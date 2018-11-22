@@ -146,6 +146,17 @@ class Camera:
         y = max(-(HEIGHT+550), y)
         self.camera = pg.Rect(x,y,self.width,self.height)
 
+class Wall(pg.sprite.Sprite):
+    def__init__(self,game,x,y,width,height):
+        self.groups = game.all_sprites,game.walls
+        pg.sprite.Sprite.__init__(self,self,groups)
+        self.game = game
+        self.image = pg.Surface((width,height))
+        self.image.fill(BLACK)
+        self.image = self.image.ret_rect()
+        self.rect.x = x
+        self.rect.y = y
+
 
 class Platform(pg.sprite.Sprite):
     def __init__(self,game,x,y,width,height):
@@ -213,8 +224,8 @@ class Game:
         PLATFORM_LIST =[
             "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
             "P                                            P                                                             P",
-            "P                                            PPPPPPPPPPPPPPPPPPP                                           P",
-            "P    PPPPPPP                              P                                                                P",
+            "P            W                                PPPPPPPPPPPPPPPPPPP                                           P",
+            "P    PPPPPPPPPPP                             P                                                             P",
             "P                                            P                                                             P",
             "P            PPPPPPPPPPPPPP                  P                PPPPPP                      PPPPP            P",
             "P            P                                                                               P             P",
