@@ -39,7 +39,8 @@ BULLET_LIFETIME = 1000
 BULLET_RATE = 150
 
 ENEMY_1_IMG = 'ghost.png'
-ENEMY1_SPEED = 0.01
+ENEMY1_SPEED = 0.03
+ENEMY1_FRICTION = -0.02
 
 class Bullet(pg.sprite.Sprite):
     def __init__(self,game,pos,dir):
@@ -143,10 +144,9 @@ class Enemy_1 (pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
         self.acc = vector(ENEMY1_SPEED, 0).rotate(-self.rot)
+        self.acc += self.vel * ENEMY1_FRICTION
         self.vel += self.acc
-        self.pos += self.vel + 0.5 * self.acc
-        self.rect.center = self.pos
-
+        self.pos += self.vel + (0.5 * self.acc)
 class Camera:
     def __init__(self,width,height):
         self.camera = pg.Rect(0,0,width,height)
