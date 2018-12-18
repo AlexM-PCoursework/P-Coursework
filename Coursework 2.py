@@ -148,6 +148,39 @@ class Enemy_1 (pg.sprite.Sprite):
         self.acc += self.vel * ENEMY1_FRICTION
         self.vel += self.acc
         self.pos += self.vel + (0.5 * self.acc)
+
+        block_hit_list = pg.sprite.spritecollide(self, self.game.platforms, False)
+        for block in block_hit_list:
+            if self.vel.y > 0:
+                if self.pos.y < block.rect.centery:
+                    self.pos.y = block.rect.top + 1
+
+                    self.vel.y = 0
+            if self.vel.x > 0 and self.vel.y != 0:
+                if self.pos.x < block.rect.left:
+                    self.pos.x = block.rect.left - 15
+                    self.vel.x = 0
+            if self.vel.x < 0 and self.vel.y != 0:
+                if self.pos.x > block.rect.right:
+                    self.pos.x = block.rect.right + 15
+                    self.vel.x = 0
+            if self.vel.y < 0:
+                if self.pos.y - 30 > block.rect.bottom:
+                    self.pos.y = block.rect.bottom + 30
+                #
+                self.vel.y = 0
+
+        block_hit_list = pg.sprite.spritecollide(self, self.game.walls, False)
+        for block in block_hit_list:
+            if self.vel.x > 0:
+                if self.pos.x < block.rect.left:
+                    self.pos.x = block.rect.left - 15
+                    self.vel.x = 0
+
+            if self.vel.x < 0:
+                if self.pos.x > block.rect.right:
+                    self.pos.x = block.rect.right + 15
+                    self.vel.x = 0
 class Camera:
     def __init__(self,width,height):
         self.camera = pg.Rect(0,0,width,height)
@@ -242,7 +275,7 @@ class Game:
         self.all_sprites.add(self.player)
         self.round = 1
 
-        self.enemy1s = Enemy_1(self,100,100)
+        Enemy_1(self,100,100)
 
         x = y = 0
 
@@ -356,38 +389,7 @@ class Game:
                     self.player.pos.x = block.rect.right + 15
                     self.player.vel.x = 0
 
-        block_hit_list = pg.sprite.spritecollide(self.enemy1s, self.platforms, False)
-        for block in block_hit_list:
-            if self.enemy1s.vel.y > 0:
-                if self.enemy1s.pos.y < block.rect.centery:
-                    self.enemy1s.pos.y = block.rect.top + 1
 
-                    self.enemy1s.vel.y = 0
-            if self.enemy1s.vel.x > 0 and self.enemy1s.vel.y != 0:
-                if self.enemy1s.pos.x < block.rect.left:
-                    self.enemy1s.pos.x = block.rect.left - 15
-                    self.enemy1s.vel.x = 0
-            if self.enemy1s.vel.x < 0 and self.enemy1s.vel.y != 0:
-                if self.enemy1s.pos.x > block.rect.right:
-                    self.enemy1s.pos.x = block.rect.right + 15
-                    self.enemy1s.vel.x = 0
-            if self.enemy1s.vel.y < 0:
-                if self.enemy1s.pos.y - 30 > block.rect.bottom:
-                    self.enemy1s.pos.y = block.rect.bottom + 30
-                #
-                self.enemy1s.vel.y = 0
-
-        block_hit_list = pg.sprite.spritecollide(self.enemy1s, self.walls, False)
-        for block in block_hit_list:
-            if self.enemy1s.vel.x > 0:
-                if self.enemy1s.pos.x < block.rect.left:
-                    self.enemy1s.pos.x = block.rect.left - 15
-                    self.enemy1s.vel.x = 0
-
-            if self.enemy1s.vel.x < 0:
-                if self.enemy1s.pos.x > block.rect.right:
-                    self.enemy1s.pos.x = block.rect.right + 15
-                    self.enemy1s.vel.x = 0
 
         # check if player hits coins
 
