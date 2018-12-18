@@ -230,7 +230,7 @@ class Game:
             "W            W                               WPPPPPPPPPPPPPPPPPP                                           P",
             "W    PPPPPPPPWPP                             W                                                             P",
             "W                                            W                                                             P",
-            "W            PPPPPPPPPPPPPP                  W                PPPPPP                      PPPPP            P",
+            "W   P        PPPPPPPPPPPPPP                  W                PPPPPP                      PPPPP            P",
             "W            W                                                                               W             P",
             "W            W              PPPP                                                             W             P",
             "W            W                      PPPP                               PPPPPP                W             P",
@@ -248,11 +248,11 @@ class Game:
             "W            W     PPPPPPPPP                                PPPPPPPPP   PPPPPP   PPPPPPPPPPP   W           P",
             "W            W                                                                                             P",
             "W            W              PPPPPP      P    P                                                             P",
-            "W            W                           P    P                 PPPPPP   PPPPPP       PPPPPPPPPPPP          P",
-            "W            W                           P    P                                                             P",
-            "W                 PPPPPPPPPPPPPPPPPPPPPP    PPPPPPPPPPPPPP         PPPPPPPP                 P             P",
-            "W            W                                                                               P             P",
-            "W            W                                                               PPPPPPPPP                     P",
+            "W            W                           P    P                 PPPPPP   PPPPPP       PPPPPPPPPPPP         P",
+            "W            P                           P    P                                                            P",
+            "W                 PPPPPPPPPPPPPPPPPPPPPP    PPPPPPPPPPPPPP         PPPPPPPP                 P              P",
+            "W            P                                                                               P             P",
+            "W   PP PP P  W                                                               PPPPPPPPP                     P",
             "W            WPPPPPPPPPPPPPPP    W    PPPPPPPP                                               P             P",
             "W            W                   W    W      PPPPP            PPPPPPPPP                      P             P",
             "WPPPPPPP     W                   W    W  W         PPPP                                       P            P",
@@ -261,7 +261,7 @@ class Game:
             "W          W           PPPPP     W    W  W                        PPPPPPPP                                 P",
             "WPPPPPPP   W   W                 W    W  W   PPPPPPPPPP                                PPPPP               P",
             "W          W   W   PPPPPP        W    W  W      W                                    PPPP   P              P",
-            "W    PPPPPPW   W                                W  W            PPPPPPPPPPPPPPPPPP  PPP                    P",
+            "W    PPPPPPP   W                                W  W            PPPPPPPPPPPPPPPPPP  PPP                    P",
             "W              W                      PPP          W                             W  P                      P",
             "WPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
@@ -303,9 +303,24 @@ class Game:
                 if self.player.pos.y < block.rect.centery:
                     self.player.pos.y = block.rect.top + 1
             #
-            self.player.vel.y = 0
+                    self.player.vel.y = 0
+            if self.player.vel.x > 0 and self.player.vel.y != 0:
+                if self.player.pos.x < block.rect.left:
+                    self.player.pos.x = block.rect.left - 15
+                    self.player.vel.x = 0
+            if self.player.vel.x < 0 and self.player.vel.y != 0:
+                if self.player.pos.x > block.rect.right:
+                    self.player.pos.x = block.rect.right + 15
+                    self.player.vel.x = 0
+            if self.player.vel.y < 0:
+                if self.player.pos.y - 30 > block.rect.bottom:
+                    self.player.pos.y = block.rect.bottom + 30
+                #
+                self.player.vel.y = 0
 
-         
+
+
+
         block_hit_list = pg.sprite.spritecollide(self.player, self.walls, False)
         for block in block_hit_list:
             if self.player.vel.x > 0:
@@ -315,7 +330,7 @@ class Game:
 
 
             if self.player.vel.x < 0:
-                if self.player.pos.x > block.rect.centerx:
+                if self.player.pos.x > block.rect.right:
                     self.player.pos.x = block.rect.right + 15
                     self.player.vel.x = 0
 
