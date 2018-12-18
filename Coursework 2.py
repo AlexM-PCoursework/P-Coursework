@@ -143,7 +143,7 @@ class Enemy_1 (pg.sprite.Sprite):
         self.rot = (self.game.player.pos - self.pos).angle_to(vector(1,0))
         self.image = pg.transform.rotate(self.game.enemy1_img,self.rot)
         self.rect = self.image.get_rect()
-        self.rect.center = self.pos
+        self.rect.midbottom = self.pos
         self.acc = vector(ENEMY1_SPEED, 0).rotate(-self.rot)
         self.acc += self.vel * ENEMY1_FRICTION
         self.vel += self.acc
@@ -158,15 +158,15 @@ class Enemy_1 (pg.sprite.Sprite):
                     self.vel.y = 0
             if self.vel.x > 0 and self.vel.y != 0:
                 if self.pos.x < block.rect.left:
-                    self.pos.x = block.rect.left - 15
+                    self.pos.x = block.rect.left - self.rect.width/2
                     self.vel.x = 0
             if self.vel.x < 0 and self.vel.y != 0:
                 if self.pos.x > block.rect.right:
-                    self.pos.x = block.rect.right + 15
+                    self.pos.x = block.rect.right + self.rect.width/2
                     self.vel.x = 0
             if self.vel.y < 0:
-                if self.pos.y - 30 > block.rect.bottom:
-                    self.pos.y = block.rect.bottom + 30
+                if self.pos.y - self.rect.height > block.rect.bottom:
+                    self.pos.y = block.rect.bottom + self.rect.height
                 #
                 self.vel.y = 0
 
@@ -174,12 +174,12 @@ class Enemy_1 (pg.sprite.Sprite):
         for block in block_hit_list:
             if self.vel.x > 0:
                 if self.pos.x < block.rect.left:
-                    self.pos.x = block.rect.left - 15
+                    self.pos.x = block.rect.left - self.rect.width/2
                     self.vel.x = 0
 
             if self.vel.x < 0:
                 if self.pos.x > block.rect.right:
-                    self.pos.x = block.rect.right + 15
+                    self.pos.x = block.rect.right + self.rect.width/2
                     self.vel.x = 0
 class Camera:
     def __init__(self,width,height):
