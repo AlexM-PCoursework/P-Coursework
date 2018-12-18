@@ -38,6 +38,8 @@ BULLET_SPEED = 40
 BULLET_LIFETIME = 1000
 BULLET_RATE = 150
 
+ENEMY_1_IMG = 'ghost.png'
+
 class Bullet(pg.sprite.Sprite):
     def __init__(self,game,pos,dir):
         self.groups = game.all_sprites, game.bullets
@@ -77,7 +79,7 @@ class Player(pg.sprite.Sprite):
         self.acc = vector(0,0)
         self.last_shot = 0
         self.aim_dir = "RIGHT"
-        self.rot = 0
+
 
     def jump(self):
         #Jump allowed if on a platform
@@ -125,10 +127,17 @@ class Enemy_1 (pg.sprite.Sprite):
     def __init__ (self,game,x,y):
         self.groups = game.all_sprites, game.enemy1s
         pg.sprite.Sprite.__init__(self,self.groups)
-        self.image = pg.Surface((30,30))
-        self.image.fill(RED)
+        self.image = game.enemy1_img
+        self.game = game
         self.rect = self.image.get_rect()
         self.pos = vector(x,y)
+        self.rect.center = self.pos
+        self.rot = 0
+
+    def update(self):
+        self.rot = (self.game.player.pos - self.pos).angle_to(vector(1,0))
+        self.image = pg.transform.rotate(self.game.enemy1_img,self.rot)
+        self.rect = self.image.get_rect()
         self.rect.center = self.pos
 
 class Camera:
@@ -204,6 +213,8 @@ class Game:
     def data(self):
         #load highest Round
         self.dir = path.dirname(__file__)
+        img_folder = path.join(self.dir,'img')
+        self.enemy1_img = pg.image.load(path.join(img_folder, ENEMY_1_IMG)).convert_alpha()
         with open(path.join(self.dir,hs_file),'w') as file:
             try:
                 self.highscore = int(file.read())
