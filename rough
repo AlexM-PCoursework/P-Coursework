@@ -1,0 +1,68 @@
+def collide(sprite, groupp, groupw):
+    block_hit_list = pg.sprite.spritecollide(sprite, groupp, False)
+    for block in block_hit_list:
+        if sprite.vel.y > 0:
+            if sprite.pos.y < block.rect.centery:
+                sprite.pos.y = block.rect.top + 1
+                #
+                sprite.vel.y = 0
+        if sprite.vel.x > 0 and sprite.vel.y != 0:
+            if sprite.pos.x < block.rect.left:
+                sprite.pos.x = block.rect.left - 15
+                sprite.vel.x = 0
+        if sprite.vel.x < 0 and sprite.vel.y != 0:
+            if sprite.pos.x > block.rect.right:
+                sprite.pos.x = block.rect.right + 15
+                sprite.vel.x = 0
+
+        if sprite.vel.y < 0:
+            if sprite.pos.y - 30 > block.rect.bottom:
+                sprite.pos.y = block.rect.bottom + 30
+
+            sprite.vel.y = 0
+
+    block_hit_list = pg.sprite.spritecollide(sprite, groupw, False)
+    for block in block_hit_list:
+        if sprite.vel.x > 0:
+            if sprite.pos.x < block.rect.left:
+                sprite.pos.x = block.rect.left - 15
+                sprite.vel.x = 0
+
+        if sprite.vel.x < 0:
+            if sprite.pos.x > block.rect.right:
+                sprite.pos.x = block.rect.right + 15
+                sprite.vel.x = 0
+
+
+
+
+  block_hit_list = pg.sprite.spritecollide(self.player, self.platforms, False)
+        for block in block_hit_list:
+            if self.player.vel.y > 0:
+                if self.player.pos.y < block.rect.centery:
+                    self.player.pos.y = block.rect.top + 1
+            #
+                    self.player.vel.y = 0
+            if self.player.vel.x > 0 and self.player.vel.y != 0:
+                if self.player.pos.x < block.rect.left:
+                    self.player.pos.x = block.rect.left - 15
+                    self.player.vel.x = 0
+            if self.player.vel.x < 0 and self.player.vel.y != 0:
+                if self.player.pos.x > block.rect.right:
+                    self.player.pos.x = block.rect.right + 15
+                    self.player.vel.x = 0
+            if self.player.vel.y < 0:
+                if self.player.pos.y - 30 > block.rect.bottom:
+                    self.player.pos.y = block.rect.bottom + 30
+                #
+                self.player.vel.y = 0
+
+
+
+
+        block_hit_list = pg.sprite.spritecollide(self.player, self.walls, False)
+        for block in block_hit_list:
+            if self.player.vel.x > 0:
+                if self.player.pos.x < block.rect.left:
+                    self.player.pos.x = block.rect.left - 15
+                    self.player.vel.x = 0

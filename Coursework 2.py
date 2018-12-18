@@ -138,6 +138,7 @@ class Enemy_1 (pg.sprite.Sprite):
         self.vel = vector(0,0)
         self.acc = vector(0,0)
 
+
     def update(self):
         self.rot = (self.game.player.pos - self.pos).angle_to(vector(1,0))
         self.image = pg.transform.rotate(self.game.enemy1_img,self.rot)
@@ -241,7 +242,7 @@ class Game:
         self.all_sprites.add(self.player)
         self.round = 1
 
-        Enemy_1(self,100,100)
+        self.enemy1s = Enemy_1(self,100,100)
 
         x = y = 0
 
@@ -355,13 +356,38 @@ class Game:
                     self.player.pos.x = block.rect.right + 15
                     self.player.vel.x = 0
 
+        block_hit_list = pg.sprite.spritecollide(self.enemy1s, self.platforms, False)
+        for block in block_hit_list:
+            if self.enemy1s.vel.y > 0:
+                if self.enemy1s.pos.y < block.rect.centery:
+                    self.enemy1s.pos.y = block.rect.top + 1
 
+                    self.enemy1s.vel.y = 0
+            if self.enemy1s.vel.x > 0 and self.enemy1s.vel.y != 0:
+                if self.enemy1s.pos.x < block.rect.left:
+                    self.enemy1s.pos.x = block.rect.left - 15
+                    self.enemy1s.vel.x = 0
+            if self.enemy1s.vel.x < 0 and self.enemy1s.vel.y != 0:
+                if self.enemy1s.pos.x > block.rect.right:
+                    self.enemy1s.pos.x = block.rect.right + 15
+                    self.enemy1s.vel.x = 0
+            if self.enemy1s.vel.y < 0:
+                if self.enemy1s.pos.y - 30 > block.rect.bottom:
+                    self.enemy1s.pos.y = block.rect.bottom + 30
+                #
+                self.enemy1s.vel.y = 0
 
+        block_hit_list = pg.sprite.spritecollide(self.enemy1s, self.walls, False)
+        for block in block_hit_list:
+            if self.enemy1s.vel.x > 0:
+                if self.enemy1s.pos.x < block.rect.left:
+                    self.enemy1s.pos.x = block.rect.left - 15
+                    self.enemy1s.vel.x = 0
 
-
-
-
-
+            if self.enemy1s.vel.x < 0:
+                if self.enemy1s.pos.x > block.rect.right:
+                    self.enemy1s.pos.x = block.rect.right + 15
+                    self.enemy1s.vel.x = 0
 
         # check if player hits coins
 
