@@ -77,6 +77,7 @@ class Player(pg.sprite.Sprite):
         self.acc = vector(0,0)
         self.last_shot = 0
         self.aim_dir = "RIGHT"
+        self.rot = 0
 
     def jump(self):
         #Jump allowed if on a platform
