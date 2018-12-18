@@ -127,7 +127,7 @@ class Enemy_1 (pg.sprite.Sprite):
         self.image = pg.Surface((30,30))
         self.image.fill(RED)
         self.rect = self.image.get_rect()
-        self.pos = vec(x,y)
+        self.pos = vector(x,y)
         self.rect.center = self.pos
 
 class Camera:
@@ -221,6 +221,8 @@ class Game:
         self.player = Player(self)
         self.all_sprites.add(self.player)
         self.round = 1
+
+        Enemy_1(self,100,100)
 
         x = y = 0
 
