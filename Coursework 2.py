@@ -59,6 +59,7 @@ ENEMY_1_IMG = 'ghost.png'
 ENEMY1_SPEED = 0.03
 ENEMY1_FRICTION = -0.02
 ENEMY1_DAMAGE = 10
+KNOCKBACK = 20
 
 WALL_IMG ='wall.png'
 BACKGROUND_IMG = 'bg2.png'
@@ -423,12 +424,15 @@ class Game:
         # Check if player hits platform iff falling
         #enemy hits player
         hits = pg.sprite.spritecollide(self.player, self.enemy1s, False)
-        for hits in hits:
-            self.player.health -= ENEMYY1_DAMAGE
+        for hit in hits:
+            self.player.health -= ENEMY1_DAMAGE
             hit.vel = vector(0,0)
             if self.player.health <= 0:
                 self.playing = False
-        hits = pg.sprite.spritecoolide(self.player,self.items, False)
+        if hits:
+
+            self.player.vel += vector(KNOCKBACK,0).rotate(-hits[0].rot)
+        hits = pg.sprite.spritecollide(self.player,self.items, False)
         for hit in hits:
             if hit.type =='health' and self.player.health < PLAYER_HEALTH:
                 hit.kill()
