@@ -44,6 +44,7 @@ ENEMY1_FRICTION = -0.02
 
 WALL_IMG ='wall.png'
 BACKGROUND_IMG = 'bg2.png'
+COIN_IMG ='coin.png'
 
 class Bullet(pg.sprite.Sprite):
     def __init__(self,game,pos,dir):
@@ -76,7 +77,7 @@ class Player(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
         self.image = pg.Surface((30,30))
-        self.image.fill(BLUE)
+        self.image.fill(GOLD)
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH/2,100)
         self.pos = vector(WIDTH/2,100)
@@ -232,8 +233,7 @@ class Coin(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
         self.plat = plat
-        self.image = pg.Surface((15,15))
-        self.image.fill(GOLD)
+        self.image = game.coin_img
         self.rect = self.image.get_rect()
         self.rect.centerx = self.plat.rect.centerx
         self.rect.bottom = self.plat.rect.top - 5
@@ -259,6 +259,7 @@ class Game:
         img_folder = path.join(self.dir,'img')
         self.enemy1_img = pg.image.load(path.join(img_folder, ENEMY_1_IMG)).convert_alpha()
         self.wall_img = pg.image.load(path.join(img_folder,WALL_IMG)).convert_alpha()
+        self.coin_img = pg.image.load(path.join(img_folder,COIN_IMG)).convert_alpha()
         self.background_img = pg.image.load(path.join(img_folder,BACKGROUND_IMG)).convert_alpha()
         with open(path.join(self.dir,hs_file),'w') as file:
             try:
