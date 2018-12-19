@@ -32,12 +32,13 @@ vector = pg.math.Vector2
 PLAYER_ACC = 1.2
 PLAYER_FRICTION = -0.25
 GRAVITY = 0.5
-PLAYER_JUMP = 12
+PLAYER_JUMP = 10
 
 BULLET_SPEED = 40
 BULLET_LIFETIME = 1000
 BULLET_RATE = 150
 BULLET_OFFSET = vector(-30,-15)
+BULLET_DAMAGE = 10
 
 ENEMY_1_IMG = 'ghost.png'
 ENEMY1_SPEED = 0.03
@@ -146,6 +147,7 @@ class Enemy_1 (pg.sprite.Sprite):
         self.rot = 0
         self.vel = vector(0,0)
         self.acc = vector(0,0)
+        self.health = 70
 
 
     def update(self):
@@ -157,6 +159,8 @@ class Enemy_1 (pg.sprite.Sprite):
         self.acc += self.vel * ENEMY1_FRICTION
         self.vel += self.acc
         self.pos += self.vel + (0.5 * self.acc)
+        if self.health <= 0:
+            self.kill()
 
 
         block_hit_list = pg.sprite.spritecollide(self, self.game.platforms, False)
@@ -310,25 +314,25 @@ class Game:
             "W            W        W             PPPPPP                                                     W           P",
             "W       PPPPPW        W   PPPPPPPPPPP                  PPPPPPPPPPPPPPPPPPPPPPP   P             W           P",
             "W            W        W                                                      P   P             W           P",
-            "W            W    PPPPPPPPPP      PPPPPPPPPPPP              PPPPPPPPPPPP     P   P             W           P",
-            "W            W                                              P                P   P             W           P",
-            "W            W     PPPPPPPPP                                PPPPPPPPP   PPPPPP   PPPPPPPPPPP   W           P",
-            "W            W                                                                                             P",
-            "W            W              PPPPPP      P    P                                                             P",
-            "W            W                           P    P                 PPPPPP   PPPPPP       PPPPPPPPPPPP         P",
-            "W            P                           P    P                                                            P",
-            "W                 PPPPPPPPPPPPPPPPPPPPPP    PPPPPPPPPPPPPP         PPPPPPPP                 P              P",
-            "W            P                                                                               P             P",
+            "WPPPPPPPPP   W    PPPPPPPPPP      PPPPPPPPPPPP              PPPPPPPPPPPP     P   P             W           P",
+            "W        W   W                                              P                P   P             W           P",
+            "WPPPPP   W   W     PPPPPPPPP                                PPPPPPPPP   PPPPPP   PPPPPPPPPPP   W           P",
+            "W        W   W                                                                                             P",
+            "WP       WPP W              PPPPPP      P    P                                                             P",
+            "WPP      W   W                           P    P                 PPPPPP   PPPPPP       PPPPPPPPPPPP         P",
+            "WPPP     W  PW                           P    P                                                            P",
+            "WPPPP    W         PPPPPPPPPPPPPPPPPPPPPP    PPPPPPPPPPPPPP         PPPPPPPP                 P              P",
+            "WPPPPP       P                                                                               P             P",
             "W   PP PP P  W                                                               PPPPPPPPP                     P",
             "W            WPPPPPPPPPPPPPPP    W    PPPPPPPP                                               P             P",
-            "W            W                   W    W      PPPPP            PPPPPPPPP                      P             P",
+            "W   PP       W                   W    W      PPPPP            PPPPPPPPP                      P             P",
             "WPPPPPPP     W                   W    W  W         PPPP                                       P            P",
             "W            W        PPPP       W    W  W             PPPP                 PPPPPPP           P            P",
             "W       PPPPPWPPPP               W    W  W                PPPP                                             P",
             "W          W           PPPPP     W    W  W                        PPPPPPPP                                 P",
             "WPPPPPPP   W   W                 W    W  W   PPPPPPPPPP                                PPPPP               P",
             "W          W   W   PPPPPP        W    W  W      W                                    PPPP   P              P",
-            "W    PPPPPPP   W                                W  W            PPPPPPPPPPPPPPPPPP  PPP                    P",
+            "W    PPPPPPW   W                                W  W            PPPPPPPPPPPPPPPPPP  PPP                    P",
             "W              W                      PPP          W                             W  P                      P",
             "WPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
@@ -366,7 +370,8 @@ class Game:
         # Check if player hits platform iff falling
         hits = pg.sprite.groupcollide(self.enemy1s,self.bullets,False,True)
         for hit in hits:
-            hit.kill()
+            hit.health -= BULLET_DAMAGE
+
         block_hit_list = pg.sprite.spritecollide(self.player, self.platforms, False)
         for block in block_hit_list:
             if self.player.vel.y > 0:
