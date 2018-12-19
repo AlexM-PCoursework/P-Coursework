@@ -287,6 +287,7 @@ class Game:
         self.round = 1
 
         Enemy_1(self,100,100)
+        Enemy_1(self,100,500)
 
         x = y = 0
 
@@ -363,6 +364,9 @@ class Game:
         self.all_sprites.update()
         self.camera.update(self.player)
         # Check if player hits platform iff falling
+        hits = pg.sprite.groupcollide(self.enemy1s,self.bullets,False,True)
+        for hit in hits:
+            hit.kill()
         block_hit_list = pg.sprite.spritecollide(self.player, self.platforms, False)
         for block in block_hit_list:
             if self.player.vel.y > 0:
@@ -393,6 +397,12 @@ class Game:
                 if self.player.pos.x < block.rect.left:
                     self.player.pos.x = block.rect.left - 15
                     self.player.vel.x = 0
+
+            if self.player.vel.y < 0:
+                if self.player.pos.y - 30 > block.rect.bottom:
+                    self.player.pos.y = block.rect.bottom + 30
+                #
+                self.player.vel.y = 0
 
 
             if self.player.vel.x < 0:
