@@ -53,19 +53,24 @@ WEAPONS['pistol']={'bullet_speed':20,
 # items
 
 ITEM_IMAGES = {'health':'health.png'}
+HEALTH_POWERUP = 50
 
 BULLET_OFFSET = vector(-30,-15)
 ENEMY_1_IMG = 'ghost.png'
 ENEMY1_SPEED = 0.03
 ENEMY1_FRICTION = -0.02
 ENEMY1_DAMAGE = 10
-KNOCKBACK = 20
+KNOCKBACK = 10
 
 WALL_IMG ='wall.png'
 BACKGROUND_IMG = 'bg2.png'
 COIN_IMG ='coin.png'
+PLAYER_IMG ='player3.png'
 
 WEAPON1_WIDTH = 20
+
+def draw_player_health(surf,x,y,pct):
+    if pct< 0:
 
 class Item(pg.sprite.Sprite):
     def __init__(self,game, pos, type,plat):
@@ -111,8 +116,7 @@ class Player(pg.sprite.Sprite):
         self.groups=game.all_sprites
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
-        self.image = pg.Surface((30,30))
-        self.image.fill(GOLD)
+        self.image = game.player_img
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH/2,100)
         self.pos = vector(WIDTH/2,100)
@@ -316,6 +320,7 @@ class Game:
         self.dir = path.dirname(__file__)
         img_folder = path.join(self.dir,'img')
         self.enemy1_img = pg.image.load(path.join(img_folder, ENEMY_1_IMG)).convert_alpha()
+        self.player_img = pg.image.load(path.join(img_folder, PLAYER_IMG)).convert_alpha()
         self.wall_img = pg.image.load(path.join(img_folder,WALL_IMG)).convert_alpha()
         self.coin_img = pg.image.load(path.join(img_folder,COIN_IMG)).convert_alpha()
         self.background_img = pg.image.load(path.join(img_folder,BACKGROUND_IMG)).convert_alpha()
