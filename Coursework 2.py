@@ -48,13 +48,11 @@ WEAPONS['pistol']={'bullet_speed':20,
                    'damage':10,
                    'bullet_size':'large',
                    'bullet_count':1}
-'''
-BULLET_SPEED = 40
-BULLET_LIFETIME = 1000
-BULLET_RATE = 150
 
-BULLET_DAMAGE = 10
-'''
+# items
+
+ITEM_IMAGES = {'health':'health.png'}
+
 BULLET_OFFSET = vector(-30,-15)
 ENEMY_1_IMG = 'ghost.png'
 ENEMY1_SPEED = 0.03
@@ -65,6 +63,20 @@ BACKGROUND_IMG = 'bg2.png'
 COIN_IMG ='coin.png'
 
 WEAPON1_WIDTH = 20
+
+class Item(pg.sprite.Sprite):
+    def __init__(self,game, pos, type,plat):
+        self.groups = game.all_sprites, game.items
+        pg.sprite.Sprite.__init__(self,self.groups)
+        self.game = game
+        self.plat = plat
+        self.image = game.item_images[type]
+        self.rect = self.image.get_rect()
+        self.type = type
+        self.rect.center = pos
+
+    def update(self):
+     self.rect.bottom = self.plat.rect.top - 5
 
 class Bullet(pg.sprite.Sprite):
     def __init__(self,game,pos,dir):
@@ -260,6 +272,8 @@ class Platform(pg.sprite.Sprite):
         self.rect.y = y
         if randrange (100) < 15:
             Coin(self.game,self)
+        if randrange (1000) < 2:
+            Item(self.game, (x,y),'health',self)
 
 class Coin(pg.sprite.Sprite):
     def __init__(self,game,plat):
@@ -300,6 +314,10 @@ class Game:
                 self.highscore = int(file.read())
             except:
                 self.highscore = 0
+        self.item_images ={}
+        for item in ITEM_IMAGES:
+            self.item_images[item]=pg.image.load(path.join(img_folder,ITEM_IMAGES[item])).convert_alpha()
+
 
     def new(self):
         #starts new game
@@ -307,6 +325,7 @@ class Game:
         self.score = 0
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
+        self.items = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.coins = pg.sprite.Group()
         self.enemy1s = pg.sprite.Group()
@@ -393,6 +412,11 @@ class Game:
         self.all_sprites.update()
         self.camera.update(self.player)
         # Check if player hits platform iff falling
+        hits = pg.sprite.spritecoolide(self.player,self.items, False)
+        for hit in hits:
+            if hit.type =='health' and self.player.health < PLAYER_HEALTH:
+                hit.kill()
+                self.player.add_health(HEALTH_POWERUP)
         hits = pg.sprite.groupcollide(self.enemy1s,self.bullets,False,True)
         for hit in hits:
             hit.health -= WEAPONS[self.player.weapon]['damage']
