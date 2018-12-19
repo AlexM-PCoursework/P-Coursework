@@ -42,6 +42,9 @@ ENEMY_1_IMG = 'ghost.png'
 ENEMY1_SPEED = 0.03
 ENEMY1_FRICTION = -0.02
 
+WALL_IMG ='wall.png'
+BACKGROUND_IMG = 'bg2.png'
+
 class Bullet(pg.sprite.Sprite):
     def __init__(self,game,pos,dir):
         self.groups = game.all_sprites, game.bullets
@@ -149,6 +152,7 @@ class Enemy_1 (pg.sprite.Sprite):
         self.vel += self.acc
         self.pos += self.vel + (0.5 * self.acc)
 
+
         block_hit_list = pg.sprite.spritecollide(self, self.game.platforms, False)
         for block in block_hit_list:
             if self.vel.y > 0:
@@ -196,7 +200,7 @@ class Camera:
         x = min (0,x)
         y = min(0,y)
         x = max(-( WIDTH + 3360),x)
-        y = max(-(HEIGHT+550), y)
+        y = max(-(HEIGHT+150), y)
         self.camera = pg.Rect(x,y,self.width,self.height)
 
 class Wall(pg.sprite.Sprite):
@@ -204,8 +208,7 @@ class Wall(pg.sprite.Sprite):
         self.groups = game.all_sprites,game.walls
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
-        self.image = pg.Surface((width,height))
-        self.image.fill(BLACK)
+        self.image = game.wall_img
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -216,8 +219,7 @@ class Platform(pg.sprite.Sprite):
         self.groups = game.all_sprites,game.platforms
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
-        self.image = pg.Surface((width,height))
-        self.image.fill(BLACK)
+        self.image = game.wall_img
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -256,6 +258,8 @@ class Game:
         self.dir = path.dirname(__file__)
         img_folder = path.join(self.dir,'img')
         self.enemy1_img = pg.image.load(path.join(img_folder, ENEMY_1_IMG)).convert_alpha()
+        self.wall_img = pg.image.load(path.join(img_folder,WALL_IMG)).convert_alpha()
+        self.background_img = pg.image.load(path.join(img_folder,BACKGROUND_IMG)).convert_alpha()
         with open(path.join(self.dir,hs_file),'w') as file:
             try:
                 self.highscore = int(file.read())
@@ -264,6 +268,7 @@ class Game:
 
     def new(self):
         #starts new game
+ #       self.all_sprites = pg.sprite.LayeredUpdates()
         self.score = 0
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
@@ -285,13 +290,13 @@ class Game:
             "W            W                               WPPPPPPPPPPPPPPPPPP                                           P",
             "W    PPPPPPPPWPP                             W                                                             P",
             "W                                            W                                                             P",
-            "W   P        PPPPPPPPPPPPPP                  W                PPPPPP                      PPPPP            P",
+            "W   PPPP     PPPPPPPPPPPPPP                  W                PPPPPP                      PPPPP            P",
             "W            W                                                                               W             P",
-            "W            W              PPPP                                                             W             P",
-            "W            W                      PPPP                               PPPPPP                W             P",
+            "W       PP   W              PPPP                                                             W             P",
+            "W   PP  WPPPPW                      PPPP                               PPPPPP                W             P",
             "W            W                PPPP      PPPP                                PPPPPPPPP        W             P",
             "W            W                                   PPPPPPPPPPPP                                W             P",
-            "W            W                         PPPPPPPPP                                             W             P",
+            "W       PP   W                         PPPPPPPPP                                             W             P",
             "WPPPPPPPPPPP WPPPP    PPPPPPPPPP                                                             W             P",
             "W            W        W                PPPPPPPP                                              W             P",
             "W PPPPPPPPPPPP        W        PPPP                    PPPPPPPPPPPPPPPPPPPPPPP               W             P",
@@ -327,8 +332,8 @@ class Game:
             if col =="W":
                 Wall(self,x,y,50,40)
                 
-            x += 50
-          y += 40
+            x += 41
+          y += 41
           x = 0
 
         self.camera = Camera(0, 0)
@@ -412,8 +417,9 @@ class Game:
              
     def draw(self):
         #game loop - draw
-         self.screen.fill(WHITE)
+         self.screen.blit(self.background_img,[0,0])
          pg.display.set_caption("{:.2f}".format(self.clock.get_fps()))
+
 
          for sprite in self.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
