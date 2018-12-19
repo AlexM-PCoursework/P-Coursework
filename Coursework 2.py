@@ -38,7 +38,7 @@ PLAYER_HIT_RECT = pg.Rect(0,0,30,40)
 
 
 WEAPONS ={}
-WEAPONS['machine_pistol']={'bullet_speed':40,
+WEAPONS['uzi']={'bullet_speed':40,
                    'bullet_lifetime': 1000,
                    'rate':150,
                    'damage':10,
@@ -53,7 +53,8 @@ WEAPONS['pistol']={'bullet_speed':20,
 
 # items
 
-ITEM_IMAGES = {'health':'health.png'}
+ITEM_IMAGES = {'health':'health.png',
+               'uzi':'uzi.png'}
 HEALTH_POWERUP = 50
 
 BULLET_OFFSET = vector(-30,-15)
@@ -313,6 +314,8 @@ class Platform(pg.sprite.Sprite):
             Coin(self.game,self)
         if randrange (1000) < 2:
             Item(self.game, (x,y),'health',self)
+        if randrange (100) < 5:
+            Item(self.game, (x,y),'uzi',self)
 
 class Coin(pg.sprite.Sprite):
     def __init__(self,game,plat):
@@ -467,6 +470,9 @@ class Game:
             if hit.type =='health' and self.player.health < PLAYER_HEALTH:
                 hit.kill()
                 self.player.add_health(HEALTH_POWERUP)
+            if hit.type =='uzi':
+                hit.kill()
+                self.player.weapon = 'uzi'
         hits = pg.sprite.groupcollide(self.enemy1s,self.bullets,False,True)
         for hit in hits:
             hit.health -= WEAPONS[self.player.weapon]['damage']
