@@ -34,6 +34,7 @@ PLAYER_FRICTION = -0.25
 GRAVITY = 0.5
 PLAYER_JUMP = 10
 PLAYER_HEALTH = 100
+PLAYER_HIT_RECT = pg.Rect(0,0,30,40)
 
 
 WEAPONS ={}
@@ -63,7 +64,7 @@ ENEMY1_DAMAGE = 10
 KNOCKBACK = 10
 
 WALL_IMG ='wall.png'
-BACKGROUND_IMG = 'bg2.png'
+BACKGROUND_IMG = 'bg3.png'
 COIN_IMG ='coin.png'
 PLAYER_IMG ='player3.png'
 
@@ -104,7 +105,7 @@ class Bullet(pg.sprite.Sprite):
     def __init__(self,game,pos,dir):
         self.groups = game.all_sprites, game.bullets
         pg.sprite.Sprite.__init__(self,self.groups)
-        self.image = pg.Surface((10,10))
+        self.image = pg.Surface((5,5))
         self.game = game
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
@@ -123,7 +124,8 @@ class Bullet(pg.sprite.Sprite):
         if pg.time.get_ticks() - self.spawn_time > WEAPONS[self.game.player.weapon]['bullet_lifetime']:
             self.kill()
 
-
+def collide_hit_rect(one,two):
+    return one.hit_rect.colliderect(two.rect)
 #player sprite
 class Player(pg.sprite.Sprite):
     def __init__(self,game):
@@ -132,6 +134,8 @@ class Player(pg.sprite.Sprite):
         self.game = game
         self.image = game.player_img
         self.rect = self.image.get_rect()
+        self.hit_rect = PLAYER_HIT_RECT
+        self.hit_rect.center = self.rect.center
         self.rect.center = (WIDTH/2,100)
         self.pos = vector(WIDTH/2,100)
         self.vel = vector(0,0)
@@ -176,7 +180,8 @@ class Player(pg.sprite.Sprite):
            self.vel.x = 0
        self.pos += self.vel + (0.5 * self.acc)
 
-       self.rect.midbottom = self.pos
+       self.hit_rect.midbottom = self.pos
+       self.rect.center = self.hit_rect.center
 
     def shoot(self):
            now = pg.time.get_ticks()
@@ -260,6 +265,12 @@ class Enemy_1 (pg.sprite.Sprite):
                 if self.pos.x > block.rect.right:
                     self.pos.x = block.rect.right + self.rect.width/2
                     self.vel.x = 0
+
+            if self.vel.y < 0:
+                if self.pos.y - 30 > block.rect.bottom:
+                    self.pos.y = block.rect.bottom + 30
+                #
+                self.vel.y = 0
 class Camera:
     def __init__(self,width,height):
         self.camera = pg.Rect(0,0,width,height)
@@ -381,9 +392,9 @@ class Game:
             "W            W                PPPP      PPPP                                PPPPPPPPP        W             P",
             "W            W                                   PPPPPPPPPPPP                                W             P",
             "W       PP   W                         PPPPPPPPP                                             W             P",
-            "WPPPPPPPPPPP WPPPP    PPPPPPPPPP                                                             W             P",
+            "WPPPPPPPWWP  WPPPP    PPPPPPPPPP                                                             W             P",
             "W            W        W                PPPPPPPP                                              W             P",
-            "W PPPPPPPPPPPP        W        PPPP                    PPPPPPPPPPPPPPPPPPPPPPP               W             P",
+            "W  PPPPPPPPPPP        W        PPPP                    PPPPPPPPPPPPPPPPPPPPPPP               W             P",
             "W            W        W             PPPPPP                                                     W           P",
             "W       PPPPPW        W   PPPPPPPPPPP                  PPPPPPPPPPPPPPPPPPPPPPP   P             W           P",
             "W            W        W                                                      P   P             W           P",
@@ -392,11 +403,11 @@ class Game:
             "WPPPPP   W   W     PPPPPPPPP                                PPPPPPPPP   PPPPPP   PPPPPPPPPPP   W           P",
             "W        W   W                                                                                             P",
             "WP       WPP W              PPPPPP      P    P                                                             P",
-            "WPP      W   W                           P    P                 PPPPPP   PPPPPP       PPPPPPPPPPPP         P",
-            "WPPP     W  PW                           P    P                                                            P",
-            "WPPPP    W         PPPPPPPPPPPPPPPPPPPPPP    PPPPPPPPPPPPPP         PPPPPPPP                 P              P",
-            "WPPPPP       P                                                                               P             P",
-            "W   PP PP P  W                                                               PPPPPPPPP                     P",
+            "WWP      W   W                           P    P                 PPPPPP   PPPPPP       PPPPPPPPPPPP         P",
+            "WWWP     W  PW                           P    P                                                            P",
+            "WWWWP    W         PPPPPPPPPPPPPPPPPPPPPP    PPPPPPPPPPPPPP         PPPPPPPP                 P              P",
+            "WWWWWP       P                                                                               P             P",
+            "W   WW PP P  W                                                               PPPPPPPPP                     P",
             "W            WPPPPPPPPPPPPPPP    W    PPPPPPPP                                               P             P",
             "W   PP       W                   W    W      PPPPP            PPPPPPPPP                      P             P",
             "WPPPPPPP     W                   W    W  W         PPPP                                       P            P",
@@ -460,7 +471,7 @@ class Game:
         for hit in hits:
             hit.health -= WEAPONS[self.player.weapon]['damage']
 
-        block_hit_list = pg.sprite.spritecollide(self.player, self.platforms, False)
+        block_hit_list = pg.sprite.spritecollide(self.player, self.platforms, False,collide_hit_rect)
         for block in block_hit_list:
             if self.player.vel.y > 0:
                 if self.player.pos.y < block.rect.centery:
@@ -469,22 +480,22 @@ class Game:
                     self.player.vel.y = 0
             if self.player.vel.x > 0 and self.player.vel.y != 0:
                 if self.player.pos.x < block.rect.left:
-                    self.player.pos.x = block.rect.left - 15
+                    self.player.pos.x = block.rect.left - self.player.hit_rect.width/2
                     self.player.vel.x = 0
             if self.player.vel.x < 0 and self.player.vel.y != 0:
                 if self.player.pos.x > block.rect.right:
-                    self.player.pos.x = block.rect.right + 15
+                    self.player.pos.x = block.rect.right + self.player.hit_rect.width/2
                     self.player.vel.x = 0
             if self.player.vel.y < 0:
-                if self.player.pos.y - 30 > block.rect.bottom:
-                    self.player.pos.y = block.rect.bottom + 30
+                if self.player.pos.y - self.player.hit_rect.height > block.rect.bottom:
+                    self.player.pos.y = block.rect.bottom + self.player.hit_rect.height
                 #
                 self.player.vel.y = 0
 
 
 
 
-        block_hit_list = pg.sprite.spritecollide(self.player, self.walls, False)
+        block_hit_list = pg.sprite.spritecollide(self.player, self.walls, False,collide_hit_rect)
         for block in block_hit_list:
             if self.player.vel.x > 0:
                 if self.player.pos.x < block.rect.left:
@@ -551,17 +562,17 @@ class Game:
         #game over or continue
         if not self.running:
             return
-        self.screen.fill(BG_COLOUR)
-        self.draw_text("GAME OVER",50,RED,WIDTH/2 - 25,HEIGHT/3)
-        self.draw_text("You got to round " + str(self.round),30, RED,WIDTH/3,HEIGHT/2)
-        self.draw_text("Press any key to play again",20,GREEN, WIDTH/2,HEIGHT* 2/3)
-        if self.score > self.highscore:
-            self.highscore = self.score
-            self.draw_text("NEW HIGH ROUND!", 30, WHITE, WIDTH/2,HEIGHT/4)
+        self.screen.fill(BLACK)
+        self.draw_text("GAME OVER",50,RED,WIDTH/2 - 100,HEIGHT/3)
+        self.draw_text("You got to round " + str(self.round),30, RED,WIDTH/2 - 80,HEIGHT/2)
+        self.draw_text("Press any key to play again",20,GREEN, WIDTH/2 - 80,HEIGHT* 2/3)
+        if self.round > self.highscore:
+            self.highscore = self.round
+            self.draw_text("NEW HIGH ROUND!", 20, WHITE, WIDTH/2 - 60,HEIGHT *3/4)
             with open(path.join(self.dir,hs_file),'w') as file:
-                file.write(str(self.score))
+                file.write(str(self.round))
         else:
-           self.draw_text("Highest Round: " + str(self.highscore),20,RED, WIDTH/3,HEIGHT *3/4)
+           self.draw_text("Highest Round: " + str(self.highscore),20,RED, WIDTH/3 + 120,HEIGHT *3/4)
         pg.display.flip()
         self.key_press()
 
