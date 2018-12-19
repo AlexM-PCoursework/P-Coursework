@@ -147,7 +147,7 @@ class Enemy_1 (pg.sprite.Sprite):
         self.rot = 0
         self.vel = vector(0,0)
         self.acc = vector(0,0)
-        self.health = 70
+        self.health = 40
 
 
     def update(self):
