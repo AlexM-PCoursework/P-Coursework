@@ -33,6 +33,7 @@ PLAYER_ACC = 1.2
 PLAYER_FRICTION = -0.25
 GRAVITY = 0.5
 PLAYER_JUMP = 10
+PLAYER_HEALTH = 100
 
 
 WEAPONS ={}
@@ -57,6 +58,7 @@ BULLET_OFFSET = vector(-30,-15)
 ENEMY_1_IMG = 'ghost.png'
 ENEMY1_SPEED = 0.03
 ENEMY1_FRICTION = -0.02
+ENEMY1_DAMAGE = 10
 
 WALL_IMG ='wall.png'
 BACKGROUND_IMG = 'bg2.png'
@@ -118,6 +120,7 @@ class Player(pg.sprite.Sprite):
         self.last_shot = 0
         self.aim_dir = "RIGHT"
         self.weapon = 'pistol'
+        self.health = PLAYER_HEALTH
 
 
     def jump(self):
@@ -126,6 +129,12 @@ class Player(pg.sprite.Sprite):
         if contacts:
 
             self.vel.y = -PLAYER_JUMP
+
+    def add_health(self,amount):
+        self.health += amount
+        if self.health > PLAYER_HEALTH:
+            self.health = PLAYER_HEALTH
+
         
                           
 
@@ -412,6 +421,13 @@ class Game:
         self.all_sprites.update()
         self.camera.update(self.player)
         # Check if player hits platform iff falling
+        #enemy hits player
+        hits = pg.sprite.spritecollide(self.player, self.enemy1s, False)
+        for hits in hits:
+            self.player.health -= ENEMYY1_DAMAGE
+            hit.vel = vector(0,0)
+            if self.player.health <= 0:
+                self.playing = False
         hits = pg.sprite.spritecoolide(self.player,self.items, False)
         for hit in hits:
             if hit.type =='health' and self.player.health < PLAYER_HEALTH:
