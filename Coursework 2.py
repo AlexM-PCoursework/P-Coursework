@@ -37,6 +37,7 @@ PLAYER_JUMP = 12
 BULLET_SPEED = 40
 BULLET_LIFETIME = 1000
 BULLET_RATE = 150
+BULLET_OFFSET = vector(-30,-15)
 
 ENEMY_1_IMG = 'ghost.png'
 ENEMY1_SPEED = 0.03
@@ -110,11 +111,15 @@ class Player(pg.sprite.Sprite):
            now = pg.time.get_ticks()
            if now - self.last_shot > BULLET_RATE:
                self.last_shot = now
+               pos = self.pos + BULLET_OFFSET
                if self.aim_dir == "RIGHT":
                     dir = vector(1,0)
+                    Bullet(self.game, pos + (60,0), dir)
                else:
                     dir = vector(-1,0)
-               Bullet(self.game,self.pos - (0,15),dir)
+                    Bullet(self.game, pos, dir)
+
+
 
 
       #equations of motion
