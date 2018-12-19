@@ -34,12 +34,28 @@ PLAYER_FRICTION = -0.25
 GRAVITY = 0.5
 PLAYER_JUMP = 10
 
+
+WEAPONS ={}
+WEAPONS['machine_pistol']={'bullet_speed':40,
+                   'bullet_lifetime': 1000,
+                   'rate':150,
+                   'damage':10,
+                   'bullet_size':'large',
+                   'bullet_count':1}
+WEAPONS['pistol']={'bullet_speed':20,
+                   'bullet_lifetime': 500,
+                   'rate':600,
+                   'damage':10,
+                   'bullet_size':'large',
+                   'bullet_count':1}
+'''
 BULLET_SPEED = 40
 BULLET_LIFETIME = 1000
 BULLET_RATE = 150
-BULLET_OFFSET = vector(-30,-15)
-BULLET_DAMAGE = 10
 
+BULLET_DAMAGE = 10
+'''
+BULLET_OFFSET = vector(-30,-15)
 ENEMY_1_IMG = 'ghost.png'
 ENEMY1_SPEED = 0.03
 ENEMY1_FRICTION = -0.02
@@ -47,6 +63,8 @@ ENEMY1_FRICTION = -0.02
 WALL_IMG ='wall.png'
 BACKGROUND_IMG = 'bg2.png'
 COIN_IMG ='coin.png'
+
+WEAPON1_WIDTH = 20
 
 class Bullet(pg.sprite.Sprite):
     def __init__(self,game,pos,dir):
@@ -58,7 +76,7 @@ class Bullet(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
         self.pos = pos
-        self.vel = dir * BULLET_SPEED
+        self.vel = dir * WEAPONS[game.player.weapon]['bullet_speed']
         self.spawn_time = pg.time.get_ticks()
 
     def update(self):
@@ -68,7 +86,7 @@ class Bullet(pg.sprite.Sprite):
             self.kill()
         if pg.sprite.spritecollideany(self,self.game.platforms):
             self.kill()
-        if pg.time.get_ticks() - self.spawn_time > BULLET_LIFETIME:
+        if pg.time.get_ticks() - self.spawn_time > WEAPONS[self.game.player.weapon]['bullet_lifetime']:
             self.kill()
 
 
@@ -87,6 +105,7 @@ class Player(pg.sprite.Sprite):
         self.acc = vector(0,0)
         self.last_shot = 0
         self.aim_dir = "RIGHT"
+        self.weapon = 'pistol'
 
 
     def jump(self):
@@ -109,22 +128,8 @@ class Player(pg.sprite.Sprite):
             self.acc.x= PLAYER_ACC
             self.aim_dir = "RIGHT"
        if keystate[pg.K_SPACE]:
-           now = pg.time.get_ticks()
-           if now - self.last_shot > BULLET_RATE:
-               self.last_shot = now
-               pos = self.pos + BULLET_OFFSET
-               if self.aim_dir == "RIGHT":
-                    dir = vector(1,0)
-                    Bullet(self.game, pos + (60,0), dir)
-               else:
-                    dir = vector(-1,0)
-                    Bullet(self.game, pos, dir)
+           self.shoot()
 
-
-
-
-      #equations of motion
-       
        self.acc.x += self.vel.x * PLAYER_FRICTION
        self.vel += self.acc
        if abs(self.vel.x) < 0.1:
@@ -132,6 +137,26 @@ class Player(pg.sprite.Sprite):
        self.pos += self.vel + (0.5 * self.acc)
 
        self.rect.midbottom = self.pos
+
+    def shoot(self):
+           now = pg.time.get_ticks()
+           if now - self.last_shot > WEAPONS[self.weapon]['rate']:
+               self.last_shot = now
+               pos = self.pos + BULLET_OFFSET
+               for i in range(WEAPONS[self.weapon]['bullet_count']):
+                   if self.aim_dir == "RIGHT":
+                        dir = vector(1,0)
+                        Bullet(self.game, pos + (60,0), dir)
+                   else:
+                        dir = vector(-1,0)
+                        Bullet(self.game, pos, dir)
+           self.barrel = pg.Rect(0,15,WEAPON1_WIDTH ,7)
+           pg.draw.rect(self.image,BLACK,self.barrel)
+
+
+
+      #equations of motion
+       
 
        
 
@@ -370,7 +395,7 @@ class Game:
         # Check if player hits platform iff falling
         hits = pg.sprite.groupcollide(self.enemy1s,self.bullets,False,True)
         for hit in hits:
-            hit.health -= BULLET_DAMAGE
+            hit.health -= WEAPONS[self.player.weapon]['damage']
 
         block_hit_list = pg.sprite.spritecollide(self.player, self.platforms, False)
         for block in block_hit_list:
