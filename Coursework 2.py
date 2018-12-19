@@ -71,6 +71,20 @@ WEAPON1_WIDTH = 20
 
 def draw_player_health(surf,x,y,pct):
     if pct< 0:
+        pct = 0
+    BAR_LENGTH = 150
+    BAR_HEIGHT = 10
+    fill = pct * BAR_LENGTH
+    outline_rect = pg.Rect(x,y, BAR_LENGTH, BAR_HEIGHT)
+    fill_rect = pg.Rect(x,y,fill,BAR_HEIGHT)
+    if pct > 0.6:
+        colour = GREEN
+    elif pct > 0.3:
+        colour = GOLD
+    else:
+        colour = RED
+    pg.draw.rect(surf,colour,fill_rect)
+    pg.draw.rect(surf,WHITE,outline_rect,2)
 
 class Item(pg.sprite.Sprite):
     def __init__(self,game, pos, type,plat):
@@ -520,6 +534,7 @@ class Game:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
          self.draw_text("BANK: " + str(self.score),20,GOLD,20,20)
          self.draw_text("ROUND: "+str(self.round),30,BLACK,WIDTH - 150 ,20)
+         draw_player_health(self.screen, 430,10,self.player.health/ PLAYER_HEALTH)
          #Flip display after drawing
          pg.display.flip()
     def show_start_screen(self):
