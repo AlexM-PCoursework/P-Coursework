@@ -29,7 +29,7 @@ vector = pg.math.Vector2
 
 #Player Properties
 
-PLAYER_ACC = 1.2
+PLAYER_ACC = 0.8
 PLAYER_FRICTION = -0.25
 GRAVITY = 0.5
 PLAYER_JUMP = 10
@@ -108,7 +108,7 @@ class Bullet(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self,self.groups)
         self.image = pg.Surface((5,5))
         self.game = game
-        self.image.fill(BLACK)
+        self.image.fill(GOLD)
         self.rect = self.image.get_rect()
         self.rect.center = pos
         self.pos = pos
@@ -388,7 +388,7 @@ class Game:
             "W            W                               WPPPPPPPPPPPPPPPPPP                                           P",
             "W    PPPPPPPPWPP                             W                                                             P",
             "W                                            W                                                             P",
-            "W   PPPP     PPPPPPPPPPPPPP                  W                PPPPPP                      PPPPP            P",
+            "W   PPPP  PPPPPPPPPPPPPPPPP                  W                PPPPPP                      PPPPP            P",
             "W            W                                                                               W             P",
             "W       PP   W              PPPP                                                             W             P",
             "W   PP  WPPPPW                      PPPP                               PPPPPP                W             P",
