@@ -145,7 +145,6 @@ class Player(pg.sprite.Sprite):
         self.aim_dir = "RIGHT"
         self.weapon = 'pistol'
         self.health = PLAYER_HEALTH
-        self.damaged = False
 
 
     def jump(self):
@@ -601,6 +600,7 @@ class Game:
                 if event.type == pg.KEYUP:
                     not_pressed = False
         
+    
 
 
           
