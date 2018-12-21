@@ -74,7 +74,7 @@ ENEMY_LAYER = 2
 WEAPON_LAYER = 3
 EFFECTS_LAYER = 4
 
-WEAPON_ROT = 20
+WEAPON_ROT = 2
 
 WALL_IMG ='wall.png'
 BACKGROUND_IMG = 'bg3.png'
@@ -195,8 +195,10 @@ class Player(pg.sprite.Sprite):
        if keystate[pg.K_RIGHT]:
             self.acc.x= PLAYER_ACC
             self.aim_dir = "RIGHT"
-        if keystate[ord'a']:
-
+       if keystate[ord('a')]:
+            self.rot_speed -= WEAPON_ROT
+       if keystate[ord('d')]:
+            self.rot_speed += WEAPON_ROT
        if keystate[pg.K_SPACE]:
            self.shoot()
 
@@ -205,6 +207,8 @@ class Player(pg.sprite.Sprite):
        if abs(self.vel.x) < 0.1:
            self.vel.x = 0
        self.pos += self.vel + (0.5 * self.acc)
+       self.rot =(self.rot + self.rot_speed)%360
+       self.barrel = pg.transform.rotate(self.barrel, self.rot)
 
 
        self.hit_rect.midbottom = self.pos
