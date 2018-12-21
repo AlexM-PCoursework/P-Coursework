@@ -54,7 +54,8 @@ WEAPONS['pistol']={'bullet_speed':20,
 # items
 
 ITEM_IMAGES = {'health':'health.png',
-               'uzi':'uzi.png'}
+               'uzi':'uzi.png',
+               'pistol':'pistol.png'}
 HEALTH_POWERUP = 50
 
 BULLET_OFFSET = vector(-30,-15)
@@ -72,6 +73,8 @@ BULLET_LAYER = 3
 ENEMY_LAYER = 2
 WEAPON_LAYER = 3
 EFFECTS_LAYER = 4
+
+WEAPON_ROT = 20
 
 WALL_IMG ='wall.png'
 BACKGROUND_IMG = 'bg3.png'
@@ -158,6 +161,9 @@ class Player(pg.sprite.Sprite):
         self.weapon = 'pistol'
         self.health = PLAYER_HEALTH
         self.damaged = False
+        self.barrel = game.item_images[self.weapon]
+        self.rot = 0
+
 
     def hit(self):
         self.damaged = True
@@ -180,6 +186,7 @@ class Player(pg.sprite.Sprite):
 
     def update(self):
        self.acc = vector(0,GRAVITY)
+       self.rot_speed = 0
        #self.vel = vector(0,0)
        keystate = pg.key.get_pressed()
        if keystate[pg.K_LEFT]:
@@ -188,6 +195,8 @@ class Player(pg.sprite.Sprite):
        if keystate[pg.K_RIGHT]:
             self.acc.x= PLAYER_ACC
             self.aim_dir = "RIGHT"
+        if keystate[ord'a']:
+
        if keystate[pg.K_SPACE]:
            self.shoot()
 
@@ -198,10 +207,9 @@ class Player(pg.sprite.Sprite):
        self.pos += self.vel + (0.5 * self.acc)
 
 
-
-
        self.hit_rect.midbottom = self.pos
        self.rect.center = self.hit_rect.center
+
 
 
 
@@ -217,8 +225,7 @@ class Player(pg.sprite.Sprite):
                    else:
                         dir = vector(-1,0)
                         Bullet(self.game, pos, dir)
-           self.barrel = pg.Rect(-10,15,WEAPON1_WIDTH ,7)
-           pg.draw.rect(self.image,BLACK,self.barrel)
+
 
 
 
@@ -410,12 +417,12 @@ class Game:
         self.player = Player(self)
         self.all_sprites.add(self.player)
         self.round = 1
-
+        '''
         Enemy_1(self,100,100)
         Enemy_1(self,100,500)
         Enemy_1(self,100,400)
         Enemy_1(self,100,350)
-
+        '''
         x = y = 0
 
         PLATFORM_LIST =[
@@ -488,6 +495,7 @@ class Game:
          
     def update(self):
         #game loop - update
+
         self.all_sprites.update()
         self.camera.update(self.player)
         # Check if player hits platform iff falling
@@ -579,7 +587,20 @@ class Game:
              
     def draw(self):
         #game loop - draw
-         self.screen.blit(self.background_img,[0,0])
+         background = self.background_img
+         weapon = self.player.barrel
+         pg.draw.rect(self.screen, WHITE,self.player.rect , 2 )
+
+         self.screen.blit(background,[0,0])
+         self.player.image.blit(weapon,[25,10])
+
+#         weapon_img = self.screen.blit(weapon, [self.player.pos.x, self.player.pos.y])
+
+
+
+
+
+
          pg.display.set_caption("{:.2f}".format(self.clock.get_fps()))
 
 
