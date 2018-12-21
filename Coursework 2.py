@@ -62,7 +62,8 @@ ENEMY_1_IMG = 'ghost.png'
 ENEMY1_SPEED = 0.03
 ENEMY1_FRICTION = -0.02
 ENEMY1_DAMAGE = 10
-KNOCKBACK = 10
+KNOCKBACK = 6
+AVOID_RAD = 40
 
 WALL_IMG ='wall.png'
 BACKGROUND_IMG = 'bg3.png'
@@ -147,6 +148,9 @@ class Player(pg.sprite.Sprite):
         self.health = PLAYER_HEALTH
         self.damaged = False
 
+    def hit(self):
+        self.damaged = True
+
 
     def jump(self):
         #Jump allowed if on a platform
@@ -182,8 +186,13 @@ class Player(pg.sprite.Sprite):
            self.vel.x = 0
        self.pos += self.vel + (0.5 * self.acc)
 
+
+
+
        self.hit_rect.midbottom = self.pos
        self.rect.center = self.hit_rect.center
+
+
 
     def shoot(self):
            now = pg.time.get_ticks()
@@ -221,13 +230,22 @@ class Enemy_1 (pg.sprite.Sprite):
         self.acc = vector(0,0)
         self.health = 40
 
+    def avoid_enemies(self):
+        for enemy1 in self.game.enemy1s:
+            if enemy1 != self:
+                dist = self.pos - enemy1.pos
+                if 0 < dist.length() < AVOID_RAD:
+                    self.acc += dist.normalize()
+
 
     def update(self):
         self.rot = (self.game.player.pos - self.pos).angle_to(vector(1,0))
         self.image = pg.transform.rotate(self.game.enemy1_img,self.rot)
         self.rect = self.image.get_rect()
         self.rect.midbottom = self.pos
-        self.acc = vector(ENEMY1_SPEED, 0).rotate(-self.rot)
+        self.acc = vector(1, 0).rotate(-self.rot)
+        self.avoid_enemies()
+        self.acc.scale_to_length(ENEMY1_SPEED)
         self.acc += self.vel * ENEMY1_FRICTION
         self.vel += self.acc
         self.pos += self.vel + (0.5 * self.acc)
@@ -380,6 +398,8 @@ class Game:
 
         Enemy_1(self,100,100)
         Enemy_1(self,100,500)
+        Enemy_1(self,100,400)
+        Enemy_1(self,100,350)
 
         x = y = 0
 
