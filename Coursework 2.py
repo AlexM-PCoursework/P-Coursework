@@ -63,7 +63,15 @@ ENEMY1_SPEED = 0.03
 ENEMY1_FRICTION = -0.02
 ENEMY1_DAMAGE = 10
 KNOCKBACK = 6
-AVOID_RAD = 40
+AVOID_RAD = 50
+
+BACKGROUND_LAYER = 0
+WALL_LAYER = 1
+PLAYER_LAYER = 2
+BULLET_LAYER = 3
+ENEMY_LAYER = 2
+WEAPON_LAYER = 3
+EFFECTS_LAYER = 4
 
 WALL_IMG ='wall.png'
 BACKGROUND_IMG = 'bg3.png'
@@ -91,6 +99,7 @@ def draw_player_health(surf,x,y,pct):
 
 class Item(pg.sprite.Sprite):
     def __init__(self,game, pos, type,plat):
+        self._layer = EFFECTS_LAYER
         self.groups = game.all_sprites, game.items
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
@@ -105,6 +114,7 @@ class Item(pg.sprite.Sprite):
 
 class Bullet(pg.sprite.Sprite):
     def __init__(self,game,pos,dir):
+        self._layer = BULLET_LAYER
         self.groups = game.all_sprites, game.bullets
         pg.sprite.Sprite.__init__(self,self.groups)
         self.image = pg.Surface((5,5))
@@ -131,6 +141,7 @@ def collide_hit_rect(one,two):
 #player sprite
 class Player(pg.sprite.Sprite):
     def __init__(self,game):
+        self._layer = PLAYER_LAYER
         self.groups=game.all_sprites
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
@@ -206,7 +217,7 @@ class Player(pg.sprite.Sprite):
                    else:
                         dir = vector(-1,0)
                         Bullet(self.game, pos, dir)
-           self.barrel = pg.Rect(0,15,WEAPON1_WIDTH ,7)
+           self.barrel = pg.Rect(-10,15,WEAPON1_WIDTH ,7)
            pg.draw.rect(self.image,BLACK,self.barrel)
 
 
@@ -218,6 +229,7 @@ class Player(pg.sprite.Sprite):
 
 class Enemy_1 (pg.sprite.Sprite):
     def __init__ (self,game,x,y):
+        self._layer = ENEMY_LAYER
         self.groups = game.all_sprites, game.enemy1s
         pg.sprite.Sprite.__init__(self,self.groups)
         self.image = game.enemy1_img
@@ -311,6 +323,7 @@ class Camera:
 
 class Wall(pg.sprite.Sprite):
     def __init__(self,game,x,y,width,height):
+        self._layer = WALL_LAYER
         self.groups = game.all_sprites,game.walls
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
@@ -322,6 +335,7 @@ class Wall(pg.sprite.Sprite):
 
 class Platform(pg.sprite.Sprite):
     def __init__(self,game,x,y,width,height):
+        self._layer = WALL_LAYER
         self.groups = game.all_sprites,game.platforms
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
@@ -338,6 +352,7 @@ class Platform(pg.sprite.Sprite):
 
 class Coin(pg.sprite.Sprite):
     def __init__(self,game,plat):
+        self._layer = EFFECTS_LAYER
         self.groups = game.all_sprites, game.coins
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
@@ -385,7 +400,7 @@ class Game:
         #starts new game
  #       self.all_sprites = pg.sprite.LayeredUpdates()
         self.score = 0
-        self.all_sprites = pg.sprite.Group()
+        self.all_sprites = pg.sprite.LayeredUpdates()
         self.platforms = pg.sprite.Group()
         self.items = pg.sprite.Group()
         self.walls = pg.sprite.Group()
