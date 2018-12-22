@@ -208,7 +208,7 @@ class Player(pg.sprite.Sprite):
            self.vel.x = 0
        self.pos += self.vel + (0.5 * self.acc)
        self.rot =(self.rot + self.rot_speed)%360
-       self.barrel = pg.transform.rotate(self.barrel, self.rot)
+       self.barrel = pg.transform.rotate(self.game.item_images[self.weapon], self.rot)
 
 
        self.hit_rect.midbottom = self.pos
@@ -502,6 +502,13 @@ class Game:
 
         self.all_sprites.update()
         self.camera.update(self.player)
+
+        background = self.background_img
+        self.screen.blit(background, [0, 0])
+        weapon = self.player.barrel
+        pg.draw.rect(self.screen, WHITE, self.player.hit_rect, 2)
+
+        self.player.image.blit(weapon, [25, 10])
         # Check if player hits platform iff falling
         #enemy hits player
         hits = pg.sprite.spritecollide(self.player, self.enemy1s, False)
@@ -529,7 +536,7 @@ class Game:
         for block in block_hit_list:
             if self.player.vel.y > 0:
                 if self.player.pos.y < block.rect.centery:
-                    self.player.pos.y = block.rect.top + 1
+                    self.player.pos.y = block.rect.top +1
             #
                     self.player.vel.y = 0
             if self.player.vel.x > 0 and self.player.vel.y != 0:
@@ -553,19 +560,19 @@ class Game:
         for block in block_hit_list:
             if self.player.vel.x > 0:
                 if self.player.pos.x < block.rect.left:
-                    self.player.pos.x = block.rect.left - 15
+                    self.player.pos.x = block.rect.left - self.player.hit_rect.width/2
                     self.player.vel.x = 0
 
             if self.player.vel.y < 0:
-                if self.player.pos.y - 30 > block.rect.bottom:
-                    self.player.pos.y = block.rect.bottom + 30
+                if self.player.pos.y - self.player.hit_rect.height > block.rect.bottom:
+                    self.player.pos.y = block.rect.bottom + self.player.hit_rect.height
                 #
                 self.player.vel.y = 0
 
 
             if self.player.vel.x < 0:
                 if self.player.pos.x > block.rect.right:
-                    self.player.pos.x = block.rect.right + 15
+                    self.player.pos.x = block.rect.right + self.player.hit_rect.width/2
                     self.player.vel.x = 0
 
 
@@ -591,12 +598,10 @@ class Game:
              
     def draw(self):
         #game loop - draw
-         background = self.background_img
-         weapon = self.player.barrel
-         pg.draw.rect(self.screen, WHITE,self.player.rect , 2 )
 
-         self.screen.blit(background,[0,0])
-         self.player.image.blit(weapon,[25,10])
+
+
+
 
 #         weapon_img = self.screen.blit(weapon, [self.player.pos.x, self.player.pos.y])
 
