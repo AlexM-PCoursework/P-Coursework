@@ -146,7 +146,7 @@ def collide_hit_rect(one,two):
 
 class Weapon(pg.sprite.Sprite):
     def __init__(self,game,image):
-        self.layer = EFFECTS_LAYER
+        self._layer = EFFECTS_LAYER
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
@@ -159,10 +159,22 @@ class Weapon(pg.sprite.Sprite):
         self.aim_dir = "RIGHT"
         self.rot = 0
 
+
     def update(self):
         self.vel = self.game.player.vel
         self.acc = self.game.player.acc
-        self.pos = self.game.player.pos
+        self.pos = self.game.player.pos + (18,-20)
+        self.rot_speed = 0
+        keystate = pg.key.get_pressed()
+        if keystate[ord('a')]:
+            self.rot_speed += WEAPON_ROT
+        if keystate[ord('d')]:
+            self.rot_speed -= WEAPON_ROT
+        self.rot = (self.rot + self.rot_speed) % 360
+        self.image = pg.transform.rotate(self.game.item_images  ['pistol'], self.rot)
+        self.rect = self.image.get_rect()
+        self.rect.center = self.pos
+
 
 
 class Player(pg.sprite.Sprite):
@@ -198,7 +210,7 @@ class Player(pg.sprite.Sprite):
         if contacts:
 
             self.vel.y = -PLAYER_JUMP
-            self.game.weapon.vel.y -= PLAYER_JUMP
+     #       self.game.weapon.vel.y -= PLAYER_JUMP
 
 
     def add_health(self,amount):
@@ -216,15 +228,11 @@ class Player(pg.sprite.Sprite):
        keystate = pg.key.get_pressed()
        if keystate[pg.K_LEFT]:
             self.acc.x = -PLAYER_ACC
-            self.game.weapon.acc.x = -PLAYER_ACC
             self.aim_dir = "LEFT"
        if keystate[pg.K_RIGHT]:
             self.acc.x= PLAYER_ACC
             self.aim_dir = "RIGHT"
-       if keystate[ord('a')]:
-            self.rot_speed -= WEAPON_ROT
-       if keystate[ord('d')]:
-            self.rot_speed += WEAPON_ROT
+
        if keystate[pg.K_SPACE]:
            self.shoot()
 
@@ -234,11 +242,10 @@ class Player(pg.sprite.Sprite):
            self.vel.x = 0
        self.pos += self.vel + (0.5 * self.acc)
 
-       self.game.weapon.acc.x += self.game.weapon.vel.x * PLAYER_FRICTION
-       self.game.weapon.vel += self.game.weapon.acc
-       self.game.weapon.pos += self.game.weapon.vel + (0.5* self.game.weapon.acc)
- #      self.rot =(self.rot + self.rot_speed)%360
-#       self.barrel = pg.transform.rotate(self.game.item_images[self.weapon], self.rot)
+#       self.game.weapon.acc.x += self.vel.x * PLAYER_FRICTION
+ #      self.game.weapon.vel += self.acc
+ #      self.game.weapon.pos += self.vel + (0.5* self.acc)
+
 
 
        self.hit_rect.midbottom = self.pos
@@ -472,8 +479,8 @@ class Game:
         self.paused = False
 
 
-        Enemy_1(self,100,100)
-        Enemy_1(self,100,500)
+#        Enemy_1(self,100,100)
+#        Enemy_1(self,100,500)
 
 
         x = y = 0
