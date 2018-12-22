@@ -405,6 +405,7 @@ class Game:
         #load highest Round
         self.dir = path.dirname(__file__)
         img_folder = path.join(self.dir,'img')
+        self.sound_folder = path.join(self.dir,'sound')
         self.title_font = path.join(img_folder, 'font.ttf')
         self.header_font = path.join(img_folder,'zombified.ttf')
         self.body_font = path.join(img_folder,'arial.ttf')
@@ -438,6 +439,7 @@ class Game:
         self.all_sprites.add(self.player)
         self.round = 1
         self.paused = False
+
 
         Enemy_1(self,100,100)
         Enemy_1(self,100,500)
@@ -505,6 +507,7 @@ class Game:
         
     def run(self):
         #game loop
+
         self.playing = True
         while self.playing:
          self.clock.tick(60)
@@ -512,6 +515,7 @@ class Game:
          if not self.paused:
             self.update()
          self.draw()
+        pg.mixer.music.fadeout(100)
         
          
     def update(self):
@@ -645,11 +649,12 @@ class Game:
     def show_start_screen(self):
         #game start screen
         self.screen.fill(BLACK)
-
+        pg.mixer.music.load(path.join(self.sound_folder, 'background.mp3'))
+        pg.mixer.music.play(loops=-1)
         self.draw_texty(TITLE,self.title_font,150,RED,WIDTH/2,HEIGHT*1/4,align="center")
-        self.draw_texty("Use arrows to move, UP arrow to jump",self.header_font, 70, RED, WIDTH/2,HEIGHT/2,align = "center")
-        self.draw_texty("Press any key to play",self.body_font, 20,GREEN, WIDTH/2 ,HEIGHT* 2/3)
-        self.draw_text("Highest Round: " + str(self.highscore),20,RED, WIDTH/2 - 60,HEIGHT *3/4)
+        self.draw_texty("Use arrows to move, UP arrow to jump",self.header_font, 50, RED, WIDTH/2,HEIGHT/2,align = "center")
+        self.draw_texty("Press Any Key to Play",self.body_font, 20,WHITE, WIDTH/2 ,HEIGHT* 2/3, align="center")
+        self.draw_texty("Highest Round: " + str(self.highscore),self.body_font,20,RED, WIDTH/2 ,HEIGHT *3/4)
         pg.display.flip()
         self.key_press()
     
@@ -658,16 +663,16 @@ class Game:
         if not self.running:
             return
         self.screen.fill(BLACK)
-        self.draw_text("GAME OVER",50,RED,WIDTH/2 - 100,HEIGHT/3)
-        self.draw_text("You got to round " + str(self.round),30, RED,WIDTH/2 - 80,HEIGHT/2)
-        self.draw_text("Press any key to play again",20,GREEN, WIDTH/2 - 80,HEIGHT* 2/3)
+        self.draw_texty("GAME OVER",self.title_font, 150,RED,WIDTH/2,HEIGHT/4)
+        self.draw_texty("You got to round " + str(self.round),self.header_font, 50, RED,WIDTH/2,HEIGHT *2/3 - 20)
+        self.draw_texty("Press any key to play again",self.header_font,50,GOLD, WIDTH/2 ,HEIGHT* 3/4)
         if self.round > self.highscore:
             self.highscore = self.round
-            self.draw_text("NEW HIGH ROUND!", 20, WHITE, WIDTH/2 - 60,HEIGHT *3/4)
+            self.draw_texty("NEW HIGH ROUND",self.header_font, 40, WHITE, WIDTH/2,HEIGHT /2, align="center")
             with open(path.join(self.dir,hs_file),'w') as file:
                 file.write(str(self.round))
         else:
-           self.draw_text("Highest Round: " + str(self.highscore),20,RED, WIDTH/3 + 120,HEIGHT *3/4)
+           self.draw_texty("Highest Round: " + str(self.highscore),self.body_font, 20,RED, WIDTH/3,HEIGHT *3/4)
         pg.display.flip()
         self.key_press()
 
@@ -694,8 +699,6 @@ class Game:
           
 
 g = Game()
-"""player = Player()
-all_sprites.add(player)"""
 g.show_start_screen()
 while g.running:
     g.new()
