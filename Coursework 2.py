@@ -261,9 +261,9 @@ class Enemy_1 (pg.sprite.Sprite):
                     self.acc += dist.normalize()
 
     def draw_health(self):
-        if self.health > 30:
+        if self.health > 20:
             colour = GREEN
-        elif self.health > 20:
+        elif self.health > 10:
             colour = GOLD
         else:
             colour = RED
