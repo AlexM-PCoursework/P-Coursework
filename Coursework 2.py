@@ -527,7 +527,7 @@ class Game:
         background = self.background_img
         self.screen.blit(background, [0, 0])
         weapon = self.player.barrel
-        pg.draw.rect(self.screen, WHITE, self.player.hit_rect, 2)
+  #      pg.draw.rect(self.screen, WHITE, self.player.hit_rect, 2)
 
         self.player.image.blit(weapon, [25, 10])
         # Check if player hits platform iff falling
@@ -639,7 +639,7 @@ class Game:
                 sprite.draw_health()
             self.screen.blit(sprite.image, self.camera.apply(sprite))
          self.draw_text("BANK: " + str(self.score),20,GOLD,20,20)
-         self.draw_text("ROUND: "+str(self.round),30,BLACK,WIDTH - 150 ,20)
+         self.draw_text("ROUND: "+str(self.round),30,BLOOD_RED,WIDTH - 150 ,20)
          draw_player_health(self.screen, 430,10,self.player.health/ PLAYER_HEALTH)
          if self.paused:
              self.draw_texty("Paused",self.title_font,120,RED,WIDTH/2,HEIGHT/2,align="center")
@@ -651,12 +651,14 @@ class Game:
         self.screen.fill(BLACK)
         pg.mixer.music.load(path.join(self.sound_folder, 'background.mp3'))
         pg.mixer.music.play(loops=-1)
+
         self.draw_texty(TITLE,self.title_font,150,RED,WIDTH/2,HEIGHT*1/4,align="center")
         self.draw_texty("Use arrows to move, UP arrow to jump",self.header_font, 50, RED, WIDTH/2,HEIGHT/2,align = "center")
         self.draw_texty("Press Any Key to Play",self.body_font, 20,WHITE, WIDTH/2 ,HEIGHT* 2/3, align="center")
         self.draw_texty("Highest Round: " + str(self.highscore),self.body_font,20,RED, WIDTH/2 ,HEIGHT *3/4)
         pg.display.flip()
         self.key_press()
+
     
     def show_go_screen(self):
         #game over or continue
@@ -672,9 +674,9 @@ class Game:
             with open(path.join(self.dir,hs_file),'w') as file:
                 file.write(str(self.round))
         else:
-           self.draw_texty("Highest Round: " + str(self.highscore),self.body_font, 20,RED, WIDTH/3,HEIGHT *3/4)
+           self.draw_texty("Highest Round: " + str(self.highscore),self.body_font, 20,RED, WIDTH/2,HEIGHT /2)
         pg.display.flip()
-        self.key_press()
+        self.key_press2()
 
     def draw_text(self,text,size,colour,x,y):
         font = pg.font.Font(self.font_name,size)
@@ -692,8 +694,24 @@ class Game:
                     not_pressed = False
                     self.running = False
                 if event.type == pg.KEYUP:
+
                     not_pressed = False
-        
+
+
+    def key_press2(self):
+        pg.mixer.music.load(path.join(self.sound_folder, 'game_over.mp3'))
+        pg.mixer.music.play(loops=-1)
+        not_pressed = True
+        while not_pressed:
+            self.clock.tick(60)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    not_pressed = False
+                    self.running = False
+                if event.type == pg.KEYUP:
+                    pg.mixer.music.load(path.join(self.sound_folder, 'background.mp3'))
+                    pg.mixer.music.play(loops=-1)
+                    not_pressed = False
 
 
           
