@@ -143,6 +143,28 @@ class Bullet(pg.sprite.Sprite):
 def collide_hit_rect(one,two):
     return one.hit_rect.colliderect(two.rect)
 #player sprite
+
+class Weapon(pg.sprite.Sprite):
+    def __init__(self,game,image):
+        self.layer = EFFECTS_LAYER
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self,self.groups)
+        self.game = game
+        self.image = game.item_images['pistol']
+        self.rect = self.image.get_rect()
+        self.rect.center = (WIDTH/2,100)
+        self.pos = vector(WIDTH/2,100)
+        self.vel = vector(0,0)
+        self.acc = vector(0,0)
+        self.aim_dir = "RIGHT"
+        self.rot = 0
+
+    def update(self):
+        self.vel = self.game.player.vel
+        self.acc = self.game.player.acc
+        self.pos = self.game.player.pos
+
+
 class Player(pg.sprite.Sprite):
     def __init__(self,game):
         self._layer = PLAYER_LAYER
@@ -159,10 +181,10 @@ class Player(pg.sprite.Sprite):
         self.acc = vector(0,0)
         self.last_shot = 0
         self.aim_dir = "RIGHT"
-        self.weapon = 'pistol'
+#        self.weapon = 'pistol'
         self.health = PLAYER_HEALTH
         self.damaged = False
-        self.barrel = game.item_images[self.weapon]
+#        self.barrel = game.item_images[self.weapon]
         self.rot = 0
 
 
@@ -176,6 +198,8 @@ class Player(pg.sprite.Sprite):
         if contacts:
 
             self.vel.y = -PLAYER_JUMP
+            self.game.weapon.vel.y -= PLAYER_JUMP
+
 
     def add_health(self,amount):
         self.health += amount
@@ -192,6 +216,7 @@ class Player(pg.sprite.Sprite):
        keystate = pg.key.get_pressed()
        if keystate[pg.K_LEFT]:
             self.acc.x = -PLAYER_ACC
+            self.game.weapon.acc.x = -PLAYER_ACC
             self.aim_dir = "LEFT"
        if keystate[pg.K_RIGHT]:
             self.acc.x= PLAYER_ACC
@@ -208,8 +233,12 @@ class Player(pg.sprite.Sprite):
        if abs(self.vel.x) < 0.1:
            self.vel.x = 0
        self.pos += self.vel + (0.5 * self.acc)
-       self.rot =(self.rot + self.rot_speed)%360
-       self.barrel = pg.transform.rotate(self.game.item_images[self.weapon], self.rot)
+
+       self.game.weapon.acc.x += self.game.weapon.vel.x * PLAYER_FRICTION
+       self.game.weapon.vel += self.game.weapon.acc
+       self.game.weapon.pos += self.game.weapon.vel + (0.5* self.game.weapon.acc)
+ #      self.rot =(self.rot + self.rot_speed)%360
+#       self.barrel = pg.transform.rotate(self.game.item_images[self.weapon], self.rot)
 
 
        self.hit_rect.midbottom = self.pos
@@ -434,9 +463,11 @@ class Game:
         self.walls = pg.sprite.Group()
         self.coins = pg.sprite.Group()
         self.enemy1s = pg.sprite.Group()
+        self.weapon = Weapon(self,'pistol')
         self.bullets = pg.sprite.Group()
         self.player = Player(self)
         self.all_sprites.add(self.player)
+        self.all_sprites.add(self.weapon)
         self.round = 1
         self.paused = False
 
@@ -526,10 +557,10 @@ class Game:
 
         background = self.background_img
         self.screen.blit(background, [0, 0])
-        weapon = self.player.barrel
+ #       weapon = self.player.barrel
   #      pg.draw.rect(self.screen, WHITE, self.player.hit_rect, 2)
 
-        self.player.image.blit(weapon, [25, 10])
+#        self.player.image.blit(weapon, [25, 10])
         # Check if player hits platform iff falling
         #enemy hits player
         hits = pg.sprite.spritecollide(self.player, self.enemy1s, False)
