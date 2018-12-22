@@ -127,7 +127,7 @@ class Bullet(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
         self.pos = pos
-        self.vel = dir * WEAPONS[game.player.weapon]['bullet_speed']
+        self.vel = dir * WEAPONS['pistol']['bullet_speed']
         self.spawn_time = pg.time.get_ticks()
 
     def update(self):
@@ -137,7 +137,7 @@ class Bullet(pg.sprite.Sprite):
             self.kill()
         if pg.sprite.spritecollideany(self,self.game.platforms):
             self.kill()
-        if pg.time.get_ticks() - self.spawn_time > WEAPONS[self.game.player.weapon]['bullet_lifetime']:
+        if pg.time.get_ticks() - self.spawn_time > WEAPONS['pistol']['bullet_lifetime']:
             self.kill()
 
 def collide_hit_rect(one,two):
@@ -261,10 +261,10 @@ class Player(pg.sprite.Sprite):
 
     def shoot(self):
            now = pg.time.get_ticks()
-           if now - self.last_shot > WEAPONS[self.game.weapon.image]['rate']:
+           if now - self.last_shot > WEAPONS['pistol']['rate']:
                self.last_shot = now
                pos = self.pos + BULLET_OFFSET
-               for i in range(WEAPONS[self.weapon]['bullet_count']):
+               for i in range(WEAPONS['pistol']['bullet_count']):
                    if self.aim_dir == "RIGHT":
                         dir = vector(1,0)
                         Bullet(self.game, pos + (60,-15), dir)
@@ -594,7 +594,7 @@ class Game:
                 self.player.weapon = 'uzi'
         hits = pg.sprite.groupcollide(self.enemy1s,self.bullets,False,True)
         for hit in hits:
-            hit.health -= WEAPONS[self.player.weapon]['damage']
+            hit.health -= WEAPONS['pistol']['damage']
 
         block_hit_list = pg.sprite.spritecollide(self.player, self.platforms, False,collide_hit_rect)
         for block in block_hit_list:
