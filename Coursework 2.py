@@ -225,7 +225,7 @@ class Player(pg.sprite.Sprite):
                for i in range(WEAPONS[self.weapon]['bullet_count']):
                    if self.aim_dir == "RIGHT":
                         dir = vector(1,0)
-                        Bullet(self.game, pos + (60,0), dir)
+                        Bullet(self.game, pos + (60,-15), dir)
                    else:
                         dir = vector(-1,0)
                         Bullet(self.game, pos, dir)
@@ -259,6 +259,18 @@ class Enemy_1 (pg.sprite.Sprite):
                 dist = self.pos - enemy1.pos
                 if 0 < dist.length() < AVOID_RAD:
                     self.acc += dist.normalize()
+
+    def draw_health(self):
+        if self.health > 30:
+            colour = GREEN
+        elif self.health > 20:
+            colour = GOLD
+        else:
+            colour = RED
+        width = int(self.rect.width * self.health/100)
+        self.health_bar = pg.Rect(0,0,width,5)
+        if self.health < 40:
+            pg.draw.rect(self.image, colour, self.health_bar)
 
 
     def update(self):
@@ -421,12 +433,11 @@ class Game:
         self.player = Player(self)
         self.all_sprites.add(self.player)
         self.round = 1
-        '''
+
         Enemy_1(self,100,100)
         Enemy_1(self,100,500)
-        Enemy_1(self,100,400)
-        Enemy_1(self,100,350)
-        '''
+
+
         x = y = 0
 
         PLATFORM_LIST =[
@@ -600,20 +611,12 @@ class Game:
         #game loop - draw
 
 
-
-
-
-#         weapon_img = self.screen.blit(weapon, [self.player.pos.x, self.player.pos.y])
-
-
-
-
-
-
          pg.display.set_caption("{:.2f}".format(self.clock.get_fps()))
 
 
          for sprite in self.all_sprites:
+            if isinstance(sprite,Enemy_1):
+                sprite.draw_health()
             self.screen.blit(sprite.image, self.camera.apply(sprite))
          self.draw_text("BANK: " + str(self.score),20,GOLD,20,20)
          self.draw_text("ROUND: "+str(self.round),30,BLACK,WIDTH - 150 ,20)
