@@ -163,7 +163,7 @@ class Weapon(pg.sprite.Sprite):
     def update(self):
         self.vel = self.game.player.vel
         self.acc = self.game.player.acc
-        self.pos = self.game.player.pos + (18,-20)
+        self.pos = self.game.player.pos + (18,-23)
         self.rot_speed = 0
         keystate = pg.key.get_pressed()
         if keystate[ord('a')]:
@@ -171,6 +171,11 @@ class Weapon(pg.sprite.Sprite):
         if keystate[ord('d')]:
             self.rot_speed -= WEAPON_ROT
         self.rot = (self.rot + self.rot_speed) % 360
+        if self.rot >= 45 and self.rot < 180:
+            self.rot = 45
+        if self.rot <= 315 and self.rot > 180:
+            self.rot = 315
+
         self.image = pg.transform.rotate(self.game.item_images  ['pistol'], self.rot)
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
@@ -256,7 +261,7 @@ class Player(pg.sprite.Sprite):
 
     def shoot(self):
            now = pg.time.get_ticks()
-           if now - self.last_shot > WEAPONS[self.weapon]['rate']:
+           if now - self.last_shot > WEAPONS[self.game.weapon.image]['rate']:
                self.last_shot = now
                pos = self.pos + BULLET_OFFSET
                for i in range(WEAPONS[self.weapon]['bullet_count']):
@@ -479,8 +484,8 @@ class Game:
         self.paused = False
 
 
-#        Enemy_1(self,100,100)
-#        Enemy_1(self,100,500)
+        Enemy_1(self,100,100)
+        Enemy_1(self,100,500)
 
 
         x = y = 0
