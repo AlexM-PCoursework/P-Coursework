@@ -16,11 +16,12 @@ BLUE = (0,0,255)
 WATERM = 253,91,120
 BG_COLOUR = 48,191,191
 GOLD = 255,215,0
+BLOOD_RED = 166,16,30
 
 WIDTH = 1024
 HEIGHT = 720
 
-TITLE="Game"
+TITLE="Enclosed"
 FONT_NAME ="arial"
 
 hs_file = "hs.txt"
@@ -404,6 +405,9 @@ class Game:
         #load highest Round
         self.dir = path.dirname(__file__)
         img_folder = path.join(self.dir,'img')
+        self.title_font = path.join(img_folder, 'font.ttf')
+        self.header_font = path.join(img_folder,'zombified.ttf')
+        self.body_font = path.join(img_folder,'arial.ttf')
         self.enemy1_img = pg.image.load(path.join(img_folder, ENEMY_1_IMG)).convert_alpha()
         self.player_img = pg.image.load(path.join(img_folder, PLAYER_IMG)).convert_alpha()
         self.wall_img = pg.image.load(path.join(img_folder,WALL_IMG)).convert_alpha()
@@ -610,9 +614,9 @@ class Game:
              if event.key ==pg.K_p:
                  self.paused = not self.paused
 
-    def draw_text(self,text,font_name,size,colour,x,y,align ="center"):
+    def draw_texty(self,text,font_name,size,colour,x,y,align ="center"):
         font = pg.font.Font(font_name,size)
-        text_surface = font.render(text,True,color)
+        text_surface = font.render(text,True,colour)
         text_rect = text_surface.get_rect()
         if align == "center":
             text_rect.center = (x,y)
@@ -633,14 +637,18 @@ class Game:
          self.draw_text("BANK: " + str(self.score),20,GOLD,20,20)
          self.draw_text("ROUND: "+str(self.round),30,BLACK,WIDTH - 150 ,20)
          draw_player_health(self.screen, 430,10,self.player.health/ PLAYER_HEALTH)
+         if self.paused:
+             self.draw_texty("Paused",self.title_font,120,RED,WIDTH/2,HEIGHT/2,align="center")
          #Flip display after drawing
          pg.display.flip()
+
     def show_start_screen(self):
         #game start screen
         self.screen.fill(BLACK)
-        self.draw_text(TITLE,50,RED,WIDTH/2 - 60,HEIGHT/3)
-        self.draw_text("Use arrows to move, UP arrow to jump",30, RED,WIDTH/2 - 200,HEIGHT/2)
-        self.draw_text("Press any key to play",20,GREEN, WIDTH/2 - 80,HEIGHT* 2/3)
+
+        self.draw_texty(TITLE,self.title_font,150,RED,WIDTH/2,HEIGHT*1/4,align="center")
+        self.draw_texty("Use arrows to move, UP arrow to jump",self.header_font, 70, RED, WIDTH/2,HEIGHT/2,align = "center")
+        self.draw_texty("Press any key to play",self.body_font, 20,GREEN, WIDTH/2 ,HEIGHT* 2/3)
         self.draw_text("Highest Round: " + str(self.highscore),20,RED, WIDTH/2 - 60,HEIGHT *3/4)
         pg.display.flip()
         self.key_press()
