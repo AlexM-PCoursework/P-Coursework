@@ -433,6 +433,7 @@ class Game:
         self.player = Player(self)
         self.all_sprites.add(self.player)
         self.round = 1
+        self.paused = False
 
         Enemy_1(self,100,100)
         Enemy_1(self,100,500)
@@ -504,7 +505,8 @@ class Game:
         while self.playing:
          self.clock.tick(60)
          self.events()
-         self.update()
+         if not self.paused:
+            self.update()
          self.draw()
         
          
@@ -605,6 +607,16 @@ class Game:
          if event.type ==pg.KEYDOWN:
              if event.key == pg.K_UP:
                  self.player.jump()
+             if event.key ==pg.K_p:
+                 self.paused = not self.paused
+
+    def draw_text(self,text,font_name,size,colour,x,y,align ="center"):
+        font = pg.font.Font(font_name,size)
+        text_surface = font.render(text,True,color)
+        text_rect = text_surface.get_rect()
+        if align == "center":
+            text_rect.center = (x,y)
+        self.screen.blit(text_surface, text_rect)
             
              
     def draw(self):
