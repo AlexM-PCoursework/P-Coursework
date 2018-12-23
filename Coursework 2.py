@@ -4,6 +4,7 @@ import random
 from pygame import *
 from os import path
 from random import randrange
+import math
 
 
 #settings
@@ -264,10 +265,22 @@ class Player(pg.sprite.Sprite):
            if now - self.last_shot > WEAPONS['pistol']['rate']:
                self.last_shot = now
                pos = self.pos + BULLET_OFFSET
+               unit = [[1],
+                      [0]]
+               unitn =[[-1],
+                       [0]]
+               dir = [[0],
+                     [0]]
+               rotate = [[math.cos(self.game.weapon.rot), math.sin(self.game.weapon.rot)] ,
+                        [- math.sin(self.game.weapon.rot), math.cos(self.game.weapon.rot)]]
                for i in range(WEAPONS['pistol']['bullet_count']):
                    if self.aim_dir == "RIGHT":
-                        dir = vector(1,0)
-                        Bullet(self.game, pos + (60,-15), dir)
+                        for i in range(len(rotate)):
+                            for j in range(len(unit[0])):
+                                for k in range(len(unit)):
+                                    dir[i][j] += rotate[i][k] * unit[k][j]
+                                    dirv = vector(dir[0][0],dir[1][0])
+                        Bullet(self.game, pos + (60,-15), dirv)
                    else:
                         dir = vector(-1,0)
                         Bullet(self.game, pos, dir)
