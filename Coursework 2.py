@@ -130,7 +130,7 @@ class Bullet(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
         self.pos = pos
-        self.vel = dir * WEAPONS[self.game.player.weapon]['bullet_speed']
+        self.vel = dir * WEAPONS[self.game.player.weaponl]['bullet_speed']
         self.spawn_time = pg.time.get_ticks()
 
     def update(self):
@@ -140,7 +140,7 @@ class Bullet(pg.sprite.Sprite):
             self.kill()
         if pg.sprite.spritecollideany(self,self.game.platforms):
             self.kill()
-        if pg.time.get_ticks() - self.spawn_time > WEAPONS['pistol']['bullet_lifetime']:
+        if pg.time.get_ticks() - self.spawn_time > WEAPONS[self.game.player.weaponl]['bullet_lifetime']:
             self.kill()
 
 def collide_hit_rect(one,two):
@@ -421,7 +421,7 @@ class Platform(pg.sprite.Sprite):
         if randrange (1000) < 2:
             Item(self.game, (x,y),'health',self)
         if randrange (100) < 5:
-            Item(self.game, (x,y),'uzir',self)
+            Item(self.game, (x,y),'uzil',self)
 
 class Coin(pg.sprite.Sprite):
     def __init__(self,game,plat):
@@ -598,11 +598,11 @@ class Game:
             if hit.type =='health' and self.player.health < PLAYER_HEALTH:
                 hit.kill()
                 self.player.add_health(HEALTH_POWERUP)
-            if hit.type =='uzi':
+            if hit.type =='uzil':
                 hit.kill()
                 self.player.weaponl = 'uzil'
                 self.player.weaponr ='uzir'
-                self.weapon.image = 'uzir'
+                self.weapon.image = self.item_images['uzil']
         hits = pg.sprite.groupcollide(self.enemy1s,self.bullets,False,True)
         for hit in hits:
             hit.health -= WEAPONS[self.player.weaponl]['damage']
