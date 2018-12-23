@@ -141,6 +141,8 @@ class Bullet(pg.sprite.Sprite):
             self.kill()
         if pg.time.get_ticks() - self.spawn_time > WEAPONS[self.game.player.weaponl]['bullet_lifetime']:
             self.kill()
+        self.image = pg.transform.rotate(self.game.bullet_img, self.game.weapon.rot)
+
 
 def collide_hit_rect(one,two):
     return one.hit_rect.colliderect(two.rect)
@@ -181,9 +183,11 @@ class Weapon(pg.sprite.Sprite):
             self.pos = self.game.player.pos + (-18, -23)
             self.image = pg.transform.rotate(self.game.item_images[self.game.player.weaponl], self.rot)
 
+
         else:
             self.pos = self.game.player.pos + (18, -23)
             self.image = pg.transform.rotate(self.game.item_images[self.game.player.weaponr], self.rot)
+
 
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
