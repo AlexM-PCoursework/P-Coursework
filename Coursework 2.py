@@ -165,7 +165,6 @@ class Weapon(pg.sprite.Sprite):
     def update(self):
         self.vel = self.game.player.vel
         self.acc = self.game.player.acc
-        self.pos = self.game.player.pos + (18,-23)
         self.rot_speed = 0
         keystate = pg.key.get_pressed()
         if keystate[ord('a')]:
@@ -179,8 +178,11 @@ class Weapon(pg.sprite.Sprite):
             self.rot = 315
 
         if self.game.player.aim_dir == "LEFT":
+            self.pos = self.game.player.pos + (-18, -23)
             self.image = pg.transform.rotate(self.game.item_images[self.game.player.weaponl], self.rot)
+
         else:
+            self.pos = self.game.player.pos + (18, -23)
             self.image = pg.transform.rotate(self.game.item_images[self.game.player.weaponr], self.rot)
 
         self.rect = self.image.get_rect()
