@@ -183,7 +183,7 @@ class Weapon(pg.sprite.Sprite):
             self.image = pg.transform.rotate(self.game.item_images[self.game.player.weaponl], self.rot)
         else:
             self.image = pg.transform.rotate(self.game.item_images[self.game.player.weaponr], self.rot)
-        
+
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
 
@@ -281,8 +281,8 @@ class Player(pg.sprite.Sprite):
                         dirv = vector(1,0).rotate(360 - self.game.weapon.rot)
                         Bullet(self.game, self.game.weapon.rect.center , dirv)
                    else:
-                        dir = vector(-1,0)
-                        Bullet(self.game, pos, dir)
+                       dirv = vector(-1, 0).rotate(360 - self.game.weapon.rot)
+                       Bullet(self.game, self.game.weapon.rect.center, dirv)
 
 
 
