@@ -179,7 +179,11 @@ class Weapon(pg.sprite.Sprite):
         if self.rot <= 315 and self.rot > 180:
             self.rot = 315
 
-        #self.image = pg.transform.rotate(self.game.item_images  [self.game.player.weapon], self.rot)
+        if self.game.player.aim_dir == "LEFT":
+            self.image = pg.transform.rotate(self.game.item_images[self.game.player.weaponl], self.rot)
+        else:
+            self.image = pg.transform.rotate(self.game.item_images[self.game.player.weaponr], self.rot)
+        
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
 
