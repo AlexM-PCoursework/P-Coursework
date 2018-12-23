@@ -124,9 +124,8 @@ class Bullet(pg.sprite.Sprite):
         self._layer = BULLET_LAYER
         self.groups = game.all_sprites, game.bullets
         pg.sprite.Sprite.__init__(self,self.groups)
-        self.image = pg.Surface((5,5))
         self.game = game
-        self.image.fill(GOLD)
+        self.image = self.game.bullet_img
         self.rect = self.image.get_rect()
         self.rect.center = pos
         self.pos = pos
@@ -281,8 +280,8 @@ class Player(pg.sprite.Sprite):
                         dirv = vector(1,0).rotate(360 - self.game.weapon.rot)
                         Bullet(self.game, self.game.weapon.rect.center , dirv)
                    else:
-                       dirv = vector(-1, 0).rotate(360 - self.game.weapon.rot)
-                       Bullet(self.game, self.game.weapon.rect.center, dirv)
+                        dirv = vector(-1, 0).rotate(360 - self.game.weapon.rot)
+                        Bullet(self.game, self.game.weapon.rect.center, dirv)
 
 
 
@@ -461,6 +460,7 @@ class Game:
         self.sound_folder = path.join(self.dir,'sound')
         self.title_font = path.join(img_folder, 'font.ttf')
         self.header_font = path.join(img_folder,'zombified.ttf')
+        self.bullet_img = pg.image.load(path.join(img_folder,'bullet.png')).convert_alpha()
         self.body_font = path.join(img_folder,'arial.ttf')
         self.enemy1_img = pg.image.load(path.join(img_folder, ENEMY_1_IMG)).convert_alpha()
         self.player_imgr = pg.image.load(path.join(img_folder, PLAYER_IMG)).convert_alpha()
