@@ -52,6 +52,13 @@ WEAPONS['pistoll']={'bullet_speed':20,
                    'damage':10,
                    'bullet_size':'large',
                    'bullet_count':1}
+WEAPONS['shotgunl']={'bullet_speed':20,
+                   'bullet_lifetime': 400,
+                   'rate':300,
+                   'damage':6,
+                   'spread':10,
+                   'bullet_size':'large',
+                   'bullet_count':10}
 
 # items
 
@@ -59,10 +66,12 @@ ITEM_IMAGES = {'health':'health.png',
                'uzir':'uzir.png',
                'uzil':'uzil.png',
                'pistol':'pistol.png',
-               'pistoll':'pistoll.png'}
+               'pistoll':'pistoll.png',
+               'shotgunr':'shotgunr.png',
+               'shotgunl':'shotgunl.png'}
 HEALTH_POWERUP = 50
 
-BULLET_OFFSET = vector(-30,-15)
+BULLET_OFFSET = vector(-30,-40)
 ENEMY_1_IMG = 'ghost.png'
 ENEMY1_SPEED = 0.03
 ENEMY1_FRICTION = -0.02
@@ -128,7 +137,7 @@ class Bullet(pg.sprite.Sprite):
         self.image = self.game.bullet_img
         self.rect = self.image.get_rect()
         self.rect.center = pos
-        self.pos = pos
+        self.pos = pos + vector(0,-5)
         self.vel = dir * WEAPONS[self.game.player.weaponl]['bullet_speed']
         self.spawn_time = pg.time.get_ticks()
 
