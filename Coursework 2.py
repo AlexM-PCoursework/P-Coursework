@@ -38,15 +38,15 @@ PLAYER_JUMP = 10
 PLAYER_HEALTH = 100
 PLAYER_HIT_RECT = pg.Rect(0,0,30,40)
 
-
+# using weapon'l' as convention for referencing
 WEAPONS ={}
-WEAPONS['uzi']={'bullet_speed':40,
+WEAPONS['uzil']={'bullet_speed':40,
                    'bullet_lifetime': 1000,
                    'rate':150,
                    'damage':10,
                    'bullet_size':'large',
                    'bullet_count':1}
-WEAPONS['pistol']={'bullet_speed':20,
+WEAPONS['pistoll']={'bullet_speed':20,
                    'bullet_lifetime': 500,
                    'rate':600,
                    'damage':10,
@@ -56,8 +56,10 @@ WEAPONS['pistol']={'bullet_speed':20,
 # items
 
 ITEM_IMAGES = {'health':'health.png',
-               'uzi':'uzi.png',
-               'pistol':'pistol.png'}
+               'uzir':'uzir.png',
+               'uzil':'uzil.png',
+               'pistol':'pistol.png',
+               'pistoll':'pistoll.png'}
 HEALTH_POWERUP = 50
 
 BULLET_OFFSET = vector(-30,-15)
@@ -128,7 +130,7 @@ class Bullet(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
         self.pos = pos
-        self.vel = dir * WEAPONS['pistol']['bullet_speed']
+        self.vel = dir * WEAPONS[self.game.player.weapon]['bullet_speed']
         self.spawn_time = pg.time.get_ticks()
 
     def update(self):
@@ -157,7 +159,7 @@ class Weapon(pg.sprite.Sprite):
         self.pos = vector(WIDTH/2,100)
         self.vel = vector(0,0)
         self.acc = vector(0,0)
-        self.aim_dir = "RIGHT"
+        self.aim_dir = "LEFT"
         self.rot = 0
 
 
@@ -177,7 +179,7 @@ class Weapon(pg.sprite.Sprite):
         if self.rot <= 315 and self.rot > 180:
             self.rot = 315
 
-        self.image = pg.transform.rotate(self.game.item_images  ['pistol'], self.rot)
+        #self.image = pg.transform.rotate(self.game.item_images  [self.game.player.weapon], self.rot)
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
 
@@ -189,7 +191,7 @@ class Player(pg.sprite.Sprite):
         self.groups=game.all_sprites
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
-        self.image = game.player_img
+        self.image = game.player_imgl
         self.rect = self.image.get_rect()
         self.hit_rect = PLAYER_HIT_RECT
         self.hit_rect.center = self.rect.center
@@ -198,8 +200,9 @@ class Player(pg.sprite.Sprite):
         self.vel = vector(0,0)
         self.acc = vector(0,0)
         self.last_shot = 0
-        self.aim_dir = "RIGHT"
-#        self.weapon = 'pistol'
+        self.aim_dir = "LEFT"
+        self.weaponl = 'pistoll'
+        self.weaponr ='pistol'
         self.health = PLAYER_HEALTH
         self.damaged = False
 #        self.barrel = game.item_images[self.weapon]
@@ -235,9 +238,13 @@ class Player(pg.sprite.Sprite):
        if keystate[pg.K_LEFT]:
             self.acc.x = -PLAYER_ACC
             self.aim_dir = "LEFT"
+            self.image = self.game.player_imgl
+            self.game.weapon.image = self.game.item_images [self.weaponl]
        if keystate[pg.K_RIGHT]:
             self.acc.x= PLAYER_ACC
             self.aim_dir = "RIGHT"
+            self.image = self.game.player_imgr
+            self.game.weapon.image = self.game.item_images[self.weaponr]
 
        if keystate[pg.K_SPACE]:
            self.shoot()
@@ -262,26 +269,13 @@ class Player(pg.sprite.Sprite):
 
     def shoot(self):
            now = pg.time.get_ticks()
-           if now - self.last_shot > WEAPONS['pistol']['rate']:
+           if now - self.last_shot > WEAPONS[self.weaponl]['rate']:
                self.last_shot = now
                pos = self.pos + BULLET_OFFSET
-               unit = [[1],
-                      [0]]
-               unitn =[[-1],
-                       [0]]
-               dir = [[0],
-                     [0]]
-               rotate = [[math.cos(self.game.weapon.rot), math.sin(self.game.weapon.rot)] ,
-                        [- math.sin(self.game.weapon.rot), math.cos(self.game.weapon.rot)]]
-               for i in range(WEAPONS['pistol']['bullet_count']):
+               for i in range(WEAPONS[self.weaponl]['bullet_count']):
                    if self.aim_dir == "RIGHT":
                         dirv = vector(1,0).rotate(360 - self.game.weapon.rot)
-  #                      for i in range(len(rotate)):
-  #                          for j in range(len(unit[0])):
-  #                              for k in range(len(unit)):
-   #                                 dir[i][j] += rotate[i][k] * unit[k][j]
-    #                                dirv = vector(dir[0][0],dir[1][0])
-                        Bullet(self.game, pos + (60,-15), dirv)
+                        Bullet(self.game, self.game.weapon.rect.center , dirv)
                    else:
                         dir = vector(-1,0)
                         Bullet(self.game, pos, dir)
@@ -427,7 +421,7 @@ class Platform(pg.sprite.Sprite):
         if randrange (1000) < 2:
             Item(self.game, (x,y),'health',self)
         if randrange (100) < 5:
-            Item(self.game, (x,y),'uzi',self)
+            Item(self.game, (x,y),'uzir',self)
 
 class Coin(pg.sprite.Sprite):
     def __init__(self,game,plat):
@@ -465,7 +459,8 @@ class Game:
         self.header_font = path.join(img_folder,'zombified.ttf')
         self.body_font = path.join(img_folder,'arial.ttf')
         self.enemy1_img = pg.image.load(path.join(img_folder, ENEMY_1_IMG)).convert_alpha()
-        self.player_img = pg.image.load(path.join(img_folder, PLAYER_IMG)).convert_alpha()
+        self.player_imgr = pg.image.load(path.join(img_folder, PLAYER_IMG)).convert_alpha()
+        self.player_imgl = pg.image.load(path.join(img_folder,'playerl.png')).convert_alpha()
         self.wall_img = pg.image.load(path.join(img_folder,WALL_IMG)).convert_alpha()
         self.coin_img = pg.image.load(path.join(img_folder,COIN_IMG)).convert_alpha()
         self.background_img = pg.image.load(path.join(img_folder,BACKGROUND_IMG)).convert_alpha()
@@ -605,10 +600,12 @@ class Game:
                 self.player.add_health(HEALTH_POWERUP)
             if hit.type =='uzi':
                 hit.kill()
-                self.player.weapon = 'uzi'
+                self.player.weaponl = 'uzil'
+                self.player.weaponr ='uzir'
+                self.weapon.image = 'uzir'
         hits = pg.sprite.groupcollide(self.enemy1s,self.bullets,False,True)
         for hit in hits:
-            hit.health -= WEAPONS['pistol']['damage']
+            hit.health -= WEAPONS[self.player.weaponl]['damage']
 
         block_hit_list = pg.sprite.spritecollide(self.player, self.platforms, False,collide_hit_rect)
         for block in block_hit_list:
