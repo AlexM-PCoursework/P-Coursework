@@ -3,7 +3,7 @@ import pygame as pg
 import random
 from pygame import *
 from os import path
-from random import randrange, uniform
+from random import randrange, uniform, choice
 import math
 
 
@@ -62,7 +62,9 @@ WEAPONS['shotgunl']={'bullet_speed':20,
                    'bullet_size':'small',
                    'bullet_count':8}
 
-WEAPON_SOUNDS
+WEAPON_SOUNDS = {'pistoll': ['pistol.wav'],
+                 'uzil': ['pistol.wav'],
+                 'shotgunl':['shotgun.wav']}
 
 # items
 
@@ -302,6 +304,7 @@ class Player(pg.sprite.Sprite):
                    else:
                         dirv = vector(-1, 0).rotate(360 - self.game.weapon.rot +spread)
                         Bullet(self.game, self.game.weapon.rect.center, dirv)
+                   choice(self.game.weapon_sounds[self.weaponl]).play()
 
 
 
@@ -492,6 +495,13 @@ class Game:
         self.wall_img = pg.image.load(path.join(img_folder,WALL_IMG)).convert_alpha()
         self.coin_img = pg.image.load(path.join(img_folder,COIN_IMG)).convert_alpha()
         self.background_img = pg.image.load(path.join(img_folder,BACKGROUND_IMG)).convert_alpha()
+        self.weapon_sounds ={}
+        for weapon in WEAPON_SOUNDS:
+            self.weapon_sounds[weapon] = []
+            for sound in WEAPON_SOUNDS[weapon]:
+                s = pg.mixer.Sound(path.join(self.sound_folder, sound))
+                s.set_volume(0.2)
+                self.weapon_sounds[weapon].append(s)
         with open(path.join(self.dir,hs_file),'w') as file:
             try:
                 self.highscore = int(file.read())
