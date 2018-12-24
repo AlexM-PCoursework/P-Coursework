@@ -244,7 +244,10 @@ class Player(pg.sprite.Sprite):
         if contacts:
 
             self.vel.y = -PLAYER_JUMP
-     #       self.game.weapon.vel.y -= PLAYER_JUMP
+
+        contacts = pg.sprite.spritecollide(self, self.game.trapdoors, False)
+        if contacts:
+            self.vel.y = -PLAYER_JUMP
 
 
     def add_health(self,amount):
@@ -381,10 +384,10 @@ class Enemy_1 (pg.sprite.Sprite):
                     self.pos.x = block.rect.right + self.rect.width/2
                     self.vel.x = 0
             if self.vel.y < 0:
-                if self.pos.y - self.rect.height > block.rect.bottom:
-                    self.pos.y = block.rect.bottom + self.rect.height
-                #
-                self.vel.y = 0
+                if self.pos.y - self.rect.height > block.rect.centery:
+                    self.pos.y = block.rect.bottom + self.rect.height -1
+
+                    self.vel.y = 0
 
         block_hit_list = pg.sprite.spritecollide(self, self.game.walls, False)
         for block in block_hit_list:
@@ -540,7 +543,7 @@ class Game:
 
     def new(self):
         #starts new game
- #       self.all_sprites = pg.sprite.LayeredUpdates()
+
         self.score = 0
         self.all_sprites = pg.sprite.LayeredUpdates()
         self.trapdoors = pg.sprite.Group()
@@ -568,15 +571,15 @@ class Game:
         PLATFORM_LIST =[
             "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
             "W            W                               W                                                             P",
-            "W            W                               WPPPPPPPPPPPPPPPPPP                                           P",
+            "W   PP       W                               WPPPPPPPPPPPPPPPPPP                                           P",
             "W      PPPPPPWPP                             W                                                             P",
             "WPP          D                               W                                                             P",
             "W    PPP  PPPPPPPPPPPPPPPPP                  W                PPPPPP                      PPPPP            P",
             "WPP          W                                                                               W             P",
-            "W       PP   W              PPPP                                                             W             P",
-            "W PP    WPPPPW                      PPPP                               PPPPPP                W             P",
+            "W    P  PP   W              PPPP                                                             W             P",
+            "W P      PPPPW                      PPPP                               PPPPPP                W             P",
             "W    PP      W                PPPP      PPPP                                PPPPPPPPP        W             P",
-            "WPPP         W                                   PPPPPPPPPPPP                                W             P",
+            "WPPP        PW                                   PPPPPPPPPPPP                                W             P",
             "W       PP   W                         PPPPPPPPP                                             W             P",
             "WPPPPPPPWWPPTWPPPP    PPPPPPPPPP                                                             W             P",
             "W            W        W                PPPPPPPP                                              W             P",
@@ -655,6 +658,7 @@ class Game:
 
 
         #enemy hits player
+
         hits = pg.sprite.spritecollide(self.player, self.enemy1s, False)
         for hit in hits:
             self.player.health -= ENEMY1_DAMAGE
@@ -729,24 +733,22 @@ class Game:
 
         block_hit_list = pg.sprite.spritecollide(self.player, self.doors, False, collide_hit_rect)
         for block in block_hit_list:
-            if self.player.vel.y > 0:
-                if self.player.pos.y < block.rect.centery:
-                    self.player.pos.y = block.rect.top + 1
-                    #
-                    self.player.vel.y = 0
-            if self.player.vel.x > 0 and self.player.vel.y != 0:
+            if self.player.vel.x > 0:
                 if self.player.pos.x < block.rect.left:
                     self.player.pos.x = block.rect.left - self.player.hit_rect.width / 2
                     self.player.vel.x = 0
-            if self.player.vel.x < 0 and self.player.vel.y != 0:
-                if self.player.pos.x > block.rect.right:
-                    self.player.pos.x = block.rect.right + self.player.hit_rect.width / 2
-                    self.player.vel.x = 0
+
             if self.player.vel.y < 0:
                 if self.player.pos.y - self.player.hit_rect.height > block.rect.bottom:
                     self.player.pos.y = block.rect.bottom + self.player.hit_rect.height
                 #
                 self.player.vel.y = 0
+
+            if self.player.vel.x < 0:
+                if self.player.pos.x > block.rect.right:
+                    self.player.pos.x = block.rect.right + self.player.hit_rect.width / 2
+                    self.player.vel.x = 0
+
 
 
         block_hit_list = pg.sprite.spritecollide(self.player, self.walls, False,collide_hit_rect)
