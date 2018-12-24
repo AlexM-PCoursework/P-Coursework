@@ -45,7 +45,7 @@ WEAPONS['uzil']={'bullet_speed':40,
                    'rate':150,
                    'damage':10,
                    'spread':0,
-                   'bullet_size':'large',
+                   'bullet_size':'small',
                    'bullet_count':1}
 WEAPONS['pistoll']={'bullet_speed':20,
                    'bullet_lifetime': 500,
@@ -451,6 +451,20 @@ class Platform(pg.sprite.Sprite):
         if randrange(100) <5:
             Item(self.game, (x,y),'shotgunl',self)
 
+class Door(pg.sprite.Sprite):
+    def __init__(self,game,x,y):
+        self. _layer = WALL_LAYER
+        self.groups = game.all_sprites, game.doors
+        pg.sprite.Sprite. __init__(self,self.groups)
+        self.game = game
+        self.image = pg.Surface((10,40))
+        self.image.fill(GOLD)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+
+
 class Coin(pg.sprite.Sprite):
     def __init__(self,game,plat):
         self._layer = EFFECTS_LAYER
@@ -518,6 +532,7 @@ class Game:
  #       self.all_sprites = pg.sprite.LayeredUpdates()
         self.score = 0
         self.all_sprites = pg.sprite.LayeredUpdates()
+        self.doors = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.items = pg.sprite.Group()
         self.walls = pg.sprite.Group()
@@ -543,7 +558,7 @@ class Game:
             "W            W                               W                                                             P",
             "W            W                               WPPPPPPPPPPPPPPPPPP                                           P",
             "W    PPPPPPPPWPP                             W                                                             P",
-            "W                                            W                                                             P",
+            "W            D                               W                                                             P",
             "W   PPPP  PPPPPPPPPPPPPPPPP                  W                PPPPPP                      PPPPP            P",
             "W            W                                                                               W             P",
             "W       PP   W              PPPP                                                             W             P",
@@ -585,6 +600,8 @@ class Game:
                 Platform(self,x,y,50,40)
             if col =="W":
                 Wall(self,x,y,50,40)
+            if col == "D":
+                Door(self,x,y)
                 
             x += 41
           y += 41
