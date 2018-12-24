@@ -56,14 +56,14 @@ WEAPONS['pistoll']={'bullet_speed':20,
                    'bullet_count':1}
 WEAPONS['shotgunl']={'bullet_speed':20,
                    'bullet_lifetime': 300,
-                   'rate':1000,
+                   'rate':1300,
                    'damage':6,
                    'spread':10,
                    'bullet_size':'small',
                    'bullet_count':8}
 
 WEAPON_SOUNDS = {'pistoll': ['pistol.wav'],
-                 'uzil': ['pistol.wav'],
+                 'uzil': ['uzi.wav'],
                  'shotgunl':['shotgun.wav']}
 
 # items
@@ -500,8 +500,9 @@ class Game:
             self.weapon_sounds[weapon] = []
             for sound in WEAPON_SOUNDS[weapon]:
                 s = pg.mixer.Sound(path.join(self.sound_folder, sound))
-                s.set_volume(0.2)
+                s.set_volume(0.15)
                 self.weapon_sounds[weapon].append(s)
+
         with open(path.join(self.dir,hs_file),'w') as file:
             try:
                 self.highscore = int(file.read())
@@ -616,11 +617,11 @@ class Game:
 
         background = self.background_img
         self.screen.blit(background, [0, 0])
- #       weapon = self.player.barrel
+
   #      pg.draw.rect(self.screen, WHITE, self.player.hit_rect, 2)
 
-#        self.player.image.blit(weapon, [25, 10])
-        # Check if player hits platform iff falling
+
+
         #enemy hits player
         hits = pg.sprite.spritecollide(self.player, self.enemy1s, False)
         for hit in hits:
@@ -631,6 +632,7 @@ class Game:
         if hits:
 
             self.player.vel += vector(KNOCKBACK,0).rotate(-hits[0].rot)
+
         hits = pg.sprite.spritecollide(self.player,self.items, False)
         for hit in hits:
             if hit.type =='health' and self.player.health < PLAYER_HEALTH:
@@ -741,6 +743,7 @@ class Game:
          draw_player_health(self.screen, 430,10,self.player.health/ PLAYER_HEALTH)
          if self.paused:
              self.draw_texty("Paused",self.title_font,120,RED,WIDTH/2,HEIGHT/2,align="center")
+
          #Flip display after drawing
          pg.display.flip()
 
