@@ -18,6 +18,7 @@ WATERM = 253,91,120
 BG_COLOUR = 48,191,191
 GOLD = 255,215,0
 BLOOD_RED = 166,16,30
+BROWN = 165,93,53
 
 WIDTH = 1024
 HEIGHT = 720
@@ -458,12 +459,22 @@ class Door(pg.sprite.Sprite):
         pg.sprite.Sprite. __init__(self,self.groups)
         self.game = game
         self.image = pg.Surface((10,40))
-        self.image.fill(GOLD)
+        self.image.fill(BROWN)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
-
+class Trapdoor(pg.sprite.Sprite):
+    def __init__(self,game,x,y):
+        self. _layer = WALL_LAYER
+        self.groups = game.all_sprites, game.trapdoors
+        pg.sprite.Sprite. __init__(self,self.groups)
+        self.game = game
+        self.image = pg.Surface((40,10))
+        self.image.fill(BROWN)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
 class Coin(pg.sprite.Sprite):
     def __init__(self,game,plat):
@@ -532,6 +543,7 @@ class Game:
  #       self.all_sprites = pg.sprite.LayeredUpdates()
         self.score = 0
         self.all_sprites = pg.sprite.LayeredUpdates()
+        self.trapdoors = pg.sprite.Group()
         self.doors = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.items = pg.sprite.Group()
@@ -557,16 +569,16 @@ class Game:
             "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
             "W            W                               W                                                             P",
             "W            W                               WPPPPPPPPPPPPPPPPPP                                           P",
-            "W    PPPPPPPPWPP                             W                                                             P",
-            "W            D                               W                                                             P",
-            "W   PPPP  PPPPPPPPPPPPPPPPP                  W                PPPPPP                      PPPPP            P",
-            "W            W                                                                               W             P",
+            "W      PPPPPPWPP                             W                                                             P",
+            "WPP          D                               W                                                             P",
+            "W    PPP  PPPPPPPPPPPPPPPPP                  W                PPPPPP                      PPPPP            P",
+            "WPP          W                                                                               W             P",
             "W       PP   W              PPPP                                                             W             P",
-            "W   PP  WPPPPW                      PPPP                               PPPPPP                W             P",
-            "W            W                PPPP      PPPP                                PPPPPPPPP        W             P",
-            "W            W                                   PPPPPPPPPPPP                                W             P",
+            "W PP    WPPPPW                      PPPP                               PPPPPP                W             P",
+            "W    PP      W                PPPP      PPPP                                PPPPPPPPP        W             P",
+            "WPPP         W                                   PPPPPPPPPPPP                                W             P",
             "W       PP   W                         PPPPPPPPP                                             W             P",
-            "WPPPPPPPWWP  WPPPP    PPPPPPPPPP                                                             W             P",
+            "WPPPPPPPWWPPTWPPPP    PPPPPPPPPP                                                             W             P",
             "W            W        W                PPPPPPPP                                              W             P",
             "W  PPPPPPPPPPP        W        PPPP                    PPPPPPPPPPPPPPPPPPPPPPP               W             P",
             "W            W        W             PPPPPP                                                     W           P",
@@ -602,6 +614,9 @@ class Game:
                 Wall(self,x,y,50,40)
             if col == "D":
                 Door(self,x,y)
+            if col == "T":
+                Trapdoor(self,x,y)
+
                 
             x += 41
           y += 41
@@ -691,7 +706,47 @@ class Game:
                 #
                 self.player.vel.y = 0
 
+        block_hit_list = pg.sprite.spritecollide(self.player, self.trapdoors, False, collide_hit_rect)
+        for block in block_hit_list:
+            if self.player.vel.y > 0:
+                if self.player.pos.y < block.rect.centery:
+                    self.player.pos.y = block.rect.top + 1
+                    #
+                    self.player.vel.y = 0
+            if self.player.vel.x > 0 and self.player.vel.y != 0:
+                if self.player.pos.x < block.rect.left:
+                    self.player.pos.x = block.rect.left - self.player.hit_rect.width / 2
+                    self.player.vel.x = 0
+            if self.player.vel.x < 0 and self.player.vel.y != 0:
+                if self.player.pos.x > block.rect.right:
+                    self.player.pos.x = block.rect.right + self.player.hit_rect.width / 2
+                    self.player.vel.x = 0
+            if self.player.vel.y < 0:
+                if self.player.pos.y - self.player.hit_rect.height > block.rect.bottom:
+                    self.player.pos.y = block.rect.bottom + self.player.hit_rect.height
+                #
+                self.player.vel.y = 0
 
+        block_hit_list = pg.sprite.spritecollide(self.player, self.doors, False, collide_hit_rect)
+        for block in block_hit_list:
+            if self.player.vel.y > 0:
+                if self.player.pos.y < block.rect.centery:
+                    self.player.pos.y = block.rect.top + 1
+                    #
+                    self.player.vel.y = 0
+            if self.player.vel.x > 0 and self.player.vel.y != 0:
+                if self.player.pos.x < block.rect.left:
+                    self.player.pos.x = block.rect.left - self.player.hit_rect.width / 2
+                    self.player.vel.x = 0
+            if self.player.vel.x < 0 and self.player.vel.y != 0:
+                if self.player.pos.x > block.rect.right:
+                    self.player.pos.x = block.rect.right + self.player.hit_rect.width / 2
+                    self.player.vel.x = 0
+            if self.player.vel.y < 0:
+                if self.player.pos.y - self.player.hit_rect.height > block.rect.bottom:
+                    self.player.pos.y = block.rect.bottom + self.player.hit_rect.height
+                #
+                self.player.vel.y = 0
 
 
         block_hit_list = pg.sprite.spritecollide(self.player, self.walls, False,collide_hit_rect)
