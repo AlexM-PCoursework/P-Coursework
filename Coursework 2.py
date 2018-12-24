@@ -283,9 +283,6 @@ class Player(pg.sprite.Sprite):
            self.vel.x = 0
        self.pos += self.vel + (0.5 * self.acc)
 
-#       self.game.weapon.acc.x += self.vel.x * PLAYER_FRICTION
- #      self.game.weapon.vel += self.acc
- #      self.game.weapon.pos += self.vel + (0.5* self.acc)
 
 
 
@@ -466,6 +463,18 @@ class Door(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
+    '''
+    def update(self):
+       # dist = self.rect.center - self.game.player.pos
+      #  if 0 < dist.length() < 30:
+        self.draw_texty("helloooooo",self.game.title_font,200,WHITE,200,200,align ="center")
+
+        self.game.draw_texty(TITLE,self.game.title_font,150,RED,WIDTH/2,HEIGHT*1/4,align="center")
+
+        pg.display.flip()
+
+    '''
 
 class Trapdoor(pg.sprite.Sprite):
     def __init__(self,game,x,y):
@@ -658,6 +667,24 @@ class Game:
 
 
         #enemy hits player
+        keystate = pg.key.get_pressed()
+        for door in self.doors:
+            dist = door.rect.center - self.player.pos
+            if 0 < dist.length() < 50:
+                self.draw_texty("2 (Q)", self.body_font, 12, WHITE, door.rect.x + 60, door.rect.y + 30, align="center")
+                if self.score >= 2 and keystate[ord('q')]:
+                    pg.mixer.Sound(path.join(self.sound_folder, 'door.wav')).play()
+                    self.score -= 2
+                    door.kill()
+
+        for trapdoor in self.trapdoors:
+            dist = trapdoor.rect.center - self.player.pos
+            if 0 < dist.length() < 50:
+                self.draw_texty("2 (Q)", self.body_font, 12, WHITE, trapdoor.rect.x + 20, trapdoor.rect.y -60, align="center")
+                if self.score >= 2 and keystate[ord('q')]:
+                    pg.mixer.Sound(path.join(self.sound_folder, 'door.wav')).play()
+                    self.score -= 2
+                    trapdoor.kill()
 
         hits = pg.sprite.spritecollide(self.player, self.enemy1s, False)
         for hit in hits:
@@ -799,7 +826,7 @@ class Game:
         if align == "center":
             text_rect.center = (x,y)
         self.screen.blit(text_surface, text_rect)
-            
+
              
     def draw(self):
         #game loop - draw
