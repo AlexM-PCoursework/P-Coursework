@@ -130,10 +130,11 @@ class Item(pg.sprite.Sprite):
         self.image = game.item_images[type]
         self.rect = self.image.get_rect()
         self.type = type
-        self.rect.center = pos
+        self.rect.centerx = self.plat.rect.centerx
+
 
     def update(self):
-     self.rect.bottom = self.plat.rect.top - 5
+        self.rect.bottom = self.plat.rect.top - 5
 
 class Bullet(pg.sprite.Sprite):
     def __init__(self,game,pos,dir):
@@ -499,7 +500,7 @@ class Coin(pg.sprite.Sprite):
         self.rect.bottom = self.plat.rect.top - 5
 
     def update(self):
-     self.rect.bottom = self.plat.rect.top - 5
+        self.rect.bottom = self.plat.rect.top - 5
        
 
 class Game:
@@ -530,6 +531,7 @@ class Game:
         self.player_imgr = pg.image.load(path.join(img_folder, PLAYER_IMG)).convert_alpha()
         self.player_imgl = pg.image.load(path.join(img_folder,'playerl.png')).convert_alpha()
         self.wall_img = pg.image.load(path.join(img_folder,WALL_IMG)).convert_alpha()
+
         self.coin_img = pg.image.load(path.join(img_folder,COIN_IMG)).convert_alpha()
         self.background_img = pg.image.load(path.join(img_folder,BACKGROUND_IMG)).convert_alpha()
         self.weapon_sounds ={}
