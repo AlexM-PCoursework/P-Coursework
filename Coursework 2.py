@@ -209,6 +209,16 @@ class Weapon(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
 
+class Togglebar(pg.sprite.Sprite):
+    def __init__(self,game):
+        self._layer = 5
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self,self.groups)
+        self.game = game
+        self.image = pg.Surface((WIDTH,80))
+        self.image.fill(WHITE)
+        self.rect = self.image.get_rect()
+        self.rect.center = (WIDTH/2,HEIGHT - 40)
 
 
 class Player(pg.sprite.Sprite):
@@ -231,8 +241,8 @@ class Player(pg.sprite.Sprite):
         self.weaponr ='pistol'
         self.health = PLAYER_HEALTH
         self.damaged = False
-#        self.barrel = game.item_images[self.weapon]
         self.rot = 0
+        self.inventory = ['pistoll']
 
 
     def hit(self):
@@ -400,10 +410,11 @@ class Enemy_1 (pg.sprite.Sprite):
                     self.vel.x = 0
 
             if self.vel.y < 0:
-                if self.pos.y - 30 > block.rect.bottom:
-                    self.pos.y = block.rect.bottom + 30
-                #
-                self.vel.y = 0
+                if self.pos.y - self.rect.height > block.rect.centery:
+                    self.pos.y = block.rect.bottom + self.rect.height - 1
+
+                    self.vel.y = 0
+
 class Camera:
     def __init__(self,width,height):
         self.camera = pg.Rect(0,0,width,height)
@@ -464,17 +475,8 @@ class Door(pg.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-    '''
-    def update(self):
-       # dist = self.rect.center - self.game.player.pos
-      #  if 0 < dist.length() < 30:
-        self.draw_texty("helloooooo",self.game.title_font,200,WHITE,200,200,align ="center")
 
-        self.game.draw_texty(TITLE,self.game.title_font,150,RED,WIDTH/2,HEIGHT*1/4,align="center")
 
-        pg.display.flip()
-
-    '''
 
 class Trapdoor(pg.sprite.Sprite):
     def __init__(self,game,x,y):
@@ -501,6 +503,8 @@ class Coin(pg.sprite.Sprite):
 
     def update(self):
         self.rect.bottom = self.plat.rect.top - 5
+
+
        
 
 class Game:
@@ -530,7 +534,7 @@ class Game:
         self.enemy1_img = pg.image.load(path.join(img_folder, ENEMY_1_IMG)).convert_alpha()
         self.player_imgr = pg.image.load(path.join(img_folder, PLAYER_IMG)).convert_alpha()
         self.player_imgl = pg.image.load(path.join(img_folder,'playerl.png')).convert_alpha()
-        self.wall_img = pg.image.load(path.join(img_folder,WALL_IMG)).convert_alpha()
+        self.wall_img = pg.transform.scale(pg.image.load(path.join(img_folder,WALL_IMG)).convert_alpha(),(41,41))
 
         self.coin_img = pg.image.load(path.join(img_folder,COIN_IMG)).convert_alpha()
         self.background_img = pg.image.load(path.join(img_folder,BACKGROUND_IMG)).convert_alpha()
@@ -581,20 +585,20 @@ class Game:
 
         PLATFORM_LIST =[
             "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-            "W            W                               W                                                             P",
-            "W   PP       W                               WPPPPPPPPPPPPPPPPPP                                           P",
-            "W      PPPPPPWPP                             W                                                             P",
-            "WPP          D                               W                                                             P",
-            "W    PPP  PPPPPPPPPPPPPPPPP                  W                PPPPPP                      PPPPP            P",
-            "WPP          W                                                                               W             P",
-            "W    P  PP   W              PPPP                                                             W             P",
-            "W P      PPPPW                      PPPP                               PPPPPP                W             P",
-            "W    PP      W                PPPP      PPPP                                PPPPPPPPP        W             P",
-            "WPPP        PW                                   PPPPPPPPPPPP                                W             P",
-            "W       PP   W                         PPPPPPPPP                                             W             P",
-            "WPPPPPPPWWPPTWPPPP    PPPPPPPPPP                                                             W             P",
-            "W            W        W                PPPPPPPP                                              W             P",
-            "W  PPPPPPPPPPP        W        PPPP                    PPPPPPPPPPPPPPPPPPPPPPP               W             P",
+            "W                                            W                                                             P",
+            "W           T                                WPPPPPPPPPPPPPPPPPP                                           P",
+            "W     PPPPPPPPPPPPPP        PPPPPPPPPPPPPPP  W                                                             P",
+            "WP  PPW        WWWW           WWWW           D                                                             P",
+            "W         PPP                    PPP     PPPPW              PPPPPP                      PPPPP              P",
+            "WP  PPPP                                     W                                                W            P",
+            "W      WPPPPPPPP           PPPP        PP    W                                               W             P",
+            "WPP    W     WPPPPPP               PP        W                         PPPPPP                W             P",
+            "W                      PPPPPPPP        PP    W                              PPPPPPPPP        W             P",
+            "W            PPP  PP       W      PPP        W   PPPPPPPPPPPP                                W             P",
+            "W                     PPPPPPPPPP             W                                               W             P",
+            "WPPPPPPPPPPPTPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPTW                                              W              P",
+            "W            W        W                                                                      W             P",
+            "W  PPPPPPPPPPP        W        PPPP      PPPPPP        PPPPPPPPPPPPPPPPPPPPPPP               W             P",
             "W            W        W             PPPPPP                                                     W           P",
             "W       PPPPPW        W   PPPPPPPPPPP                  PPPPPPPPPPPPPPPPPPPPPPP   P             W           P",
             "W            W        W                                                      P   P             W           P",
@@ -661,28 +665,36 @@ class Game:
         self.all_sprites.update()
         self.camera.update(self.player)
 
+
         background = self.background_img
         self.screen.blit(background, [0, 0])
 
+        keystate = pg.key.get_pressed()
+
   #      pg.draw.rect(self.screen, WHITE, self.player.hit_rect, 2)
 
+        #togglebar
+        if keystate[ord('t')]:
+            Togglebar(self)
 
 
         #enemy hits player
-        keystate = pg.key.get_pressed()
+
         for door in self.doors:
             dist = door.rect.center - self.player.pos
-            if 0 < dist.length() < 50:
-                self.draw_texty("2 (Q)", self.body_font, 12, WHITE, door.rect.x + 60, door.rect.y + 30, align="center")
-                if self.score >= 2 and keystate[ord('q')]:
+            if 0 < dist.length() < 100:
+                self.draw_text("2(Q",12,WHITE,door.rect.x,door.rect.y)
+     #           self.draw_texty("2 (Q)", self.body_font, 12, WHITE, door.rect.x + 45 , door.rect.y +20, align="center")
+                if 0 < dist.length() < 10 and self.score >= 2 and keystate[ord('q')]:
                     pg.mixer.Sound(path.join(self.sound_folder, 'door.wav')).play()
                     self.score -= 2
                     door.kill()
 
+
         for trapdoor in self.trapdoors:
             dist = trapdoor.rect.center - self.player.pos
-            if 0 < dist.length() < 50:
-                self.draw_texty("2 (Q)", self.body_font, 12, WHITE, trapdoor.rect.x + 20, trapdoor.rect.y -60, align="center")
+            if 0 < dist.length() < 100:
+                self.draw_texty("2 (Q)", self.body_font, 12, WHITE, trapdoor.rect.x + 20, trapdoor.rect.y + 30, align="center")
                 if self.score >= 2 and keystate[ord('q')]:
                     pg.mixer.Sound(path.join(self.sound_folder, 'door.wav')).play()
                     self.score -= 2
@@ -703,16 +715,23 @@ class Game:
             if hit.type =='health' and self.player.health < PLAYER_HEALTH:
                 hit.kill()
                 self.player.add_health(HEALTH_POWERUP)
+
+
             if hit.type =='uzil':
                 hit.kill()
                 self.player.weaponl = 'uzil'
                 self.player.weaponr ='uzir'
                 self.weapon.image = self.item_images['uzil']
+                if 'uzil' in self.player.inventory == False:
+                    self.player.inventory.append('uzil')
+
             if hit.type =='shotgunl':
                 hit.kill()
                 self.player.weaponl = 'shotgunl'
                 self.player.weaponr = 'shotgunr'
                 self.weapon.image = self.item_images['shotgunl']
+                if 'shotgunl' in self.player.inventory == False:
+                    self.player.inventory.append('shotgunl')
 
         hits = pg.sprite.groupcollide(self.enemy1s,self.bullets,False,True)
         for hit in hits:
@@ -828,6 +847,8 @@ class Game:
         if align == "center":
             text_rect.center = (x,y)
         self.screen.blit(text_surface, text_rect)
+
+
 
              
     def draw(self):
