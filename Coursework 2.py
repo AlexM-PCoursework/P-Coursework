@@ -212,11 +212,10 @@ class Weapon(pg.sprite.Sprite):
 class Togglebar(pg.sprite.Sprite):
     def __init__(self,game):
         self._layer = 5
-        self.groups = game.all_sprites
+        self.groups = game.all_sprites, game.togglebar
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
-        self.image = pg.Surface((WIDTH,80))
-        self.image.fill(WHITE)
+        self.image = game.togglebar_img
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH/2,HEIGHT - 40)
 
@@ -529,6 +528,7 @@ class Game:
         self.bullet_images['large'] = pg.image.load(path.join(img_folder,'bullet.png')).convert_alpha()
         self.bullet_images['small']= pg.transform.scale(self.bullet_images['large'],(4,8))
         self.door_image = pg.transform.scale(pg.image.load(path.join(img_folder,'door.png')),(25,40))
+        self.togglebar_img = pg.transform.scale(pg.image.load(path.join(img_folder, 'togglebar.jpg')), (WIDTH, 100))
         self.trapdoor_image = pg.image.load(path.join(img_folder,'trapdoor.png')).convert_alpha()
         self.body_font = path.join(img_folder,'arial.ttf')
         self.enemy1_img = pg.image.load(path.join(img_folder, ENEMY_1_IMG)).convert_alpha()
@@ -564,6 +564,7 @@ class Game:
         self.trapdoors = pg.sprite.Group()
         self.doors = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
+        self.togglebar = pg.sprite.Group()
         self.items = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.coins = pg.sprite.Group()
@@ -575,6 +576,7 @@ class Game:
         self.all_sprites.add(self.weapon)
         self.round = 1
         self.paused = False
+        self.toggle = False
 
 
         Enemy_1(self,100,100)
@@ -655,6 +657,9 @@ class Game:
          self.events()
          if not self.paused:
             self.update()
+         if not self.toggle:
+            self.update()
+
          self.draw()
         pg.mixer.music.fadeout(100)
         
@@ -673,9 +678,8 @@ class Game:
 
   #      pg.draw.rect(self.screen, WHITE, self.player.hit_rect, 2)
 
-        #togglebar
-        if keystate[ord('t')]:
-            Togglebar(self)
+
+
 
 
         #enemy hits player
@@ -818,6 +822,7 @@ class Game:
                     self.player.pos.x = block.rect.right + self.player.hit_rect.width/2
                     self.player.vel.x = 0
 
+        #togglebar
 
 
         # check if player hits coins
@@ -839,6 +844,8 @@ class Game:
                  self.player.jump()
              if event.key ==pg.K_p:
                  self.paused = not self.paused
+             if event.key ==pg.K_t:
+                 self.toggle = not self.toggle
 
     def draw_texty(self,text,font_name,size,colour,x,y,align ="center"):
         font = pg.font.Font(font_name,size)
@@ -867,6 +874,12 @@ class Game:
          draw_player_health(self.screen, 430,10,self.player.health/ PLAYER_HEALTH)
          if self.paused:
              self.draw_texty("Paused",self.title_font,120,RED,WIDTH/2,HEIGHT/2,align="center")
+         if self.toggle:
+             Togglebar(self)
+         if not self.toggle:
+             for sprite in self.all_sprites:
+                 if isinstance(sprite,Togglebar):
+                    sprite.kill()
 
          #Flip display after drawing
          pg.display.flip()
