@@ -458,8 +458,7 @@ class Door(pg.sprite.Sprite):
         self.groups = game.all_sprites, game.doors
         pg.sprite.Sprite. __init__(self,self.groups)
         self.game = game
-        self.image = pg.Surface((10,40))
-        self.image.fill(BROWN)
+        self.image = self.game.door_image
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -482,8 +481,7 @@ class Trapdoor(pg.sprite.Sprite):
         self.groups = game.all_sprites, game.trapdoors
         pg.sprite.Sprite. __init__(self,self.groups)
         self.game = game
-        self.image = pg.Surface((40,10))
-        self.image.fill(BROWN)
+        self.image = self.game.trapdoor_image
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -525,6 +523,8 @@ class Game:
         self.bullet_images = {}
         self.bullet_images['large'] = pg.image.load(path.join(img_folder,'bullet.png')).convert_alpha()
         self.bullet_images['small']= pg.transform.scale(self.bullet_images['large'],(4,8))
+        self.door_image = pg.transform.scale(pg.image.load(path.join(img_folder,'door.png')),(25,40))
+        self.trapdoor_image = pg.image.load(path.join(img_folder,'trapdoor.png')).convert_alpha()
         self.body_font = path.join(img_folder,'arial.ttf')
         self.enemy1_img = pg.image.load(path.join(img_folder, ENEMY_1_IMG)).convert_alpha()
         self.player_imgr = pg.image.load(path.join(img_folder, PLAYER_IMG)).convert_alpha()
