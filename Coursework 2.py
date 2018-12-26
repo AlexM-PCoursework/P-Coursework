@@ -588,6 +588,8 @@ class Game:
         self.round = 1
         self.paused = False
         self.toggle = False
+        self.mover = False
+
 #        self.tbar = Togglebar(self)
 #        self.all_sprites.add(self.tbar)
 
@@ -853,6 +855,8 @@ class Game:
                  self.paused = not self.paused
              if event.key ==pg.K_t:
                  self.toggle = not self.toggle
+             if event.key ==pg.K_e:
+                 self.mover = True
 
     def draw_texty(self,text,font_name,size,colour,x,y,align ="center"):
         font = pg.font.Font(font_name,size)
@@ -863,6 +867,7 @@ class Game:
         self.screen.blit(text_surface, text_rect)
 
     def draw_togglebar(self):
+
         self.image = self.togglebar_img
         toggle_height = 200
         self.screen.blit(self.image,(0,HEIGHT-toggle_height))
@@ -881,11 +886,35 @@ class Game:
             self.screen.blit(border, (count - border_spacing, HEIGHT - toggle_height + 60))
             count += 100
 
-        keystate = pg.key.get_pressed()
-        while not keystate[ord('t')]:
-            pg.draw.rect(self.screen, GOLD, pg.Rect(border_count - border_spacing,HEIGHT - toggle_height + 60, 60 + 2*border_spacing,toggle_height - 120), 3)
-            if keystate[ord('e')] and len(self.player.inventory)>1:
+
+
+        pg.draw.rect(self.screen, GOLD, pg.Rect(border_count - border_spacing,HEIGHT - toggle_height + 60, 60 + 2*border_spacing,toggle_height - 120), 3)
+        pg.display.flip()
+        self.image = self.togglebar_img
+        if (self.mover == True) and len(self.player.inventory)>1:
                 border_count += count
+                self.screen.blit(self.image, (0, HEIGHT - toggle_height))
+                self.draw_texty("INVENTORY", self.body_font, 20, GOLD, WIDTH / 2, HEIGHT - toggle_height)
+                '''
+                for i in range(len(self.player.inventory)):
+                    self.image = self.togglebar_images[self.player.inventory[i]]
+                    self.rect = self.image.get_rect()
+                    self.screen.blit(self.image, (count, HEIGHT - toggle_height / 2 - self.rect.height / 2))
+                    self.draw_texty(self.player.inventory[i], self.body_font, 20, BLACK,
+                                    count - border_spacing + self.rect.width / 2 + 5, HEIGHT - toggle_height + 40)
+
+                    #       pg.draw.rect(self.screen, GOLD, pg.Rect(count - border_spacing,HEIGHT - toggle_height + 40, 60 + 2*border_spacing,toggle_height - 80), 3)
+                    border = pg.transform.scale(self.border_img, (60 + 2 * border_spacing, toggle_height - 120))
+                    self.screen.blit(border, (count - border_spacing, HEIGHT - toggle_height + 60))
+                    count += 100
+                '''
+                pg.draw.rect(self.screen, GOLD, pg.Rect(border_count - border_spacing, HEIGHT - toggle_height + 60, 60 + 2 * border_spacing, toggle_height - 120), 3)
+                pg.display.flip()
+
+
+
+
+         #       self.mover == False
 
 
 
