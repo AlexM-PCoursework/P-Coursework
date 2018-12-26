@@ -736,7 +736,7 @@ class Game:
                 self.player.weaponl = 'uzil'
                 self.player.weaponr ='uzir'
                 self.weapon.image = self.item_images['uzil']
-                if 'uzil' not in self.player.inventory:
+                if 'UZI' not in self.player.inventory:
                     self.player.inventory.append('UZI')
 
             if hit.type =='shotgunl':
@@ -744,7 +744,7 @@ class Game:
                 self.player.weaponl = 'shotgunl'
                 self.player.weaponr = 'shotgunr'
                 self.weapon.image = self.item_images['shotgunl']
-                if 'shotgunl' not in self.player.inventory:
+                if 'SHOTGUN' not in self.player.inventory:
                     self.player.inventory.append('SHOTGUN')
 
         hits = pg.sprite.groupcollide(self.enemy1s,self.bullets,False,True)
@@ -868,17 +868,22 @@ class Game:
         self.screen.blit(self.image,(0,HEIGHT-toggle_height))
         self.draw_texty("INVENTORY",self.body_font,20,GOLD,WIDTH/2,HEIGHT-toggle_height)
         count = 100
+        border_count = 100
         for i in range(len(self.player.inventory)):
             self.image = self.togglebar_images[self.player.inventory[i]]
             self.rect = self.image.get_rect()
             self.screen.blit(self.image,(count, HEIGHT - toggle_height/2 - self.rect.height/2))
             border_spacing = 10
-            self.draw_texty(self.player.inventory[i],self.body_font,20,BLACK,count-border_spacing +self.rect.width/2,HEIGHT - toggle_height + 40)
+            self.draw_texty(self.player.inventory[i],self.body_font,20,BLACK,count-border_spacing +self.rect.width/2 + 5,HEIGHT - toggle_height + 40)
 
      #       pg.draw.rect(self.screen, GOLD, pg.Rect(count - border_spacing,HEIGHT - toggle_height + 40, 60 + 2*border_spacing,toggle_height - 80), 3)
             border = pg.transform.scale(self.border_img, (60 + 2 * border_spacing, toggle_height - 120))
             self.screen.blit(border, (count - border_spacing, HEIGHT - toggle_height + 60))
             count += 100
+
+        pg.draw.rect(self.screen, GOLD, pg.Rect(border_count - border_spacing,HEIGHT - toggle_height + 60, 60 + 2*border_spacing,toggle_height - 120), 3)
+
+
 
 
 
