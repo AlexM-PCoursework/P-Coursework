@@ -889,13 +889,20 @@ class Game:
 
 
         pg.draw.rect(self.screen, GOLD, pg.Rect(border_count - border_spacing,HEIGHT - toggle_height + 60, 60 + 2*border_spacing,toggle_height - 120), 3)
-        pg.display.flip()
-        self.image = self.togglebar_img
-        if (self.mover == True) and len(self.player.inventory)>1:
+
+
+
+
+        def redrawr(self,border_count2):
+
+            self.image = self.togglebar_img
+            count = 100
+            border_count = border_count2
+            if (self.mover == True) and len(self.player.inventory) > 1:
                 border_count += count
                 self.screen.blit(self.image, (0, HEIGHT - toggle_height))
                 self.draw_texty("INVENTORY", self.body_font, 20, GOLD, WIDTH / 2, HEIGHT - toggle_height)
-                '''
+
                 for i in range(len(self.player.inventory)):
                     self.image = self.togglebar_images[self.player.inventory[i]]
                     self.rect = self.image.get_rect()
@@ -907,21 +914,15 @@ class Game:
                     border = pg.transform.scale(self.border_img, (60 + 2 * border_spacing, toggle_height - 120))
                     self.screen.blit(border, (count - border_spacing, HEIGHT - toggle_height + 60))
                     count += 100
-                '''
+
                 pg.draw.rect(self.screen, GOLD, pg.Rect(border_count - border_spacing, HEIGHT - toggle_height + 60, 60 + 2 * border_spacing, toggle_height - 120), 3)
                 pg.display.flip()
+                self.mover = False
 
 
 
 
-         #       self.mover == False
-
-
-
-
-
-
-
+        redrawr(self, border_count)
 
 
              
