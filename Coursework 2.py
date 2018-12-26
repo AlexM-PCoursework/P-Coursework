@@ -215,7 +215,8 @@ class Togglebar(pg.sprite.Sprite):
         self.groups = game.all_sprites, game.togglebar
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
-        self.image = game.togglebar_img
+        self.image = pg.Surface((WIDTH,80)).convert_alpha()
+        self.image.fill(BROWN)
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH/2,HEIGHT - 40)
 
@@ -527,8 +528,8 @@ class Game:
         self.bullet_images = {}
         self.bullet_images['large'] = pg.image.load(path.join(img_folder,'bullet.png')).convert_alpha()
         self.bullet_images['small']= pg.transform.scale(self.bullet_images['large'],(4,8))
-        self.door_image = pg.transform.scale(pg.image.load(path.join(img_folder,'door.png')),(25,40))
-        self.togglebar_img = pg.transform.scale(pg.image.load(path.join(img_folder, 'togglebar.jpg')), (WIDTH, 100))
+        self.door_image = pg.transform.scale(pg.image.load(path.join(img_folder,'door.png')).convert_alpha(),(25,40))
+  #      self.togglebar_img = pg.transform.scale(pg.image.load(path.join(img_folder, 'togglebar.jpg')).convert_alpha(), (WIDTH, 100))
         self.trapdoor_image = pg.image.load(path.join(img_folder,'trapdoor.png')).convert_alpha()
         self.body_font = path.join(img_folder,'arial.ttf')
         self.enemy1_img = pg.image.load(path.join(img_folder, ENEMY_1_IMG)).convert_alpha()
@@ -577,6 +578,8 @@ class Game:
         self.round = 1
         self.paused = False
         self.toggle = False
+        self.tbar = Togglebar(self)
+        self.all_sprites.add(self.tbar)
 
 
         Enemy_1(self,100,100)
@@ -588,7 +591,7 @@ class Game:
         PLATFORM_LIST =[
             "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
             "W                                            W                                                             P",
-            "W           T                                WPPPPPPPPPPPPPPPPPP                                           P",
+            "W                                            WPPPPPPPPPPPPPPPPPP                                           P",
             "W     PPPPPPPPPPPPPP        PPPPPPPPPPPPPPP  W                                                             P",
             "WP  PPW        WWWW           WWWW           D                                                             P",
             "W         PPP                    PPP     PPPPW              PPPPPP                      PPPPP              P",
@@ -657,9 +660,6 @@ class Game:
          self.events()
          if not self.paused:
             self.update()
-         if not self.toggle:
-            self.update()
-
          self.draw()
         pg.mixer.music.fadeout(100)
         
@@ -689,7 +689,7 @@ class Game:
             if 0 < dist.length() < 100:
                 self.draw_text("2(Q",12,WHITE,door.rect.x,door.rect.y)
      #           self.draw_texty("2 (Q)", self.body_font, 12, WHITE, door.rect.x + 45 , door.rect.y +20, align="center")
-                if 0 < dist.length() < 10 and self.score >= 2 and keystate[ord('q')]:
+                if 0 < dist.length() < 40 and self.score >= 2 and keystate[ord('q')]:
                     pg.mixer.Sound(path.join(self.sound_folder, 'door.wav')).play()
                     self.score -= 2
                     door.kill()
@@ -874,12 +874,14 @@ class Game:
          draw_player_health(self.screen, 430,10,self.player.health/ PLAYER_HEALTH)
          if self.paused:
              self.draw_texty("Paused",self.title_font,120,RED,WIDTH/2,HEIGHT/2,align="center")
-         if self.toggle:
-             Togglebar(self)
-         if not self.toggle:
-             for sprite in self.all_sprites:
-                 if isinstance(sprite,Togglebar):
-                    sprite.kill()
+
+
+
+ #        if not self.toggle:
+  #          for togglebar in self.togglebar:
+  #              togglebar.kill()
+
+
 
          #Flip display after drawing
          pg.display.flip()
