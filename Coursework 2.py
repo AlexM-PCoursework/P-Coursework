@@ -859,6 +859,12 @@ class Game:
     def draw_togglebar(self):
         self.image = self.togglebar_img
         self.screen.blit(self.image,(0,HEIGHT-100))
+        count = 100
+        for i in range(len(self.player.inventory)):
+            self.image = self.item_images [self.player.inventory[i]]
+            self.screen.blit(self.image,(count,HEIGHT - 50))
+            count += 100
+
 
 
 
