@@ -869,11 +869,11 @@ class Game:
         self.draw_texty("INVENTORY",self.body_font,20,GOLD,WIDTH/2,HEIGHT-toggle_height)
         count = 100
         border_count = 100
+        border_spacing = 10
         for i in range(len(self.player.inventory)):
             self.image = self.togglebar_images[self.player.inventory[i]]
             self.rect = self.image.get_rect()
             self.screen.blit(self.image,(count, HEIGHT - toggle_height/2 - self.rect.height/2))
-            border_spacing = 10
             self.draw_texty(self.player.inventory[i],self.body_font,20,BLACK,count-border_spacing +self.rect.width/2 + 5,HEIGHT - toggle_height + 40)
 
      #       pg.draw.rect(self.screen, GOLD, pg.Rect(count - border_spacing,HEIGHT - toggle_height + 40, 60 + 2*border_spacing,toggle_height - 80), 3)
@@ -881,7 +881,13 @@ class Game:
             self.screen.blit(border, (count - border_spacing, HEIGHT - toggle_height + 60))
             count += 100
 
-        pg.draw.rect(self.screen, GOLD, pg.Rect(border_count - border_spacing,HEIGHT - toggle_height + 60, 60 + 2*border_spacing,toggle_height - 120), 3)
+        keystate = pg.key.get_pressed()
+        while not keystate[ord('t')]:
+            pg.draw.rect(self.screen, GOLD, pg.Rect(border_count - border_spacing,HEIGHT - toggle_height + 60, 60 + 2*border_spacing,toggle_height - 120), 3)
+            if keystate[ord('e')] and len(self.player.inventory)>1:
+                border_count += count
+
+
 
 
 
