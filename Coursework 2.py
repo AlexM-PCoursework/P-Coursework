@@ -77,9 +77,9 @@ ITEM_IMAGES = {'health':'health.png',
                'shotgunr':'shotgunr.png',
                'shotgunl':'shotgunl.png'}
 
-TOGGLEBAR_IMAGES = {'pistoll':'pistolt.png',
-                    'uzil':'uzilt.png',
-                    'shotgunl':'shotgunlt.png'}
+TOGGLEBAR_IMAGES = {'PISTOL':'pistolt.png',
+                    'UZI':'uzilt.png',
+                    'SHOTGUN':'shotgunlt.png'}
 
 HEALTH_POWERUP = 50
 
@@ -248,7 +248,7 @@ class Player(pg.sprite.Sprite):
         self.health = PLAYER_HEALTH
         self.damaged = False
         self.rot = 0
-        self.inventory = ['pistoll']
+        self.inventory = ['PISTOL']
 
 
     def hit(self):
@@ -535,13 +535,14 @@ class Game:
         self.bullet_images['large'] = pg.image.load(path.join(img_folder,'bullet.png')).convert_alpha()
         self.bullet_images['small']= pg.transform.scale(self.bullet_images['large'],(4,8))
         self.door_image = pg.transform.scale(pg.image.load(path.join(img_folder,'door.png')).convert_alpha(),(25,40))
-        self.togglebar_img = pg.transform.scale(pg.image.load(path.join(img_folder, 'togglebar.jpg')).convert_alpha(), (WIDTH, 100))
+        self.togglebar_img = pg.transform.scale(pg.image.load(path.join(img_folder, 'paper.png')).convert_alpha(), (WIDTH, 200))
         self.trapdoor_image = pg.image.load(path.join(img_folder,'trapdoor.png')).convert_alpha()
         self.body_font = path.join(img_folder,'arial.ttf')
         self.enemy1_img = pg.image.load(path.join(img_folder, ENEMY_1_IMG)).convert_alpha()
         self.player_imgr = pg.image.load(path.join(img_folder, PLAYER_IMG)).convert_alpha()
         self.player_imgl = pg.image.load(path.join(img_folder,'playerl.png')).convert_alpha()
         self.wall_img = pg.transform.scale(pg.image.load(path.join(img_folder,WALL_IMG)).convert_alpha(),(41,41))
+        self.border_img = pg.image.load(path.join(img_folder,'border.png')).convert_alpha()
 
         self.coin_img = pg.image.load(path.join(img_folder,COIN_IMG)).convert_alpha()
         self.background_img = pg.image.load(path.join(img_folder,BACKGROUND_IMG)).convert_alpha()
@@ -736,7 +737,7 @@ class Game:
                 self.player.weaponr ='uzir'
                 self.weapon.image = self.item_images['uzil']
                 if 'uzil' not in self.player.inventory:
-                    self.player.inventory.append('uzil')
+                    self.player.inventory.append('UZI')
 
             if hit.type =='shotgunl':
                 hit.kill()
@@ -744,7 +745,7 @@ class Game:
                 self.player.weaponr = 'shotgunr'
                 self.weapon.image = self.item_images['shotgunl']
                 if 'shotgunl' not in self.player.inventory:
-                    self.player.inventory.append('shotgunl')
+                    self.player.inventory.append('SHOTGUN')
 
         hits = pg.sprite.groupcollide(self.enemy1s,self.bullets,False,True)
         for hit in hits:
@@ -831,11 +832,6 @@ class Game:
                     self.player.pos.x = block.rect.right + self.player.hit_rect.width/2
                     self.player.vel.x = 0
 
-        #togglebar
-
- #       if 'shotgunl' in self.player.inventory:
- #           self.running = False
-  #          self.playing = False
         # check if player hits coins
 
         coin_contact = pg.sprite.spritecollide(self.player,self.coins,True)
@@ -868,14 +864,22 @@ class Game:
 
     def draw_togglebar(self):
         self.image = self.togglebar_img
-        toggle_height = 100
+        toggle_height = 200
         self.screen.blit(self.image,(0,HEIGHT-toggle_height))
+        self.draw_texty("INVENTORY",self.body_font,20,GOLD,WIDTH/2,HEIGHT-toggle_height)
         count = 100
         for i in range(len(self.player.inventory)):
             self.image = self.togglebar_images[self.player.inventory[i]]
             self.rect = self.image.get_rect()
             self.screen.blit(self.image,(count, HEIGHT - toggle_height/2 - self.rect.height/2))
+            border_spacing = 10
+            self.draw_texty(self.player.inventory[i],self.body_font,20,BLACK,count-border_spacing +self.rect.width/2,HEIGHT - toggle_height + 40)
+
+     #       pg.draw.rect(self.screen, GOLD, pg.Rect(count - border_spacing,HEIGHT - toggle_height + 40, 60 + 2*border_spacing,toggle_height - 80), 3)
+            border = pg.transform.scale(self.border_img, (60 + 2 * border_spacing, toggle_height - 120))
+            self.screen.blit(border, (count - border_spacing, HEIGHT - toggle_height + 60))
             count += 100
+
 
 
 
@@ -902,14 +906,6 @@ class Game:
              self.draw_togglebar()
 
 
-         '''   
-         if self.toggle == False:
-            for togglebar in self.togglebar:
-                togglebar.kill()
-         else:
-             self.tbar = Togglebar(self)
-             self.all_sprites.add(self.tbar)
-        '''
 
 
 
