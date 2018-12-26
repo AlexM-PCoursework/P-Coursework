@@ -209,6 +209,7 @@ class Weapon(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
 
+'''
 class Togglebar(pg.sprite.Sprite):
     def __init__(self,game):
         self._layer = 5
@@ -219,7 +220,7 @@ class Togglebar(pg.sprite.Sprite):
         self.image.fill(BROWN)
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH/2,HEIGHT - 40)
-
+'''
 
 class Player(pg.sprite.Sprite):
     def __init__(self,game):
@@ -529,7 +530,7 @@ class Game:
         self.bullet_images['large'] = pg.image.load(path.join(img_folder,'bullet.png')).convert_alpha()
         self.bullet_images['small']= pg.transform.scale(self.bullet_images['large'],(4,8))
         self.door_image = pg.transform.scale(pg.image.load(path.join(img_folder,'door.png')).convert_alpha(),(25,40))
-  #      self.togglebar_img = pg.transform.scale(pg.image.load(path.join(img_folder, 'togglebar.jpg')).convert_alpha(), (WIDTH, 100))
+        self.togglebar_img = pg.transform.scale(pg.image.load(path.join(img_folder, 'togglebar.jpg')).convert_alpha(), (WIDTH, 100))
         self.trapdoor_image = pg.image.load(path.join(img_folder,'trapdoor.png')).convert_alpha()
         self.body_font = path.join(img_folder,'arial.ttf')
         self.enemy1_img = pg.image.load(path.join(img_folder, ENEMY_1_IMG)).convert_alpha()
@@ -578,8 +579,8 @@ class Game:
         self.round = 1
         self.paused = False
         self.toggle = False
-        self.tbar = Togglebar(self)
-        self.all_sprites.add(self.tbar)
+#        self.tbar = Togglebar(self)
+#        self.all_sprites.add(self.tbar)
 
 
         Enemy_1(self,100,100)
@@ -855,6 +856,10 @@ class Game:
             text_rect.center = (x,y)
         self.screen.blit(text_surface, text_rect)
 
+    def draw_togglebar(self):
+        self.image = self.togglebar_img
+        self.screen.blit(self.image,(0,HEIGHT-100))
+
 
 
              
@@ -875,11 +880,18 @@ class Game:
          if self.paused:
              self.draw_texty("Paused",self.title_font,120,RED,WIDTH/2,HEIGHT/2,align="center")
 
+         if self.toggle:
+             self.draw_togglebar()
 
 
- #        if not self.toggle:
-  #          for togglebar in self.togglebar:
-  #              togglebar.kill()
+         '''   
+         if self.toggle == False:
+            for togglebar in self.togglebar:
+                togglebar.kill()
+         else:
+             self.tbar = Togglebar(self)
+             self.all_sprites.add(self.tbar)
+        '''
 
 
 
