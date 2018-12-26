@@ -76,6 +76,11 @@ ITEM_IMAGES = {'health':'health.png',
                'pistoll':'pistoll.png',
                'shotgunr':'shotgunr.png',
                'shotgunl':'shotgunl.png'}
+
+TOGGLEBAR_IMAGES = {'pistoll':'pistolt.png',
+                    'uzil':'uzilt.png',
+                    'shotgunl':'shotgunlt.png'}
+
 HEALTH_POWERUP = 50
 
 BULLET_OFFSET = vector(-30,-40)
@@ -279,7 +284,7 @@ class Player(pg.sprite.Sprite):
             self.acc.x = -PLAYER_ACC
             self.aim_dir = "LEFT"
             self.image = self.game.player_imgl
-            self.game.weapon.image = self.game.item_images [self.weaponl]
+            self.game.weapon.image = self.game.item_images[self.weaponl]
        if keystate[pg.K_RIGHT]:
             self.acc.x= PLAYER_ACC
             self.aim_dir = "RIGHT"
@@ -556,6 +561,9 @@ class Game:
         self.item_images ={}
         for item in ITEM_IMAGES:
             self.item_images[item]=pg.image.load(path.join(img_folder,ITEM_IMAGES[item])).convert_alpha()
+        self.togglebar_images = {}
+        for image in TOGGLEBAR_IMAGES:
+            self.togglebar_images[image] = pg.image.load(path.join(img_folder,TOGGLEBAR_IMAGES[image])).convert_alpha()
 
 
     def new(self):
@@ -864,8 +872,7 @@ class Game:
         self.screen.blit(self.image,(0,HEIGHT-toggle_height))
         count = 100
         for i in range(len(self.player.inventory)):
-            self.image = self.item_images [self.player.inventory[i]]
-            self.image = pg.transform.scale2x(self.image)
+            self.image = self.togglebar_images[self.player.inventory[i]]
             self.rect = self.image.get_rect()
             self.screen.blit(self.image,(count, HEIGHT - toggle_height/2 - self.rect.height/2))
             count += 100
