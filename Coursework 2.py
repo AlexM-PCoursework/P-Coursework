@@ -727,7 +727,7 @@ class Game:
                 self.player.weaponl = 'uzil'
                 self.player.weaponr ='uzir'
                 self.weapon.image = self.item_images['uzil']
-                if 'uzil' in self.player.inventory == False:
+                if 'uzil' not in self.player.inventory:
                     self.player.inventory.append('uzil')
 
             if hit.type =='shotgunl':
@@ -860,15 +860,16 @@ class Game:
 
     def draw_togglebar(self):
         self.image = self.togglebar_img
-        self.screen.blit(self.image,(0,HEIGHT-100))
+        toggle_height = 100
+        self.screen.blit(self.image,(0,HEIGHT-toggle_height))
         count = 100
         for i in range(len(self.player.inventory)):
             self.image = self.item_images [self.player.inventory[i]]
-            self.screen.blit(self.image,(count,HEIGHT - 50))
+            self.image = pg.transform.scale(self.image,(50,50))
+            self.screen.blit(self.image,(count,HEIGHT - toggle_height/2))
             count += 100
 
-
-
+  #  pg.transform.scale(pg.image.load(path.join(img_folder, WALL_IMG)).convert_alpha(), (41, 41))
 
 
              
