@@ -735,7 +735,7 @@ class Game:
                 self.player.weaponl = 'shotgunl'
                 self.player.weaponr = 'shotgunr'
                 self.weapon.image = self.item_images['shotgunl']
-                if 'shotgunl' in self.player.inventory == False:
+                if 'shotgunl' not in self.player.inventory:
                     self.player.inventory.append('shotgunl')
 
         hits = pg.sprite.groupcollide(self.enemy1s,self.bullets,False,True)
@@ -825,7 +825,9 @@ class Game:
 
         #togglebar
 
-
+ #       if 'shotgunl' in self.player.inventory:
+ #           self.running = False
+  #          self.playing = False
         # check if player hits coins
 
         coin_contact = pg.sprite.spritecollide(self.player,self.coins,True)
@@ -864,6 +866,7 @@ class Game:
             self.image = self.item_images [self.player.inventory[i]]
             self.screen.blit(self.image,(count,HEIGHT - 50))
             count += 100
+
 
 
 
