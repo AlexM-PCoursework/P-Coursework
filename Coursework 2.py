@@ -865,7 +865,7 @@ class Game:
         count = 100
         for i in range(len(self.player.inventory)):
             self.image = self.item_images [self.player.inventory[i]]
-            self.image = pg.transform.scale(self.image,(50,50))
+            self.image = pg.transform.scale2x(self.image)
             self.rect = self.image.get_rect()
             self.screen.blit(self.image,(count, HEIGHT - toggle_height/2 - self.rect.height/2))
             count += 100
