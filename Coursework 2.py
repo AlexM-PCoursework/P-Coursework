@@ -241,18 +241,6 @@ class Weapon(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
 
-'''
-class Togglebar(pg.sprite.Sprite):
-    def __init__(self,game):
-        self._layer = 5
-        self.groups = game.all_sprites, game.togglebar
-        pg.sprite.Sprite.__init__(self,self.groups)
-        self.game = game
-        self.image = pg.Surface((WIDTH,80)).convert_alpha()
-        self.image.fill(BROWN)
-        self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH/2,HEIGHT - 40)
-'''
 
 class Player(pg.sprite.Sprite):
     def __init__(self,game):
@@ -888,6 +876,29 @@ class Game:
         for coin in coin_contact:
             self.score += 1
 
+        border_spacing = 10
+        toggle_height = 200
+     #   keystate = pg.key.get_pressed
+
+    def right(self):
+        border_spacing = 10
+        toggle_height = 200
+        if len(self.player.inventory) > self.current + 1:
+            self.border_count += 100
+            pg.draw.rect(self.screen, GOLD, pg.Rect(self.border_count - border_spacing, HEIGHT - toggle_height + 60,
+                                                    60 + 2 * border_spacing, toggle_height - 120), 3)
+            self.current += 1
+
+    def left(self):
+        border_spacing = 10
+        toggle_height = 200
+        if self.current > 0:
+            self.border_count -= 100
+            pg.draw.rect(self.screen, GOLD, pg.Rect(self.border_count - border_spacing, HEIGHT - toggle_height + 60,
+                                                    60 + 2 * border_spacing, toggle_height - 120), 3)
+            self.current -= 1
+
+
         '''
         counter = 0
         while self.toggle:
@@ -951,6 +962,11 @@ class Game:
     #             self.mover = True
         #         self.border_count += 100
                  self.draw_togglebar()
+                 self.right()
+
+             if event.key ==pg.K_q:
+                 self.draw_togglebar()
+                 self.left()
      #    if event.type == pg.KEYUP:
           #   if event.key ==pg.K_e:
            #      self.mover = False
@@ -1018,13 +1034,6 @@ class Game:
                     self.screen.blit(border, (count - border_spacing, HEIGHT - toggle_height + 60))
                     count += 100
 
-        keystate = pg.key.get_pressed()
-        if keystate[ord('e')]:
-            if len(self.player.inventory) > self.current+1:
-                    self.border_count += 100
-                    pg.draw.rect(self.screen, GOLD, pg.Rect(self.border_count - border_spacing, HEIGHT - toggle_height + 60, 60 + 2 * border_spacing, toggle_height - 120), 3)
-                    self.current += 1
-                    pg.display.flip()
 
 
         
