@@ -201,6 +201,31 @@ class Weapon(pg.sprite.Sprite):
         if self.rot <= 315 and self.rot > 180:
             self.rot = 315
 
+        if self.game.player.inventory[self.game.current] == 'UZI':
+            self.game.player.weaponl = 'uzil'
+            self.game.player.weaponr = 'uzir'
+            if self.game.player.aim_dir == 'LEFT':
+                self.image = self.game.item_images['uzil']
+            else:
+                self.image = self.game.item_images['uzir']
+
+        if self.game.player.inventory[self.game.current] == 'SHOTGUN':
+            self.game.player.weaponl = 'shotgunl'
+            self.game.player.weaponr = 'shotgunr'
+            if self.game.player.aim_dir == 'LEFT':
+                self.image = self.game.item_images['shotgunl']
+            else:
+                self.image = self.game.item_images['shotgunr']
+
+        if self.game.player.inventory[self.game.current] == 'PISTOL':
+            self.game.player.weaponl = 'pistoll'
+            self.game.player.weaponr = 'pistol'
+            if self.game.player.aim_dir == 'LEFT':
+                self.image = self.game.item_images['pistoll']
+            else:
+                self.image = self.game.item_images['pistol']
+
+
         if self.game.player.aim_dir == "LEFT":
             self.pos = self.game.player.pos + (-18, -23)
             self.image = pg.transform.rotate(self.game.item_images[self.game.player.weaponl], self.rot)
@@ -209,6 +234,8 @@ class Weapon(pg.sprite.Sprite):
         else:
             self.pos = self.game.player.pos + (18, -23)
             self.image = pg.transform.rotate(self.game.item_images[self.game.player.weaponr], self.rot)
+
+
 
 
         self.rect = self.image.get_rect()
@@ -284,12 +311,12 @@ class Player(pg.sprite.Sprite):
             self.acc.x = -PLAYER_ACC
             self.aim_dir = "LEFT"
             self.image = self.game.player_imgl
-            self.game.weapon.image = self.game.item_images[self.weaponl]
+        #    self.game.weapon.image = self.game.item_images[self.weaponl]
        if keystate[pg.K_RIGHT]:
             self.acc.x= PLAYER_ACC
             self.aim_dir = "RIGHT"
             self.image = self.game.player_imgr
-            self.game.weapon.image = self.game.item_images[self.weaponr]
+        #    self.game.weapon.image = self.game.item_images[self.weaponr]
 
        if keystate[pg.K_SPACE]:
            self.shoot()
@@ -510,7 +537,23 @@ class Coin(pg.sprite.Sprite):
     def update(self):
         self.rect.bottom = self.plat.rect.top - 5
 
+'''
+class ToggleRect(pg.sprite.Sprite):
+    def __init__(self,game):
+        self. _layer = 10
+        self.groups = game.all_sprites, game.togglerect
+        pg.sprite.Sprite. __init__(self,self.groups)
+        self.game = game
+        toggle_height = 200
+        border_spacing = 10
+      #  self.image = pg.draw.rect(self.game.screen, GOLD, pg.Rect(0 - border_spacing, HEIGHT - toggle_height + 60, 60 + 2 * border_spacing, toggle_height - 120), 3)
+        self.image = Surface((10,10))
+        self.image.fill(GOLD)
+        self.rect = self.image.get_rect()
+        self.game.togglebar_img.blit(self.image,[200,HEIGHT-50])
+        #self.rect.center = (100-border_spacing + 30,HEIGHT - toggle_height )
 
+'''
        
 
 class Game:
@@ -576,6 +619,7 @@ class Game:
         self.doors = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.togglebar = pg.sprite.Group()
+ #       self.togglerect = pg.sprite.Group()
         self.items = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.coins = pg.sprite.Group()
@@ -588,10 +632,10 @@ class Game:
         self.round = 1
         self.paused = False
         self.toggle = False
-        self.mover = False
+        self.mover = True
+        self.border_count = 0
+        self.current = 0
 
-#        self.tbar = Togglebar(self)
-#        self.all_sprites.add(self.tbar)
 
 
         Enemy_1(self,100,100)
@@ -735,17 +779,21 @@ class Game:
 
             if hit.type =='uzil':
                 hit.kill()
+                '''
                 self.player.weaponl = 'uzil'
                 self.player.weaponr ='uzir'
                 self.weapon.image = self.item_images['uzil']
+                '''
                 if 'UZI' not in self.player.inventory:
                     self.player.inventory.append('UZI')
 
             if hit.type =='shotgunl':
                 hit.kill()
+                '''
                 self.player.weaponl = 'shotgunl'
                 self.player.weaponr = 'shotgunr'
                 self.weapon.image = self.item_images['shotgunl']
+                '''
                 if 'SHOTGUN' not in self.player.inventory:
                     self.player.inventory.append('SHOTGUN')
 
@@ -840,6 +888,50 @@ class Game:
         for coin in coin_contact:
             self.score += 1
 
+        '''
+        counter = 0
+        while self.toggle:
+
+            keystate = pg.key.get_pressed()
+            if keystate[ord('e')] and len(self.player.inventory) > counter:
+                counter = counter + 1
+                if self.player.inventory[counter] == 'UZI':
+                    self.player.weaponl = 'uzil'
+                    self.player.weaponr = 'uzir'
+                    self.weapon.image = self.item_images['uzil']
+                if self.player.inventory[counter] == 'SHOTGUN':
+                    self.player.weaponl = 'shotgunl'
+                    self.player.weaponr = 'shotgunr'
+                    self.weapon.image = self.item_images['shotgunl']
+
+            if keystate[ord('q')] and len(self.player.inventory) > 1:
+                counter = counter - 1
+                if self.player.inventory[counter] == 'UZI':
+                    self.player.weaponl = 'uzil'
+                    self.player.weaponr = 'uzir'
+                    self.weapon.image = self.item_images['uzil']
+                if self.player.inventory[counter] == 'SHOTGUN':
+                    self.player.weaponl = 'shotgunl'
+                    self.player.weaponr = 'shotgunr'
+                    self.weapon.image = self.item_images['shotgunl']
+        '''
+
+
+
+
+
+
+
+    '''
+    def right(self):
+
+         if len(self.player.inventory) > self.current:
+             self.image = self.togglebar_img
+             toggle_height = 200
+             self.screen.blit(self.image, (0, HEIGHT - toggle_height))
+             self.draw_texty("INVENTORY", self.body_font, 20, GOLD, WIDTH / 2, HEIGHT - toggle_height)
+             pg.display.flip()
+    '''
 
     def events(self):
         #game loop - events
@@ -856,7 +948,12 @@ class Game:
              if event.key ==pg.K_t:
                  self.toggle = not self.toggle
              if event.key ==pg.K_e:
-                 self.mover = True
+    #             self.mover = True
+        #         self.border_count += 100
+                 self.draw_togglebar()
+     #    if event.type == pg.KEYUP:
+          #   if event.key ==pg.K_e:
+           #      self.mover = False
 
     def draw_texty(self,text,font_name,size,colour,x,y,align ="center"):
         font = pg.font.Font(font_name,size)
@@ -866,8 +963,13 @@ class Game:
             text_rect.center = (x,y)
         self.screen.blit(text_surface, text_rect)
 
+
+
+
     def draw_togglebar(self):
 
+
+        '''
         self.image = self.togglebar_img
         toggle_height = 200
         self.screen.blit(self.image,(0,HEIGHT-toggle_height))
@@ -875,13 +977,14 @@ class Game:
         count = 100
         border_count = 100
         border_spacing = 10
+
         for i in range(len(self.player.inventory)):
             self.image = self.togglebar_images[self.player.inventory[i]]
             self.rect = self.image.get_rect()
             self.screen.blit(self.image,(count, HEIGHT - toggle_height/2 - self.rect.height/2))
             self.draw_texty(self.player.inventory[i],self.body_font,20,BLACK,count-border_spacing +self.rect.width/2 + 5,HEIGHT - toggle_height + 40)
 
-     #       pg.draw.rect(self.screen, GOLD, pg.Rect(count - border_spacing,HEIGHT - toggle_height + 40, 60 + 2*border_spacing,toggle_height - 80), 3)
+
             border = pg.transform.scale(self.border_img, (60 + 2 * border_spacing, toggle_height - 120))
             self.screen.blit(border, (count - border_spacing, HEIGHT - toggle_height + 60))
             count += 100
@@ -891,19 +994,19 @@ class Game:
         pg.draw.rect(self.screen, GOLD, pg.Rect(border_count - border_spacing,HEIGHT - toggle_height + 60, 60 + 2*border_spacing,toggle_height - 120), 3)
 
 
+        '''
+        border_spacing = 10
+        toggle_height = 200
+        self.image = self.togglebar_img
+        # draws paper texture and title
+        self.screen.blit(self.image, (0, HEIGHT - toggle_height))
+        self.draw_texty("INVENTORY", self.body_font, 20, GOLD, WIDTH / 2, HEIGHT - toggle_height)
+        count = 100
+      #  border_count = border_count2
+          #  if len(self.player.inventory) > 1:
 
 
-        def redrawr(self,border_count2):
-
-            self.image = self.togglebar_img
-            count = 100
-            border_count = border_count2
-            if (self.mover == True) and len(self.player.inventory) > 1:
-                border_count += count
-                self.screen.blit(self.image, (0, HEIGHT - toggle_height))
-                self.draw_texty("INVENTORY", self.body_font, 20, GOLD, WIDTH / 2, HEIGHT - toggle_height)
-
-                for i in range(len(self.player.inventory)):
+        for i in range(len(self.player.inventory)):
                     self.image = self.togglebar_images[self.player.inventory[i]]
                     self.rect = self.image.get_rect()
                     self.screen.blit(self.image, (count, HEIGHT - toggle_height / 2 - self.rect.height / 2))
@@ -915,14 +1018,26 @@ class Game:
                     self.screen.blit(border, (count - border_spacing, HEIGHT - toggle_height + 60))
                     count += 100
 
-                pg.draw.rect(self.screen, GOLD, pg.Rect(border_count - border_spacing, HEIGHT - toggle_height + 60, 60 + 2 * border_spacing, toggle_height - 120), 3)
-                pg.display.flip()
-                self.mover = False
+        keystate = pg.key.get_pressed()
+        if keystate[ord('e')]:
+            if len(self.player.inventory) > self.current+1:
+                    self.border_count += 100
+                    pg.draw.rect(self.screen, GOLD, pg.Rect(self.border_count - border_spacing, HEIGHT - toggle_height + 60, 60 + 2 * border_spacing, toggle_height - 120), 3)
+                    self.current += 1
+                    pg.display.flip()
+
+
+        
+
+
+
+        
 
 
 
 
-        redrawr(self, border_count)
+
+
 
 
              
@@ -945,6 +1060,7 @@ class Game:
 
          if self.toggle:
              self.draw_togglebar()
+
 
 
 
