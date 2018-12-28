@@ -5,6 +5,7 @@ from pygame import *
 from os import path
 from random import randrange, uniform, choice
 import math
+import time
 
 
 #settings
@@ -19,6 +20,7 @@ BG_COLOUR = 48,191,191
 GOLD = 255,215,0
 BLOOD_RED = 166,16,30
 BROWN = 165,93,53
+NIGHT = (14,14,14)
 
 WIDTH = 1024
 HEIGHT = 720
@@ -38,7 +40,7 @@ GRAVITY = 0.5
 PLAYER_JUMP = 10
 PLAYER_HEALTH = 100
 PLAYER_HIT_RECT = pg.Rect(0,0,30,40)
-LIGHTING_RAD = (200,200)
+LIGHTING_RAD = (600,600)
 
 # using weapon'l' as convention for referencing
 WEAPONS ={}
@@ -581,7 +583,7 @@ class Game:
         self.background_img = pg.image.load(path.join(img_folder,BACKGROUND_IMG)).convert_alpha()
         #torch effect
         self.fog = pg.Surface((WIDTH,HEIGHT))
-        self.fog.fill((20,20,20))
+        self.fog.fill(NIGHT)
         self.light = pg.image.load(path.join(img_folder,'light.png')).convert_alpha()
         self.light = pg.transform.scale(self.light,LIGHTING_RAD)
         self.light_rect = self.light.get_rect()
@@ -632,6 +634,7 @@ class Game:
         self.night = False
         self.border_count = 0
         self.current = 0
+        self.enemy_count = 2
 
 
 
@@ -682,6 +685,7 @@ class Game:
             "W              W                      PPP          W                             W  P                      P",
             "WPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
+
         for row in PLATFORM_LIST:
           for col in row:
             if col =="P":
@@ -700,7 +704,8 @@ class Game:
 
         self.camera = Camera(0, 0)
             
-            
+        self.map_width = len(PLATFORM_LIST[0])
+        self.map_height = len(PLATFORM_LIST)
        
         self.run()
         
@@ -715,6 +720,20 @@ class Game:
             self.update()
          self.draw()
         pg.mixer.music.fadeout(100)
+
+    def spawn(self):
+
+        #increment enemy total by 2
+        self.enemy_count += 2
+        currentcount = 0
+        while currentcount != self.enemy_count:
+            x = randrange(0 - 500, self.map_width + 500)
+            y = randrange(200, 500, self.map_height + 500)
+            pos = vector(x,y)
+            if (self.player.pos - pos).length() > 400:
+                Enemy_1(self,x,y)
+                currentcount += 1
+
         
          
     def update(self):
@@ -875,9 +894,15 @@ class Game:
         for coin in coin_contact:
             self.score += 1
 
-        border_spacing = 10
-        toggle_height = 200
-     #   keystate = pg.key.get_pressed
+        if len(self.enemy1s) == 0:
+            self.round +=1
+            self.spawn()
+
+
+
+
+
+
 
     def right(self):
         border_spacing = 10
@@ -969,7 +994,7 @@ class Game:
 
     def display_fog(self):
 
-        self.fog.fill((20,20,20))
+        self.fog.fill(NIGHT)
         self.light_rect.center = self.camera.apply(self.player).center
         self.fog.blit(self.light,self.light_rect)
         self.screen.blit(self.fog,(0,0),special_flags = pg.BLEND_MULT)
