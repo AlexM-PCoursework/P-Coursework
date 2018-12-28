@@ -572,7 +572,7 @@ class Game:
         self.light_rect = self.light.get_rect()
         self.weapon_sounds ={}
         self.channel1 = pg.mixer.Channel(0)
-        self.bell_sound = pg.mixer.Sound(path.join(self.sound_folder, 'bell.wav'))
+        self.bell_sound = pg.mixer.Sound(path.join(self.sound_folder, 'bell2.wav'))
         self.bell_sound.set_volume(0.8)
         for weapon in WEAPON_SOUNDS:
             self.weapon_sounds[weapon] = []
@@ -895,12 +895,12 @@ class Game:
             self.score += 1
 
         if len(self.enemy1s) == 0:
-            pg.mixer.music.set_volume(0.05)
+            pg.mixer.music.set_volume(0.6)
             self.channel1.play(self.bell_sound)
             self.round +=1
             self.spawn()
 
-          #  pg.mixer.music.unpause()
+
 
 
 
