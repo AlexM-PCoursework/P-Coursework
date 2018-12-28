@@ -911,8 +911,6 @@ class Game:
             self.round +=1
             self.spawn()
 
-        if self.round % 2 == 0:
-            self.night = not self.night
 
 
 
@@ -1045,13 +1043,20 @@ class Game:
          if self.toggle:
              self.draw_togglebar()
 
+         if self.round % 3 == 0:
+            self.night = True
 
 
 
 
 
-         #Flip display after drawing
+
+
+
+        #Flip display after drawing
          pg.display.flip()
+
+
 
     def show_start_screen(self):
         #game start screen
