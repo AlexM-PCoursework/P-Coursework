@@ -129,13 +129,14 @@ class SquareGrid:
         return 0 <= node.x < self.width and 0 <= node.y < self.height
 
     def passable(self, node):
-        return node not in self.walls and node not in self.platforms
+        return node not in self.walls
 
     def find_neighbours(self, node):
         neighbours = [node + connection for connection in self.connections]
         neighbours = filter(self.in_bounds,neighbours)
         neighbours = filter(self.passable, neighbours)
-        print(list(neighbours))
+        reference = [x / 41 for x in neighbours]
+        print(list(reference))
         return neighbours
 
 def draw_player_health(surf,x,y,pct):
@@ -643,6 +644,7 @@ class Game:
         self.all_sprites.add(self.weapon)
         self.round = 0
         self.paused = False
+        self.wall_dim = 41
         self.toggle = False
         self.mover = True
         self.night = False
@@ -650,7 +652,7 @@ class Game:
         self.current = 0
         self.enemy_count = 2
         self.grid = SquareGrid(self, 800, 500)
-        self.grid.find_neighbours(vector(0, 41))
+        self.grid.find_neighbours(vector(1*self.wall_dim,3*self.wall_dim))
         self.grid.find_neighbours(vector(100, 200))
 
 
@@ -986,6 +988,7 @@ class Game:
         text_rect = text_surface.get_rect()
         if align == "center":
             text_rect.center = (x,y)
+        
         self.screen.blit(text_surface, text_rect)
 
 
@@ -1056,10 +1059,14 @@ class Game:
              self.display_fog()
 
          self.draw_text("BANK: " + str(self.score),20,GOLD,20,20)
-         self.draw_text("ROUND: "+str(self.round),30,BLOOD_RED,WIDTH - 150 ,20)
+         self.draw_text(str(self.round),80,BLOOD_RED,WIDTH - 80 ,20)
          draw_player_health(self.screen, 430,10,self.player.health/ PLAYER_HEALTH)
          if self.paused:
+             pg.mixer.music.pause()
              self.draw_texty("Paused",self.title_font,120,BLOOD_RED,WIDTH/2,HEIGHT/2,align="center")
+
+         else:
+             pg.mixer.music.unpause()
 
 
          if self.toggle:
