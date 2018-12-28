@@ -529,24 +529,6 @@ class Coin(pg.sprite.Sprite):
     def update(self):
         self.rect.bottom = self.plat.rect.top - 5
 
-'''
-class ToggleRect(pg.sprite.Sprite):
-    def __init__(self,game):
-        self. _layer = 10
-        self.groups = game.all_sprites, game.togglerect
-        pg.sprite.Sprite. __init__(self,self.groups)
-        self.game = game
-        toggle_height = 200
-        border_spacing = 10
-      #  self.image = pg.draw.rect(self.game.screen, GOLD, pg.Rect(0 - border_spacing, HEIGHT - toggle_height + 60, 60 + 2 * border_spacing, toggle_height - 120), 3)
-        self.image = Surface((10,10))
-        self.image.fill(GOLD)
-        self.rect = self.image.get_rect()
-        self.game.togglebar_img.blit(self.image,[200,HEIGHT-50])
-        #self.rect.center = (100-border_spacing + 30,HEIGHT - toggle_height )
-
-'''
-       
 
 class Game:
     def __init__(self):
@@ -589,6 +571,9 @@ class Game:
         self.light = pg.transform.scale(self.light,LIGHTING_RAD)
         self.light_rect = self.light.get_rect()
         self.weapon_sounds ={}
+        self.channel1 = pg.mixer.Channel(0)
+        self.bell_sound = pg.mixer.Sound(path.join(self.sound_folder, 'bell.wav'))
+        self.bell_sound.set_volume(0.8)
         for weapon in WEAPON_SOUNDS:
             self.weapon_sounds[weapon] = []
             for sound in WEAPON_SOUNDS[weapon]:
@@ -628,7 +613,7 @@ class Game:
         self.player = Player(self)
         self.all_sprites.add(self.player)
         self.all_sprites.add(self.weapon)
-        self.round = 1
+        self.round = 0
         self.paused = False
         self.toggle = False
         self.mover = True
@@ -639,8 +624,7 @@ class Game:
 
 
 
-        Enemy_1(self,100,100)
-        Enemy_1(self,100,500)
+
 
 
         x = y = 0
@@ -903,13 +887,20 @@ class Game:
 
         # check if player hits coins
 
+        if pg.mixer.Channel(0).get_busy() == False:
+            pg.mixer.music.set_volume(1)
+
         coin_contact = pg.sprite.spritecollide(self.player,self.coins,True)
         for coin in coin_contact:
             self.score += 1
 
         if len(self.enemy1s) == 0:
+            pg.mixer.music.set_volume(0.05)
+            self.channel1.play(self.bell_sound)
             self.round +=1
             self.spawn()
+
+          #  pg.mixer.music.unpause()
 
 
 
@@ -1045,6 +1036,8 @@ class Game:
 
          if self.round % 3 == 0:
             self.night = True
+         else:
+            self.night = False
 
 
 
