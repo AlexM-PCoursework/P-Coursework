@@ -111,6 +111,33 @@ PLAYER_IMG ='player3.png'
 
 WEAPON1_WIDTH = 20
 
+class SquareGrid:
+    def __init__ (self,game,width, height):
+        self.game = game
+        self.width = width
+        self.height = height
+        self.walls = []
+        self.platforms = []
+        wall_dim = 41
+        for wall in self.game.walls:
+            self.walls.append(vector(wall.rect.x,wall.rect.y))
+        for platform in self.game.platforms:
+            self.platforms.append(vector(platform.rect.x,platform.rect.y))
+        self.connections = [vector(wall_dim,0), vector(-wall_dim,0),vector(0,wall_dim),vector(0,-wall_dim)]
+
+    def in_bounds(self,node):
+        return 0 <= node.x < self.width and 0 <= node.y < self.height
+
+    def passable(self, node):
+        return node not in self.walls and node not in self.platforms
+
+    def find_neighbours(self, node):
+        neighbours = [node + connection for connection in self.connections]
+        neighbours = filter(self.in_bounds,neighbours)
+        neighbours = filter(self.passable, neighbours)
+        print(list(neighbours))
+        return neighbours
+
 def draw_player_health(surf,x,y,pct):
     if pct< 0:
         pct = 0
@@ -602,6 +629,7 @@ class Game:
         self.trapdoors = pg.sprite.Group()
         self.doors = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
+
         self.togglebar = pg.sprite.Group()
  #       self.togglerect = pg.sprite.Group()
         self.items = pg.sprite.Group()
@@ -621,6 +649,9 @@ class Game:
         self.border_count = 0
         self.current = 0
         self.enemy_count = 2
+        self.grid = SquareGrid(self, 800, 500)
+        self.grid.find_neighbours(vector(0, 41))
+        self.grid.find_neighbours(vector(100, 200))
 
 
 
@@ -1122,6 +1153,7 @@ class Game:
           
 
 g = Game()
+
 g.show_start_screen()
 while g.running:
     g.new()
