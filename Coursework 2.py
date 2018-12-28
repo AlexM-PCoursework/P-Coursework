@@ -38,7 +38,7 @@ GRAVITY = 0.5
 PLAYER_JUMP = 10
 PLAYER_HEALTH = 100
 PLAYER_HIT_RECT = pg.Rect(0,0,30,40)
-LIGHTING_RAD = 100
+LIGHTING_RAD = (200,200)
 
 # using weapon'l' as convention for referencing
 WEAPONS ={}
@@ -917,7 +917,7 @@ class Game:
                  self.right()
              if event.key ==pg.K_q:
                  self.left()
-             if event.key == pq.K_n:
+             if event.key == pg.K_n:
                  self.night = not self.night
 
     def draw_texty(self,text,font_name,size,colour,x,y,align ="center"):
@@ -967,6 +967,12 @@ class Game:
         
 
 
+    def display_fog(self):
+
+        self.fog.fill((20,20,20))
+        self.light_rect.center = self.camera.apply(self.player).center
+        self.fog.blit(self.light,self.light_rect)
+        self.screen.blit(self.fog,(0,0),special_flags = pg.BLEND_MULT)
 
 
 
@@ -985,11 +991,16 @@ class Game:
             if isinstance(sprite,Enemy_1):
                 sprite.draw_health()
             self.screen.blit(sprite.image, self.camera.apply(sprite))
+
+         if self.night:
+             self.display_fog()
+
          self.draw_text("BANK: " + str(self.score),20,GOLD,20,20)
          self.draw_text("ROUND: "+str(self.round),30,BLOOD_RED,WIDTH - 150 ,20)
          draw_player_health(self.screen, 430,10,self.player.health/ PLAYER_HEALTH)
          if self.paused:
              self.draw_texty("Paused",self.title_font,120,BLOOD_RED,WIDTH/2,HEIGHT/2,align="center")
+
 
          if self.toggle:
              self.draw_togglebar()
