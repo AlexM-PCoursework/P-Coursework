@@ -399,45 +399,46 @@ class Enemy_1 (pg.sprite.Sprite):
         if self.health <= 0:
             self.kill()
 
+        dist = (self.pos - self.game.player.pos).length()
+        if dist < 400:
+            block_hit_list = pg.sprite.spritecollide(self, self.game.platforms, False)
+            for block in block_hit_list:
+                if self.vel.y > 0:
+                    if self.pos.y < block.rect.centery:
+                        self.pos.y = block.rect.top + 1
 
-        block_hit_list = pg.sprite.spritecollide(self, self.game.platforms, False)
-        for block in block_hit_list:
-            if self.vel.y > 0:
-                if self.pos.y < block.rect.centery:
-                    self.pos.y = block.rect.top + 1
+                        self.vel.y = 0
+                if self.vel.x > 0 and self.vel.y != 0:
+                    if self.pos.x < block.rect.left:
+                        self.pos.x = block.rect.left - self.rect.width/2
+                        self.vel.x = 0
+                if self.vel.x < 0 and self.vel.y != 0:
+                    if self.pos.x > block.rect.right:
+                        self.pos.x = block.rect.right + self.rect.width/2
+                        self.vel.x = 0
+                if self.vel.y < 0:
+                    if self.pos.y - self.rect.height > block.rect.centery:
+                        self.pos.y = block.rect.bottom + self.rect.height -1
 
-                    self.vel.y = 0
-            if self.vel.x > 0 and self.vel.y != 0:
-                if self.pos.x < block.rect.left:
-                    self.pos.x = block.rect.left - self.rect.width/2
-                    self.vel.x = 0
-            if self.vel.x < 0 and self.vel.y != 0:
-                if self.pos.x > block.rect.right:
-                    self.pos.x = block.rect.right + self.rect.width/2
-                    self.vel.x = 0
-            if self.vel.y < 0:
-                if self.pos.y - self.rect.height > block.rect.centery:
-                    self.pos.y = block.rect.bottom + self.rect.height -1
+                        self.vel.y = 0
 
-                    self.vel.y = 0
+            block_hit_list = pg.sprite.spritecollide(self, self.game.walls, False)
+            for block in block_hit_list:
+                if self.vel.x > 0:
+                    if self.pos.x < block.rect.left:
+                        self.pos.x = block.rect.left - self.rect.width/2
+                        self.vel.x = 0
 
-        block_hit_list = pg.sprite.spritecollide(self, self.game.walls, False)
-        for block in block_hit_list:
-            if self.vel.x > 0:
-                if self.pos.x < block.rect.left:
-                    self.pos.x = block.rect.left - self.rect.width/2
-                    self.vel.x = 0
+                if self.vel.x < 0:
+                    if self.pos.x > block.rect.right:
+                        self.pos.x = block.rect.right + self.rect.width/2
+                        self.vel.x = 0
 
-            if self.vel.x < 0:
-                if self.pos.x > block.rect.right:
-                    self.pos.x = block.rect.right + self.rect.width/2
-                    self.vel.x = 0
+                if self.vel.y < 0:
+                    if self.pos.y - self.rect.height > block.rect.centery:
+                        self.pos.y = block.rect.bottom + self.rect.height - 1
 
-            if self.vel.y < 0:
-                if self.pos.y - self.rect.height > block.rect.centery:
-                    self.pos.y = block.rect.bottom + self.rect.height - 1
-
-                    self.vel.y = 0
+                        self.vel.y = 0
 
 class Camera:
     def __init__(self,width,height):
@@ -649,15 +650,27 @@ class Game:
             "W                                            D                                                             P",
             "W                                           PPPPPPPPPPPPPPPPPPPP                                           P",
             "WPPPPPP    PPPPPPPPP        PPPPPPP  PPPPPPPPW                                                             P",
-            "WP                                           W                                                             P",
-            "W    PPP  PPP       PPPPP       PPPP     PPPPW              PPPPPP                      PPPPP              P",
+            "W                                            W                                                             P",
+            "W                          PPPP              W                                                             P",
+            "W         PPPP                       PPP     W                                                             P",
+            "W                              PPPP          W                                                             P",
+            "W               PPPP                 PPPP    W                                                             P",
+            "W     PPPP                                   W                                                             P",
+            "W                PPPP                        W                                                             P",
+            "W       PPPP           PPP    PPPPPPPP       W                                                             P",
+            "W                                            W                                                             P",
+            "W    PPPP          PPPP         PPPP         W                                                             P",
+            "W                      PPPP                  W                                                             P",
+            "W        PPPP                                W                                                             P",
+            "W                           PPPP             W                                                             P",
+            "WPPPPPPPPPPPTPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPTW                                              W              P",
+            "W    PPP  PP        PPPPP       PPPP     PP  W              PPPPPP                      PPPPP              P",
             "WP              PPP                          W                                                W            P",
             "W      PPPPPPPPP           PPPP       PPP   PW                                               W             P",
             "W                 PPP                        W                         PPPPPP                W             P",
             "WPPPP                  PPPPPPPP        PPP   W                              PPPPPPPPP        W             P",
             "W     PP PPPP                     PP         W   PPPPPPPPPPPP                                W             P",
             "W                     PPPPPPPPPP             W                                               W             P",
-            "WPPPPPPPPPPPTPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPTW                                              W              P",
             "W            W        W                                                                      W             P",
             "W  PPPPPPPPPPP        W        PPPP      PPPPPP        PPPPPPPPPPPPPPPPPPPPPPP               W             P",
             "W            W        W             PPPPPP                                                     W           P",
@@ -704,8 +717,8 @@ class Game:
 
         self.camera = Camera(0, 0)
             
-        self.map_width = len(PLATFORM_LIST[0])
-        self.map_height = len(PLATFORM_LIST)
+        self.map_width = len(PLATFORM_LIST[0]) * 41
+        self.map_height = len(PLATFORM_LIST) * 41
        
         self.run()
         
@@ -728,7 +741,7 @@ class Game:
         currentcount = 0
         while currentcount != self.enemy_count:
             x = randrange(0 - 500, self.map_width + 500)
-            y = randrange(200, 500, self.map_height + 500)
+            y = randrange(0 - 500, self.map_height + 500)
             pos = vector(x,y)
             if (self.player.pos - pos).length() > 400:
                 Enemy_1(self,x,y)
@@ -898,6 +911,8 @@ class Game:
             self.round +=1
             self.spawn()
 
+        if self.round % 2 == 0:
+            self.night = not self.night
 
 
 
@@ -942,8 +957,8 @@ class Game:
                  self.right()
              if event.key ==pg.K_q:
                  self.left()
-             if event.key == pg.K_n:
-                 self.night = not self.night
+   #          if event.key == pg.K_n:
+    #             self.night = not self.night
 
     def draw_texty(self,text,font_name,size,colour,x,y,align ="center"):
         font = pg.font.Font(font_name,size)
