@@ -38,6 +38,7 @@ GRAVITY = 0.5
 PLAYER_JUMP = 10
 PLAYER_HEALTH = 100
 PLAYER_HIT_RECT = pg.Rect(0,0,30,40)
+LIGHTING_RAD = 100
 
 # using weapon'l' as convention for referencing
 WEAPONS ={}
@@ -562,6 +563,7 @@ class Game:
         self.sound_folder = path.join(self.dir,'sound')
         self.title_font = path.join(img_folder, 'font.ttf')
         self.header_font = path.join(img_folder,'zombified.ttf')
+        self.old_font = path.join(img_folder, 'Ginga.ttf')
         self.bullet_images = {}
         self.bullet_images['large'] = pg.image.load(path.join(img_folder,'bullet.png')).convert_alpha()
         self.bullet_images['small']= pg.transform.scale(self.bullet_images['large'],(4,8))
@@ -577,6 +579,12 @@ class Game:
 
         self.coin_img = pg.image.load(path.join(img_folder,COIN_IMG)).convert_alpha()
         self.background_img = pg.image.load(path.join(img_folder,BACKGROUND_IMG)).convert_alpha()
+        #torch effect
+        self.fog = pg.Surface((WIDTH,HEIGHT))
+        self.fog.fill((20,20,20))
+        self.light = pg.image.load(path.join(img_folder,'light.png')).convert_alpha()
+        self.light = pg.transform.scale(self.light,LIGHTING_RAD)
+        self.light_rect = self.light.get_rect()
         self.weapon_sounds ={}
         for weapon in WEAPON_SOUNDS:
             self.weapon_sounds[weapon] = []
@@ -621,6 +629,7 @@ class Game:
         self.paused = False
         self.toggle = False
         self.mover = True
+        self.night = False
         self.border_count = 0
         self.current = 0
 
@@ -634,16 +643,16 @@ class Game:
 
         PLATFORM_LIST =[
             "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-            "W                                            W                                                             P",
-            "W                                            WPPPPPPPPPPPPPPPPPP                                           P",
-            "W     PPPPPPPPPPPPPP        PPPPPPPPPPPPPPP  W                                                             P",
-            "WP  PPW        WWWW           WWWW           D                                                             P",
-            "W         PPP                    PPP     PPPPW              PPPPPP                      PPPPP              P",
-            "WP  PPPP                                     W                                                W            P",
-            "W      WPPPPPPPP           PPPP        PP    W                                               W             P",
-            "WPP    W     WPPPPPP               PP        W                         PPPPPP                W             P",
-            "W                      PPPPPPPP        PP    W                              PPPPPPPPP        W             P",
-            "W            PPP  PP       W      PPP        W   PPPPPPPPPPPP                                W             P",
+            "W                                            D                                                             P",
+            "W                                           PPPPPPPPPPPPPPPPPPPP                                           P",
+            "WPPPPPP    PPPPPPPPP        PPPPPPP  PPPPPPPPW                                                             P",
+            "WP                                           W                                                             P",
+            "W    PPP  PPP       PPPPP       PPPP     PPPPW              PPPPPP                      PPPPP              P",
+            "WP              PPP                          W                                                W            P",
+            "W      PPPPPPPPP           PPPP       PPP   PW                                               W             P",
+            "W                 PPP                        W                         PPPPPP                W             P",
+            "WPPPP                  PPPPPPPP        PPP   W                              PPPPPPPPP        W             P",
+            "W     PP PPPP                     PP         W   PPPPPPPPPPPP                                W             P",
             "W                     PPPPPPPPPP             W                                               W             P",
             "WPPPPPPPPPPPTPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPTW                                              W              P",
             "W            W        W                                                                      W             P",
@@ -676,9 +685,9 @@ class Game:
         for row in PLATFORM_LIST:
           for col in row:
             if col =="P":
-                Platform(self,x,y,50,40)
+                Platform(self,x,y,50,50)
             if col =="W":
-                Wall(self,x,y,50,40)
+                Wall(self,x,y,50,50)
             if col == "D":
                 Door(self,x,y)
             if col == "T":
@@ -767,21 +776,11 @@ class Game:
 
             if hit.type =='uzil':
                 hit.kill()
-                '''
-                self.player.weaponl = 'uzil'
-                self.player.weaponr ='uzir'
-                self.weapon.image = self.item_images['uzil']
-                '''
                 if 'UZI' not in self.player.inventory:
                     self.player.inventory.append('UZI')
 
             if hit.type =='shotgunl':
                 hit.kill()
-                '''
-                self.player.weaponl = 'shotgunl'
-                self.player.weaponr = 'shotgunr'
-                self.weapon.image = self.item_images['shotgunl']
-                '''
                 if 'SHOTGUN' not in self.player.inventory:
                     self.player.inventory.append('SHOTGUN')
 
@@ -899,50 +898,6 @@ class Game:
             self.current -= 1
 
 
-        '''
-        counter = 0
-        while self.toggle:
-
-            keystate = pg.key.get_pressed()
-            if keystate[ord('e')] and len(self.player.inventory) > counter:
-                counter = counter + 1
-                if self.player.inventory[counter] == 'UZI':
-                    self.player.weaponl = 'uzil'
-                    self.player.weaponr = 'uzir'
-                    self.weapon.image = self.item_images['uzil']
-                if self.player.inventory[counter] == 'SHOTGUN':
-                    self.player.weaponl = 'shotgunl'
-                    self.player.weaponr = 'shotgunr'
-                    self.weapon.image = self.item_images['shotgunl']
-
-            if keystate[ord('q')] and len(self.player.inventory) > 1:
-                counter = counter - 1
-                if self.player.inventory[counter] == 'UZI':
-                    self.player.weaponl = 'uzil'
-                    self.player.weaponr = 'uzir'
-                    self.weapon.image = self.item_images['uzil']
-                if self.player.inventory[counter] == 'SHOTGUN':
-                    self.player.weaponl = 'shotgunl'
-                    self.player.weaponr = 'shotgunr'
-                    self.weapon.image = self.item_images['shotgunl']
-        '''
-
-
-
-
-
-
-
-    '''
-    def right(self):
-
-         if len(self.player.inventory) > self.current:
-             self.image = self.togglebar_img
-             toggle_height = 200
-             self.screen.blit(self.image, (0, HEIGHT - toggle_height))
-             self.draw_texty("INVENTORY", self.body_font, 20, GOLD, WIDTH / 2, HEIGHT - toggle_height)
-             pg.display.flip()
-    '''
 
     def events(self):
         #game loop - events
@@ -959,17 +914,11 @@ class Game:
              if event.key ==pg.K_t:
                  self.toggle = not self.toggle
              if event.key ==pg.K_e:
-    #             self.mover = True
-        #         self.border_count += 100
-                 self.draw_togglebar()
                  self.right()
-
              if event.key ==pg.K_q:
-                 self.draw_togglebar()
                  self.left()
-     #    if event.type == pg.KEYUP:
-          #   if event.key ==pg.K_e:
-           #      self.mover = False
+             if event.key == pq.K_n:
+                 self.night = not self.night
 
     def draw_texty(self,text,font_name,size,colour,x,y,align ="center"):
         font = pg.font.Font(font_name,size)
@@ -985,38 +934,13 @@ class Game:
     def draw_togglebar(self):
 
 
-        '''
-        self.image = self.togglebar_img
-        toggle_height = 200
-        self.screen.blit(self.image,(0,HEIGHT-toggle_height))
-        self.draw_texty("INVENTORY",self.body_font,20,GOLD,WIDTH/2,HEIGHT-toggle_height)
-        count = 100
-        border_count = 100
-        border_spacing = 10
-
-        for i in range(len(self.player.inventory)):
-            self.image = self.togglebar_images[self.player.inventory[i]]
-            self.rect = self.image.get_rect()
-            self.screen.blit(self.image,(count, HEIGHT - toggle_height/2 - self.rect.height/2))
-            self.draw_texty(self.player.inventory[i],self.body_font,20,BLACK,count-border_spacing +self.rect.width/2 + 5,HEIGHT - toggle_height + 40)
-
-
-            border = pg.transform.scale(self.border_img, (60 + 2 * border_spacing, toggle_height - 120))
-            self.screen.blit(border, (count - border_spacing, HEIGHT - toggle_height + 60))
-            count += 100
-
-
-
-        pg.draw.rect(self.screen, GOLD, pg.Rect(border_count - border_spacing,HEIGHT - toggle_height + 60, 60 + 2*border_spacing,toggle_height - 120), 3)
-
-
-        '''
         border_spacing = 10
         toggle_height = 200
         self.image = self.togglebar_img
         # draws paper texture and title
         self.screen.blit(self.image, (0, HEIGHT - toggle_height))
-        self.draw_texty("INVENTORY", self.body_font, 20, GOLD, WIDTH / 2, HEIGHT - toggle_height)
+        self.draw_texty("INVENTORY", self.body_font, 20, GOLD, WIDTH / 2, HEIGHT - toggle_height - 10)
+        self.draw_texty("USE Q AND E TO CHANGE WEAPONS", self.body_font, 15, GOLD, WIDTH/2, HEIGHT - toggle_height + 10 )
         count = 100
       #  border_count = border_count2
           #  if len(self.player.inventory) > 1:
@@ -1065,7 +989,7 @@ class Game:
          self.draw_text("ROUND: "+str(self.round),30,BLOOD_RED,WIDTH - 150 ,20)
          draw_player_health(self.screen, 430,10,self.player.health/ PLAYER_HEALTH)
          if self.paused:
-             self.draw_texty("Paused",self.title_font,120,RED,WIDTH/2,HEIGHT/2,align="center")
+             self.draw_texty("Paused",self.title_font,120,BLOOD_RED,WIDTH/2,HEIGHT/2,align="center")
 
          if self.toggle:
              self.draw_togglebar()
