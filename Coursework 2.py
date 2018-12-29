@@ -6,6 +6,7 @@ from os import path
 from random import randrange, uniform, choice
 import math
 import time
+from collections import deque
 
 
 #settings
@@ -52,7 +53,7 @@ WEAPONS['uzil']={'bullet_speed':40,
                    'bullet_size':'small',
                    'bullet_count':1}
 WEAPONS['pistoll']={'bullet_speed':20,
-                   'bullet_lifetime': 500,
+                   'bullet_lifetime': 800,
                    'rate':600,
                    'damage':10,
                    'spread':0,
@@ -111,6 +112,9 @@ PLAYER_IMG ='player3.png'
 
 WEAPON1_WIDTH = 20
 
+
+
+
 class SquareGrid:
     def __init__ (self,game,width, height):
         self.game = game
@@ -122,7 +126,7 @@ class SquareGrid:
         for wall in self.game.walls:
             self.walls.append(vector(wall.rect.x,wall.rect.y))
         for platform in self.game.platforms:
-            self.platforms.append(vector(platform.rect.x,platform.rect.y))
+            self.walls.append(vector(platform.rect.x,platform.rect.y))
         self.connections = [vector(wall_dim,0), vector(-wall_dim,0),vector(0,wall_dim),vector(0,-wall_dim)]
 
     def in_bounds(self,node):
@@ -138,6 +142,31 @@ class SquareGrid:
         reference = [x / 41 for x in neighbours]
         print(list(reference))
         return neighbours
+
+    def draw_grid(self):
+        for x in range(0,WIDTH, 41):
+            pg.draw.line(self.game.screen,WHITE, (x,0), (x,1024))
+        for y in range (0,HEIGHT,41):
+            pg.draw.line(self.game.screen,WHITE,(0,y),(720,y))
+
+def breadth_first_search(graph,start):
+    frontier = deque()
+    frontier.append(start)
+    visited = []
+    visited.append(start)
+  #  while len(frontier) > 0:
+    current = frontier.popleft()
+       # print(frontier)
+    for i in range(3):
+        frontier.append(current)
+        print(frontier)
+       #     if i not in visited:
+        #        frontier.append(2)
+        #        visited.append(2)
+
+    #reference = [x / 41 for x in frontier]
+    #print(list(reference))
+ #   print(list(visited))
 
 def draw_player_health(surf,x,y,pct):
     if pct< 0:
@@ -600,8 +629,8 @@ class Game:
         self.light_rect = self.light.get_rect()
         self.weapon_sounds ={}
         self.channel1 = pg.mixer.Channel(0)
-        self.bell_sound = pg.mixer.Sound(path.join(self.sound_folder, 'bell2.wav'))
-        self.bell_sound.set_volume(0.8)
+        self.bell_sound = pg.mixer.Sound(path.join(self.sound_folder, 'level_start.wav'))
+        self.bell_sound.set_volume(0.4)
         for weapon in WEAPON_SOUNDS:
             self.weapon_sounds[weapon] = []
             for sound in WEAPON_SOUNDS[weapon]:
@@ -651,9 +680,7 @@ class Game:
         self.border_count = 0
         self.current = 0
         self.enemy_count = 2
-        self.grid = SquareGrid(self, 800, 500)
-        self.grid.find_neighbours(vector(1*self.wall_dim,3*self.wall_dim))
-        self.grid.find_neighbours(vector(100, 200))
+
 
 
 
@@ -662,7 +689,7 @@ class Game:
 
         x = y = 0
 
-        PLATFORM_LIST =[
+        self.PLATFORM_LIST =[
             "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
             "W                                            D                                                             P",
             "W                                           PPPPPPPPPPPPPPPPPPPP                                           P",
@@ -716,7 +743,7 @@ class Game:
             "WPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", ]
 
 
-        for row in PLATFORM_LIST:
+        for row in self.PLATFORM_LIST:
           for col in row:
             if col =="P":
                 Platform(self,x,y,50,50)
@@ -727,15 +754,15 @@ class Game:
             if col == "T":
                 Trapdoor(self,x,y)
 
-                
+
             x += 41
           y += 41
           x = 0
 
         self.camera = Camera(0, 0)
             
-        self.map_width = len(PLATFORM_LIST[0]) * 41
-        self.map_height = len(PLATFORM_LIST) * 41
+        self.map_width = len(self.PLATFORM_LIST[0]) * 41
+        self.map_height = len(self.PLATFORM_LIST) * 41
        
         self.run()
         
@@ -931,9 +958,8 @@ class Game:
             pg.mixer.music.set_volume(0.6)
             self.channel1.play(self.bell_sound)
             self.round +=1
+            self.player.health = 100
             self.spawn()
-
-
 
 
 
@@ -979,8 +1005,7 @@ class Game:
                  self.right()
              if event.key ==pg.K_q:
                  self.left()
-   #          if event.key == pg.K_n:
-    #             self.night = not self.night
+
 
     def draw_texty(self,text,font_name,size,colour,x,y,align ="center"):
         font = pg.font.Font(font_name,size)
@@ -988,7 +1013,7 @@ class Game:
         text_rect = text_surface.get_rect()
         if align == "center":
             text_rect.center = (x,y)
-        
+
         self.screen.blit(text_surface, text_rect)
 
 
@@ -1081,9 +1106,6 @@ class Game:
 
 
 
-
-
-
         #Flip display after drawing
          pg.display.flip()
 
@@ -1161,10 +1183,22 @@ class Game:
 
 g = Game()
 
+
+
+
 g.show_start_screen()
 while g.running:
+    w = 41
+    start = vector(5*w, 4*w)
+
     g.new()
     g.show_go_screen()
+    grid = SquareGrid(g, g.map_width, g.map_height)
+    grid.draw_grid()
+    breadth_first_search(grid, start)
+    for wall in grid.walls:
+        print(wall)
+   # grid.find_neighbours((5*w,4*w))
     
 
 pg.quit()
