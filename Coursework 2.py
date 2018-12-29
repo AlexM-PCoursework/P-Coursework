@@ -152,7 +152,7 @@ class SquareGrid:
 def breadth_first_search(graph,start):
     frontier = deque()
     frontier.append(start)
-    visited = []
+    path = {}
     visited.append(start)
     while len(frontier) > 0:
         current = frontier.popleft()
@@ -160,20 +160,11 @@ def breadth_first_search(graph,start):
             if x not in visited:
                 frontier.append(x)
                 visited.append(x)
-    print(visited)
+    ref = [x/41 for x in visited]
+    print(list(ref))
 
 
 
-
-   # print(frontier)
- #   print(visited)
-       #     if i not in visited:
-        #        frontier.append(2)
-        #        visited.append(2)
-
-    #reference = [x / 41 for x in frontier]
-    #print(list(reference))
- #   print(list(visited))
 
 def draw_player_health(surf,x,y,pct):
     if pct< 0:
