@@ -139,8 +139,8 @@ class SquareGrid:
         neighbours = [node + connection for connection in self.connections]
         neighbours = filter(self.in_bounds,neighbours)
         neighbours = filter(self.passable, neighbours)
-        reference = [x / 41 for x in neighbours]
-        print(list(reference))
+   #     reference = [x / 41 for x in neighbours]
+  #      print(list(reference))
         return neighbours
 
     def draw_grid(self):
@@ -154,12 +154,19 @@ def breadth_first_search(graph,start):
     frontier.append(start)
     visited = []
     visited.append(start)
-  #  while len(frontier) > 0:
-    current = frontier.popleft()
-       # print(frontier)
-    for i in range(3):
-        frontier.append(current)
-        print(frontier)
+    while len(frontier) > 0:
+        current = frontier.popleft()
+        for x in graph.find_neighbours(current):
+            if x not in visited:
+                frontier.append(x)
+                visited.append(x)
+    print(visited)
+
+
+
+
+   # print(frontier)
+ #   print(visited)
        #     if i not in visited:
         #        frontier.append(2)
         #        visited.append(2)
@@ -1189,15 +1196,17 @@ g = Game()
 g.show_start_screen()
 while g.running:
     w = 41
-    start = vector(5*w, 4*w)
+    start = vector(8*w, 9*w)
 
     g.new()
     g.show_go_screen()
     grid = SquareGrid(g, g.map_width, g.map_height)
     grid.draw_grid()
+  #  for wall in grid.walls:
+   #     print(wall)
     breadth_first_search(grid, start)
-    for wall in grid.walls:
-        print(wall)
+    grid.find_neighbours(start)
+
    # grid.find_neighbours((5*w,4*w))
     
 
