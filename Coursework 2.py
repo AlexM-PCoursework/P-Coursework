@@ -149,19 +149,23 @@ class SquareGrid:
         for y in range (0,HEIGHT,41):
             pg.draw.line(self.game.screen,WHITE,(0,y),(720,y))
 
+def vector_conv(vec):
+    return(int(vec.x), int(vec.y))
+
 def breadth_first_search(graph,start):
     frontier = deque()
     frontier.append(start)
     path = {}
-    visited.append(start)
+    path[vector_conv(start)] = None
     while len(frontier) > 0:
         current = frontier.popleft()
         for x in graph.find_neighbours(current):
-            if x not in visited:
+            if vector_conv(x) not in path:
                 frontier.append(x)
-                visited.append(x)
-    ref = [x/41 for x in visited]
-    print(list(ref))
+                path[vector_conv(x)] = current - x
+
+    print(path)
+    return path
 
 
 
@@ -1177,6 +1181,8 @@ class Game:
                     not_pressed = False
 
 
+
+
           
 
 g = Game()
@@ -1191,11 +1197,25 @@ while g.running:
 
     g.new()
     g.show_go_screen()
+
+    icon_dir = path.join(path.dirname(__file__), 'icons')
+    arrows = {}
+    arrow_img = pg.image.load(path.join(icon_dir, 'arrow_right.png')).convert_alpha()
+    arrow_img = pg.transform.scale(arrow_img, (41, 41))
+    for dir in [(41, 0), (0, 41), (-41, 0), (0, -41)]:
+        arrows[dir] = pg.transform.rotate(arrow_img, vector(dir).angle_to(vector(1, 0)))
+
     grid = SquareGrid(g, g.map_width, g.map_height)
     grid.draw_grid()
-  #  for wall in grid.walls:
-   #     print(wall)
-    breadth_first_search(grid, start)
+
+    path = breadth_first_search(grid, start)
+    for node, dir in path.items():
+        if dir:
+            x,y = node
+            img = arrows[vector_conv(dir)]
+            r = img.get_rect(center = (x,y))
+            g.screen.blit(img,r)
+            pg.display.flip()
     grid.find_neighbours(start)
 
    # grid.find_neighbours((5*w,4*w))
