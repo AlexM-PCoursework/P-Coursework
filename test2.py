@@ -320,6 +320,14 @@ class Platform(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        if randrange(100) < 15:
+            Coin(self.game, self)
+        if randrange(1000) < 2:
+            Item(self.game, (x, y), 'health', self)
+        if randrange(100) < 5:
+            Item(self.game, (x, y), 'uzil', self)
+        if randrange(100) < 5:
+            Item(self.game, (x, y), 'shotgunl', self)
 
 
 class Door(pg.sprite.Sprite):
@@ -354,10 +362,10 @@ class Game:
         # intialises game window etc
         pg.init()
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
-        pg.display.set_caption('Hello')
+        pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         self.running = True
-
+        self.font_name = pg.font.match_font(FONT_NAME)
         self.data()
 
     def data(self):
@@ -560,7 +568,7 @@ class Game:
 
 
 
-        block_hit_list = pg.sprite.spritecollide(self.player, self.platforms, False, )
+        block_hit_list = pg.sprite.spritecollide(self.player, self.platforms, False, collide_hit_rect)
         for block in block_hit_list:
             if self.player.vel.y > 0:
                 if self.player.pos.y < block.rect.centery:
@@ -581,7 +589,7 @@ class Game:
                 #
                 self.player.vel.y = 0
 
-        block_hit_list = pg.sprite.spritecollide(self.player, self.trapdoors, False, )
+        block_hit_list = pg.sprite.spritecollide(self.player, self.trapdoors, False, collide_hit_rect)
         for block in block_hit_list:
             if self.player.vel.y > 0:
                 if self.player.pos.y < block.rect.centery:
@@ -602,7 +610,7 @@ class Game:
                 #
                 self.player.vel.y = 0
 
-        block_hit_list = pg.sprite.spritecollide(self.player, self.doors, False, )
+        block_hit_list = pg.sprite.spritecollide(self.player, self.doors, False, collide_hit_rect)
         for block in block_hit_list:
             if self.player.vel.x > 0:
                 if self.player.pos.x < block.rect.left:
@@ -620,7 +628,7 @@ class Game:
                     self.player.pos.x = block.rect.right + self.player.hit_rect.width / 2
                     self.player.vel.x = 0
 
-        block_hit_list = pg.sprite.spritecollide(self.player, self.walls, False, )
+        block_hit_list = pg.sprite.spritecollide(self.player, self.walls, False, collide_hit_rect)
         for block in block_hit_list:
             if self.player.vel.x > 0:
                 if self.player.pos.x < block.rect.left:
@@ -645,10 +653,29 @@ class Game:
 
         if len(self.enemy1s) == 0:
             pg.mixer.music.set_volume(0.6)
+            self.channel1.play(self.bell_sound)
             self.round += 1
             self.player.health = 100
             self.spawn()
 
+        arrows = {}
+
+        self.arrow_img = pg.transform.scale(self.arrow_img, (41, 41))
+        for dir in [(41, 0), (0, 41), (-41, 0), (0, -41)]:
+            arrows[dir] = pg.transform.rotate(self.arrow_img, vector(dir).angle_to(vector(1, 0)))
+
+        grid = SquareGrid(g, g.map_width, g.map_height)
+        grid.draw_grid()
+
+        path = breadth_first_search(grid, start)
+        for node, dir in path.items():
+            if dir:
+                x, y = node
+                img = arrows[vector_conv(dir)]
+                r = img.get_rect(center=(x, y))
+                self.screen.blit(img, r)
+
+        grid.find_neighbours(start)
 
 
     def events(self):
@@ -674,7 +701,7 @@ class Game:
         self.screen.blit(text_surface, text_rect)
 
 
-
+)
 
     def draw(self):
         # game loop - draw
@@ -682,7 +709,7 @@ class Game:
         pg.display.set_caption("{:.2f}".format(self.clock.get_fps()))
 
         for sprite in self.all_sprites:
-
+            if isinstance(sprite, Enemy_1):
 
             self.screen.blit(sprite.image, self.camera.apply(sprite))
 
@@ -698,29 +725,6 @@ class Game:
             pg.mixer.music.unpause()
 
 
-        arrows = {}
-
-        self.arrow_img = pg.transform.scale(self.arrow_img, (41, 41))
-        for dir in [(41, 0), (0, 41), (-41, 0), (0, -41)]:
-            arrows[dir] = pg.transform.rotate(self.arrow_img, vector(dir).angle_to(vector(1, 0)))
-
-        grid = SquareGrid(g, g.map_width, g.map_height)
-        grid.draw_grid()
-
-        path = breadth_first_search(grid, start)
-        for node, dir in path.items():
-            if dir:
-                x, y = node
-                x = x + 41/2
-                y = y + 41/2
-                img = arrows[vector_conv(dir)]
-                r = img.get_rect(center=(x, y))
-                self.screen.blit(img, r)
-
-        grid.find_neighbours(start)
-
-
-
 
 
 
@@ -731,9 +735,14 @@ class Game:
     def show_start_screen(self):
         # game start screen
         self.screen.fill(BLACK)
+        pg.mixer.music.load(path.join(self.sound_folder, 'background.mp3'))
+        pg.mixer.music.play(loops=-1)
 
-
-
+        self.draw_texty(TITLE, self.title_font, 150, RED, WIDTH / 2, HEIGHT * 1 / 4, align="center")
+        self.draw_texty("Use arrows to move, UP arrow to jump", self.header_font, 50, RED, WIDTH / 2, HEIGHT / 2,
+                        align="center")
+        self.draw_texty("Press Any Key to Play", self.body_font, 20, WHITE, WIDTH / 2, HEIGHT * 2 / 3, align="center")
+        self.draw_texty("Highest Round: " + str(self.highscore), self.body_font, 20, RED, WIDTH / 2, HEIGHT * 3 / 4)
         pg.display.flip()
         self.key_press()
 
@@ -800,7 +809,23 @@ while g.running:
     g.new()
     g.show_go_screen()
 
+    icon_dir = path.join(path.dirname(__file__), 'icons')
+    arrows = {}
+    arrow_img = pg.image.load(path.join(icon_dir, 'arrow_right.png')).convert_alpha()
+    arrow_img = pg.transform.scale(arrow_img, (41, 41))
+    for dir in [(41, 0), (0, 41), (-41, 0), (0, -41)]:
+        arrows[dir] = pg.transform.rotate(arrow_img, vector(dir).angle_to(vector(1, 0)))
 
+    grid = SquareGrid(g, g.map_width, g.map_height)
+    grid.draw_grid()
+
+    path = breadth_first_search(grid, start)
+    for node, dir in path.items():
+        if dir:
+            x, y = node
+            img = arrows[vector_conv(dir)]
+            r = img.get_rect(center=(x, y))
+            g.screen.blit(img, r)
 
     grid.find_neighbours(start)
     pg.display.update()

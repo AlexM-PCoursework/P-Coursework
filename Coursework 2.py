@@ -966,24 +966,7 @@ class Game:
             self.spawn()
 
 
-        arrows = {}
 
-        self.arrow_img = pg.transform.scale(self.arrow_img, (41, 41))
-        for dir in [(41, 0), (0, 41), (-41, 0), (0, -41)]:
-            arrows[dir] = pg.transform.rotate(self.arrow_img, vector(dir).angle_to(vector(1, 0)))
-
-        grid = SquareGrid(g, g.map_width, g.map_height)
-        grid.draw_grid()
-
-        path = breadth_first_search(grid, start)
-        for node, dir in path.items():
-            if dir:
-                x, y = node
-                img = arrows[vector_conv(dir)]
-                r = img.get_rect(center=(x, y))
-                self.screen.blit(img, r)
-
-        grid.find_neighbours(start)
 
 
 
@@ -1219,23 +1202,12 @@ while g.running:
     g.new()
     g.show_go_screen()
 
-    icon_dir = path.join(path.dirname(__file__), 'icons')
-    arrows = {}
-    arrow_img = pg.image.load(path.join(icon_dir, 'arrow_right.png')).convert_alpha()
-    arrow_img = pg.transform.scale(arrow_img, (41, 41))
-    for dir in [(41, 0), (0, 41), (-41, 0), (0, -41)]:
-        arrows[dir] = pg.transform.rotate(arrow_img, vector(dir).angle_to(vector(1, 0)))
 
     grid = SquareGrid(g, g.map_width, g.map_height)
-    grid.draw_grid()
+
 
     path = breadth_first_search(grid, start)
-    for node, dir in path.items():
-        if dir:
-            x,y = node
-            img = arrows[vector_conv(dir)]
-            r = img.get_rect(center = (x,y))
-            g.screen.blit(img,r)
+
 
     grid.find_neighbours(start)
     pg.display.update()
