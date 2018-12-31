@@ -96,6 +96,8 @@ class SquareGrid:
 
     def find_neighbours(self, node):
         neighbours = [node + connection for connection in self.connections]
+        if (node.x + node.y) % 2:
+            neighbours.reverse()
         neighbours = filter(self.in_bounds, neighbours)
         neighbours = filter(self.passable, neighbours)
         #     reference = [x / 41 for x in neighbours]
@@ -108,24 +110,35 @@ class SquareGrid:
         for y in range(0, HEIGHT, 41):
             pg.draw.line(self.game.screen, WHITE, (0, y), (720, y))
 
+def player_tile(pos):
+
+    x = int((pos.x) / 41) * 41
+    y = int((pos.y - 30) / 41) * 41
+    tile = x, y
+
+    print(tile)
+    return tile
+
 
 def vector_conv(vec):
     return (int(vec.x), int(vec.y))
 
 
-def breadth_first_search(graph, start):
+def breadth_first_search(graph, start, end):
     frontier = deque()
     frontier.append(start)
     path = {}
     path[vector_conv(start)] = None
     while len(frontier) > 0:
         current = frontier.popleft()
+        if current == end:
+            break
         for x in graph.find_neighbours(current):
             if vector_conv(x) not in path:
                 frontier.append(x)
                 path[vector_conv(x)] = current - x
 
-    print(path)
+
     return path
 
 
@@ -238,7 +251,7 @@ class Enemy_1(pg.sprite.Sprite):
             self.kill()
 
         dist = (self.pos - self.game.player.pos).length()
-        if dist < 400:
+        if dist < 800:
             block_hit_list = pg.sprite.spritecollide(self, self.game.platforms, False)
             for block in block_hit_list:
                 if self.vel.y > 0:
@@ -409,7 +422,7 @@ class Game:
 
 
         self.current = 0
-        self.enemy_count = 2
+        self.enemy_count = 0
 
         x = y = 0
 
@@ -506,8 +519,8 @@ class Game:
         self.enemy_count += 2
         currentcount = 0
         while currentcount != self.enemy_count:
-            x = randrange(0 - 500, self.map_width + 500)
-            y = randrange(0 - 500, self.map_height + 500)
+            x = randrange(100,  500)
+            y = randrange(100, 500)
             pos = vector(x, y)
             if (self.player.pos - pos).length() > 400:
                 Enemy_1(self, x, y)
@@ -638,7 +651,44 @@ class Game:
                     self.player.pos.x = block.rect.right + self.player.hit_rect.width / 2
                     self.player.vel.x = 0
 
-        # check if player hits coins
+        w = 41
+        start = vector(player_tile(self.player.pos))
+        print(start)
+        for enemy in self.enemy1s:
+            if (enemy.pos - self.player.pos).length() < 300:
+                goal = vector(player_tile(enemy.pos))
+                arrows = {}
+
+                self.arrow_img = pg.transform.scale(self.arrow_img, (41, 41))
+                for dir in [(41, 0), (0, 41), (-41, 0), (0, -41)]:
+                    arrows[dir] = pg.transform.rotate(self.arrow_img, vector(dir).angle_to(vector(1, 0)))
+
+                grid = SquareGrid(g, g.map_width, g.map_height)
+                grid.draw_grid()
+
+                path = breadth_first_search(grid, goal, start)
+
+                # draw path from start to goal
+                current = start + path[vector_conv(start)]
+                while current != goal:
+                    x = current.x + 41 / 2
+                    y = current.y + 41 / 2
+                    img = arrows[vector_conv(path[current.x, current.y])]
+                    r = img.get_rect(center=(x, y))
+                    self.screen.blit(img, r)
+                    current = current + path[vector_conv(current)]
+                '''
+                for node, dir in path.items():
+                    if dir:
+                        x, y = node
+                        x = x + 41/2
+                        y = y + 41/2
+                        img = arrows[vector_conv(dir)]
+                        r = img.get_rect(center=(x, y))
+                        self.screen.blit(img, r)
+                '''
+
+            # check if player hits coins
 
         if pg.mixer.Channel(0).get_busy() == False:
             pg.mixer.music.set_volume(1)
@@ -696,41 +746,6 @@ class Game:
 
         else:
             pg.mixer.music.unpause()
-
-        w = 41
-        start = vector(8 * w, 8 * w)
-        goal = vector(12*w, 12*w)
-        arrows = {}
-
-        self.arrow_img = pg.transform.scale(self.arrow_img, (41, 41))
-        for dir in [(41, 0), (0, 41), (-41, 0), (0, -41)]:
-            arrows[dir] = pg.transform.rotate(self.arrow_img, vector(dir).angle_to(vector(1, 0)))
-
-        grid = SquareGrid(g, g.map_width, g.map_height)
-        grid.draw_grid()
-
-        path = breadth_first_search(grid, goal)
-
-        # draw path from start to goal
-        current = start + path[vector_conv(start)]
-        while current != goal:
-
-            x = current.x + 41/2
-            y = current.y + 41/2
-            img = arrows[vector_conv(path[current.x,current.y])]
-            r = img.get_rect(center = (x,y))
-            self.screen.blit(img,r)
-            current = current + path[vector_conv(current)]
-        '''
-        for node, dir in path.items():
-            if dir:
-                x, y = node
-                x = x + 41/2
-                y = y + 41/2
-                img = arrows[vector_conv(dir)]
-                r = img.get_rect(center=(x, y))
-                self.screen.blit(img, r)
-        '''
 
 
 
