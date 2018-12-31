@@ -697,7 +697,9 @@ class Game:
         else:
             pg.mixer.music.unpause()
 
-
+        w = 41
+        start = vector(8 * w, 8 * w)
+        goal = vector(12*w, 12*w)
         arrows = {}
 
         self.arrow_img = pg.transform.scale(self.arrow_img, (41, 41))
@@ -707,7 +709,19 @@ class Game:
         grid = SquareGrid(g, g.map_width, g.map_height)
         grid.draw_grid()
 
-        path = breadth_first_search(grid, start)
+        path = breadth_first_search(grid, goal)
+
+        # draw path from start to goal
+        current = start + path[vector_conv(start)]
+        while current != goal:
+
+            x = current.x + 41/2
+            y = current.y + 41/2
+            img = arrows[vector_conv(path[current.x,current.y])]
+            r = img.get_rect(center = (x,y))
+            self.screen.blit(img,r)
+            current = current + path[vector_conv(current)]
+        '''
         for node, dir in path.items():
             if dir:
                 x, y = node
@@ -716,8 +730,8 @@ class Game:
                 img = arrows[vector_conv(dir)]
                 r = img.get_rect(center=(x, y))
                 self.screen.blit(img, r)
+        '''
 
-        grid.find_neighbours(start)
 
 
 
@@ -794,15 +808,14 @@ g = Game()
 
 g.show_start_screen()
 while g.running:
-    w = 41
-    start = vector(8 * w, 9 * w)
+
 
     g.new()
     g.show_go_screen()
 
 
 
-    grid.find_neighbours(start)
+
     pg.display.update()
 # grid.find_neighbours((5*w,4*w))
 
