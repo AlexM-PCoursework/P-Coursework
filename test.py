@@ -237,12 +237,12 @@ class Enemy_1(pg.sprite.Sprite):
 
 
     def update(self):
-        self.rot = (self.game.player.pos - self.pos).angle_to(vector(1, 0))
+   #     self.rot = (self.game.player.pos - self.pos).angle_to(vector(1, 0))
         self.image = pg.transform.rotate(self.game.enemy1_img, self.rot)
         self.rect = self.image.get_rect()
         self.rect.midbottom = self.pos
         self.acc = vector(1, 0).rotate(-self.rot)
-        self.avoid_enemies()
+    #    self.avoid_enemies()
         self.acc.scale_to_length(ENEMY1_SPEED)
         self.acc += self.vel * ENEMY1_FRICTION
         self.vel += self.acc
@@ -553,8 +553,8 @@ class Game:
         for trapdoor in self.trapdoors:
             dist = trapdoor.rect.center - self.player.pos
             if 0 < dist.length() < 100:
-                self.draw_texty("2 (Q)", self.body_font, 12, WHITE, trapdoor.rect.x + 20, trapdoor.rect.y + 30,
-                                align="center")
+#                self.draw_texty("2 (Q)", self.body_font, 12, WHITE, trapdoor.rect.x + 20, trapdoor.rect.y + 30,
+          #                      align="center")
                 if self.score >= 2 and keystate[ord('q')]:
                     pg.mixer.Sound(path.join(self.sound_folder, 'door.wav')).play()
                     self.score -= 2
@@ -674,6 +674,7 @@ class Game:
                     x = current.x + 41 / 2
                     y = current.y + 41 / 2
                     img = arrows[vector_conv(path[current.x, current.y])]
+                    enemy.rot = (vector(path[current.x,current.y]).angle_to(vector(1, 0))) - 180
                     r = img.get_rect(center=(x, y))
                     self.screen.blit(img, r)
                     current = current + path[vector_conv(current)]
