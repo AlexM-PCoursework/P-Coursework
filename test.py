@@ -116,7 +116,7 @@ def player_tile(pos):
     y = int((pos.y - 30) / 41) * 41
     tile = x, y
 
-    print(tile)
+
     return tile
 
 
@@ -653,9 +653,9 @@ class Game:
 
         w = 41
         start = vector(player_tile(self.player.pos))
-        print(start)
+
         for enemy in self.enemy1s:
-            if (enemy.pos - self.player.pos).length() < 300:
+
                 goal = vector(player_tile(enemy.pos))
                 arrows = {}
 

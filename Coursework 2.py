@@ -137,35 +137,40 @@ class SquareGrid:
 
     def find_neighbours(self, node):
         neighbours = [node + connection for connection in self.connections]
+        if (node.x + node.y) % 2:
+            neighbours.reverse()
         neighbours = filter(self.in_bounds,neighbours)
         neighbours = filter(self.passable, neighbours)
    #     reference = [x / 41 for x in neighbours]
   #      print(list(reference))
         return neighbours
 
-    def draw_grid(self):
-        for x in range(0,WIDTH, 41):
-            pg.draw.line(self.game.screen,WHITE, (x,0), (x,1024))
-        for y in range (0,HEIGHT,41):
-            pg.draw.line(self.game.screen,WHITE,(0,y),(720,y))
 
 def vector_conv(vec):
     return(int(vec.x), int(vec.y))
 
-def breadth_first_search(graph,start):
+def breadth_first_search(graph,start,end):
     frontier = deque()
     frontier.append(start)
     path = {}
     path[vector_conv(start)] = None
     while len(frontier) > 0:
         current = frontier.popleft()
+        if current == end:
+            break
         for x in graph.find_neighbours(current):
             if vector_conv(x) not in path:
                 frontier.append(x)
                 path[vector_conv(x)] = current - x
 
-    print(path)
     return path
+
+def player_tile(pos):
+    x = int((pos.x) / 41) * 41
+    y = int((pos.y - 30) / 41) * 41
+    tile = x, y
+
+    return tile
 
 
 
@@ -445,12 +450,12 @@ class Enemy_1 (pg.sprite.Sprite):
 
 
     def update(self):
-        self.rot = (self.game.player.pos - self.pos).angle_to(vector(1,0))
+      #  self.rot = (self.game.player.pos - self.pos).angle_to(vector(1,0))
         self.image = pg.transform.rotate(self.game.enemy1_img,self.rot)
         self.rect = self.image.get_rect()
         self.rect.midbottom = self.pos
         self.acc = vector(1, 0).rotate(-self.rot)
-        self.avoid_enemies()
+      #  self.avoid_enemies()
         self.acc.scale_to_length(ENEMY1_SPEED)
         self.acc += self.vel * ENEMY1_FRICTION
         self.vel += self.acc
@@ -459,7 +464,7 @@ class Enemy_1 (pg.sprite.Sprite):
             self.kill()
 
         dist = (self.pos - self.game.player.pos).length()
-        if dist < 400:
+        if dist < 800:
             block_hit_list = pg.sprite.spritecollide(self, self.game.platforms, False)
             for block in block_hit_list:
                 if self.vel.y > 0:
@@ -683,7 +688,7 @@ class Game:
         self.night = False
         self.border_count = 0
         self.current = 0
-        self.enemy_count = 2
+        self.enemy_count = 0
 
 
 
@@ -788,8 +793,8 @@ class Game:
         self.enemy_count += 2
         currentcount = 0
         while currentcount != self.enemy_count:
-            x = randrange(0 - 500, self.map_width + 500)
-            y = randrange(0 - 500, self.map_height + 500)
+            x = randrange(100, 500)
+            y = randrange(100, 500)
             pos = vector(x,y)
             if (self.player.pos - pos).length() > 400:
                 Enemy_1(self,x,y)
@@ -964,6 +969,35 @@ class Game:
             self.round +=1
             self.player.health = 100
             self.spawn()
+
+        w = 41
+        start = vector(player_tile(self.player.pos))
+
+        for enemy in self.enemy1s:
+
+            goal = vector(player_tile(enemy.pos))
+            arrows = {}
+
+            self.arrow_img = pg.transform.scale(self.arrow_img, (41, 41))
+            for dir in [(41, 0), (0, 41), (-41, 0), (0, -41)]:
+                arrows[dir] = pg.transform.rotate(self.arrow_img, vector(dir).angle_to(vector(1, 0)))
+
+            grid = SquareGrid(g, g.map_width, g.map_height)
+
+
+            path = breadth_first_search(grid, goal, start)
+
+            # draw path from start to goal
+            current = start + path[vector_conv(start)]
+            while current != goal:
+                x = current.x + 41 / 2
+                y = current.y + 41 / 2
+            #    img = arrows[vector_conv(path[current.x, current.y])]
+                enemy.rot = (vector(path[current.x, current.y]).angle_to(vector(1, 0))) - 180
+            #    r = img.get_rect(center=(x, y))
+            #    self.screen.blit(img, r)
+                current = current + path[vector_conv(current)]
+
 
 
 
@@ -1196,20 +1230,20 @@ g = Game()
 
 g.show_start_screen()
 while g.running:
-    w = 41
-    start = vector(8*w, 9*w)
+ #   w = 41
+#    start = vector(8*w, 9*w)
 
     g.new()
     g.show_go_screen()
 
 
-    grid = SquareGrid(g, g.map_width, g.map_height)
+#    grid = SquareGrid(g, g.map_width, g.map_height)
 
 
-    path = breadth_first_search(grid, start)
+#    path = breadth_first_search(grid, start)
 
 
-    grid.find_neighbours(start)
+  #  grid.find_neighbours(start)
     pg.display.update()
    # grid.find_neighbours((5*w,4*w))
     
