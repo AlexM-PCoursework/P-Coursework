@@ -562,7 +562,7 @@ class Game:
         self.variables.insert(0,start)
         self.variables.insert(1,goal)
         self.variables.insert(2,path)
-        
+
 
 
 
@@ -716,7 +716,7 @@ class Game:
         for enemy in self.enemy1s:
 #            timer = threading.timer(2, self.pathfind(enemy))
         #    timer.start()
-            if 0 < self.time < 200 or self.time % 100 == 0:
+            if 0 < self.time < 200 or 0 < self.time % 100 > 20:
                 self.pathfind(enemy)
 
         w = 41
