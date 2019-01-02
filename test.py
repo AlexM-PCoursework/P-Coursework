@@ -242,7 +242,14 @@ class Enemy_1(pg.sprite.Sprite):
         self.image = pg.transform.rotate(self.game.enemy1_img, self.rot)
         self.rect = self.image.get_rect()
         self.rect.midbottom = self.pos
-        self.acc = vector(1, 0).rotate(-self.rot)
+
+
+        dist = (self.pos - self.game.player.pos).length()
+        if dist > 50:
+            self.acc = vector(1, 0).rotate(-self.rot)
+        else:
+            self.rot = (self.game.player.pos - self.pos).angle_to(vector(1, 0))
+            #
     #    self.avoid_enemies()
         self.acc.scale_to_length(ENEMY1_SPEED)
         self.acc += self.vel * ENEMY1_FRICTION
@@ -552,10 +559,11 @@ class Game:
 
         path = breadth_first_search(self.grid,goal,start)
 
-        self.variables.append(start)
-        self.variables.append(goal)
-        self.variables.append(path)
-        print(path)
+        self.variables.insert(0,start)
+        self.variables.insert(1,goal)
+        self.variables.insert(2,path)
+        
+
 
 
 
@@ -570,6 +578,7 @@ class Game:
         self.screen.fill(BLUE)
         dt = self.clockt.tick()
         self.time += dt
+
 
 
 
@@ -707,7 +716,7 @@ class Game:
         for enemy in self.enemy1s:
 #            timer = threading.timer(2, self.pathfind(enemy))
         #    timer.start()
-            if 0 < self.time < 200 or self.time % 3000 == 0:
+            if 0 < self.time < 200 or self.time % 100 == 0:
                 self.pathfind(enemy)
 
         w = 41
@@ -728,18 +737,25 @@ class Game:
             goal = self.variables[1]
             path = self.variables[2]
 
-            path = breadth_first_search(self.grid,goal,start)
-            current = start + path[vector_conv(start)]
-            while current != goal:
-                x = current.x + 41 / 2
-                y = current.y + 41 / 2
-                img = arrows[vector_conv(path[current.x, current.y])]
-                enemy.rot = (vector(path[current.x, current.y]).angle_to(vector(1, 0))) - 180
+            dist = (enemy.pos - self.player.pos).length()
+            if dist > 50:
 
 
-                r = img.get_rect(center=(x, y))
-                self.screen.blit(img, r)
-                current = current + path[vector_conv(current)]
+                current = start + path[vector_conv(start)]
+
+                while current != goal:
+                    x = current.x + 41 / 2
+
+                    y = current.y + 41 / 2
+                    img = arrows[vector_conv(path[current.x, current.y])]
+                    enemy.rot = (vector(path[current.x, current.y]).angle_to(vector(1, 0))) - 180
+                    #    r = img.get_rect(center=(x, y))
+                    #    self.screen.blit(img, r)
+                    current = current + path[vector_conv(current)]
+
+                    r = img.get_rect(center=(x, y))
+                    self.screen.blit(img, r)
+
 
 
 
@@ -869,10 +885,12 @@ while g.running:
 
     g.show_go_screen()
 
-
-
-
     pg.display.update()
+
+
+
+
+
 # grid.find_neighbours((5*w,4*w))
 
 

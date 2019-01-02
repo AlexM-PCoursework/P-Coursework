@@ -165,7 +165,7 @@ def breadth_first_search(graph,start,end):
                 path[vector_conv(x)] = current - x
 
     return path
-    print(path)
+
 
 def player_tile(pos):
     x = int((pos.x) / 41) * 41
@@ -798,7 +798,7 @@ class Game:
     def spawn(self):
 
         #increment enemy total by 2
-        self.enemy_count += 2
+        self.enemy_count += 1
         currentcount = 0
         while currentcount != self.enemy_count:
             x = randrange(100, 500)
@@ -980,6 +980,7 @@ class Game:
 
         w = 41
         start = vector(player_tile(self.player.pos))
+        print(start)
 
         for enemy in self.enemy1s:
 
