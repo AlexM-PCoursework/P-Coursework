@@ -165,6 +165,7 @@ def breadth_first_search(graph,start,end):
                 path[vector_conv(x)] = current - x
 
     return path
+    print(path)
 
 def player_tile(pos):
     x = int((pos.x) / 41) * 41

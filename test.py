@@ -555,6 +555,7 @@ class Game:
         self.variables.append(start)
         self.variables.append(goal)
         self.variables.append(path)
+        print(path)
 
 
 
@@ -702,10 +703,11 @@ class Game:
             self.round += 1
             self.player.health = 100
             self.spawn()
+
         for enemy in self.enemy1s:
 #            timer = threading.timer(2, self.pathfind(enemy))
         #    timer.start()
-            if 0 < self.time < 200 or self.time > 3000:
+            if 0 < self.time < 200 or self.time % 3000 == 0:
                 self.pathfind(enemy)
 
         w = 41
@@ -725,13 +727,15 @@ class Game:
             start = self.variables[0]
             goal = self.variables[1]
             path = self.variables[2]
+
+            path = breadth_first_search(self.grid,goal,start)
             current = start + path[vector_conv(start)]
             while current != goal:
                 x = current.x + 41 / 2
-
                 y = current.y + 41 / 2
                 img = arrows[vector_conv(path[current.x, current.y])]
                 enemy.rot = (vector(path[current.x, current.y]).angle_to(vector(1, 0))) - 180
+
 
                 r = img.get_rect(center=(x, y))
                 self.screen.blit(img, r)
