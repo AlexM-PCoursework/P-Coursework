@@ -405,6 +405,11 @@ class Game:
         self.doors = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.drawpath = False
+        self.time = 0
+
+
+
+
 
 
 
@@ -425,6 +430,7 @@ class Game:
         self.wall_dim = 41
 
         self.variables = []
+        self.clockt = pg.time.Clock()
 
 
 
@@ -561,6 +567,9 @@ class Game:
         self.camera.update(self.player)
 
         self.screen.fill(BLUE)
+        dt = self.clockt.tick()
+        self.time += dt
+
 
 
 
@@ -694,7 +703,10 @@ class Game:
             self.player.health = 100
             self.spawn()
         for enemy in self.enemy1s:
-            self.pathfind(enemy)
+#            timer = threading.timer(2, self.pathfind(enemy))
+        #    timer.start()
+            if 0 < self.time < 200 or self.time > 3000:
+                self.pathfind(enemy)
 
         w = 41
 
