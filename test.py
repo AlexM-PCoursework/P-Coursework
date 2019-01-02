@@ -549,7 +549,7 @@ class Game:
         self.variables.append(start)
         self.variables.append(goal)
         self.variables.append(path)
-        print(self.variables)
+
 
 
 
@@ -693,8 +693,8 @@ class Game:
             self.round += 1
             self.player.health = 100
             self.spawn()
-            for enemy in self.enemy1s:
-                self.pathfind(enemy)
+        for enemy in self.enemy1s:
+            self.pathfind(enemy)
 
         w = 41
 
@@ -716,9 +716,11 @@ class Game:
             current = start + path[vector_conv(start)]
             while current != goal:
                 x = current.x + 41 / 2
+
                 y = current.y + 41 / 2
                 img = arrows[vector_conv(path[current.x, current.y])]
                 enemy.rot = (vector(path[current.x, current.y]).angle_to(vector(1, 0))) - 180
+
                 r = img.get_rect(center=(x, y))
                 self.screen.blit(img, r)
                 current = current + path[vector_conv(current)]
