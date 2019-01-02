@@ -413,9 +413,9 @@ class Game:
 
         self.enemy1s = pg.sprite.Group()
 
-        for enemy in self.enemy1s:
-            timer = threading.timer(2, self.pathfind(enemy))
-            timer.start()
+      #  for enemy in self.enemy1s:
+        #    timer = threading.timer(2, self.pathfind(enemy))
+      #      timer.start()
 
         self.player = Player(self)
         self.all_sprites.add(self.player)
@@ -517,6 +517,7 @@ class Game:
         self.playing = True
         while self.playing:
             self.clock.tick(60)
+
             self.events()
             if not self.paused:
                 self.update()
@@ -545,9 +546,10 @@ class Game:
 
         path = breadth_first_search(self.grid,goal,start)
 
-        self.variables[0] = start
-        self.variables[1] = goal
-        self.variables[2] = path
+        self.variables.append(start)
+        self.variables.append(goal)
+        self.variables.append(path)
+        print(self.variables)
 
 
 
@@ -559,6 +561,8 @@ class Game:
         self.camera.update(self.player)
 
         self.screen.fill(BLUE)
+
+
 
         keystate = pg.key.get_pressed()
 
@@ -689,6 +693,8 @@ class Game:
             self.round += 1
             self.player.health = 100
             self.spawn()
+            for enemy in self.enemy1s:
+                self.pathfind(enemy)
 
         w = 41
 
@@ -701,10 +707,11 @@ class Game:
         self.grid.draw_grid()
 
   #      path = breadth_first_search(self.grid, goal, start)
-
+       # print(list(self.variables))
         # draw path from start to goal
         for enemy in self.enemy1s:
             start = self.variables[0]
+            goal = self.variables[1]
             path = self.variables[2]
             current = start + path[vector_conv(start)]
             while current != goal:
@@ -767,7 +774,7 @@ class Game:
             pg.mixer.music.unpause()
 
 
-        self.pathfind()
+
 
         # Flip display after drawing
         pg.display.flip()
