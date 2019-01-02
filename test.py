@@ -7,6 +7,7 @@ from random import randrange, uniform, choice
 import math
 import time
 from collections import deque
+import threading
 
 # settings
 # Define some colors (for now)
@@ -403,6 +404,8 @@ class Game:
         self.trapdoors = pg.sprite.Group()
         self.doors = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
+        self.drawpath = False
+
 
 
 
@@ -410,6 +413,9 @@ class Game:
 
         self.enemy1s = pg.sprite.Group()
 
+        for enemy in self.enemy1s:
+            timer = threading.timer(2, self.pathfind(enemy))
+            timer.start()
 
         self.player = Player(self)
         self.all_sprites.add(self.player)
@@ -417,6 +423,8 @@ class Game:
         self.round = 0
         self.paused = False
         self.wall_dim = 41
+
+        self.variables = []
 
 
 
@@ -499,6 +507,8 @@ class Game:
         self.map_width = len(self.PLATFORM_LIST[0]) * 41
         self.map_height = len(self.PLATFORM_LIST) * 41
 
+        self.grid = SquareGrid(self, self.map_width, self.map_height)
+
         self.run()
 
     def run(self):
@@ -516,7 +526,7 @@ class Game:
     def spawn(self):
 
         # increment enemy total by 2
-        self.enemy_count += 2
+        self.enemy_count += 1
         currentcount = 0
         while currentcount != self.enemy_count:
             x = randrange(100,  500)
@@ -525,6 +535,22 @@ class Game:
             if (self.player.pos - pos).length() > 400:
                 Enemy_1(self, x, y)
                 currentcount += 1
+
+    def pathfind(self, enemy):
+
+        start = vector(player_tile(self.player.pos))
+
+
+        goal = vector(player_tile(enemy.pos))
+
+        path = breadth_first_search(self.grid,goal,start)
+
+        self.variables[0] = start
+        self.variables[1] = goal
+        self.variables[2] = path
+
+
+
 
     def update(self):
         # game loop - update
@@ -651,43 +677,7 @@ class Game:
                     self.player.pos.x = block.rect.right + self.player.hit_rect.width / 2
                     self.player.vel.x = 0
 
-        w = 41
-        start = vector(player_tile(self.player.pos))
 
-        for enemy in self.enemy1s:
-
-                goal = vector(player_tile(enemy.pos))
-                arrows = {}
-
-                self.arrow_img = pg.transform.scale(self.arrow_img, (41, 41))
-                for dir in [(41, 0), (0, 41), (-41, 0), (0, -41)]:
-                    arrows[dir] = pg.transform.rotate(self.arrow_img, vector(dir).angle_to(vector(1, 0)))
-
-                grid = SquareGrid(g, g.map_width, g.map_height)
-                grid.draw_grid()
-
-                path = breadth_first_search(grid, goal, start)
-
-                # draw path from start to goal
-                current = start + path[vector_conv(start)]
-                while current != goal:
-                    x = current.x + 41 / 2
-                    y = current.y + 41 / 2
-                    img = arrows[vector_conv(path[current.x, current.y])]
-                    enemy.rot = (vector(path[current.x,current.y]).angle_to(vector(1, 0))) - 180
-                    r = img.get_rect(center=(x, y))
-                    self.screen.blit(img, r)
-                    current = current + path[vector_conv(current)]
-                '''
-                for node, dir in path.items():
-                    if dir:
-                        x, y = node
-                        x = x + 41/2
-                        y = y + 41/2
-                        img = arrows[vector_conv(dir)]
-                        r = img.get_rect(center=(x, y))
-                        self.screen.blit(img, r)
-                '''
 
             # check if player hits coins
 
@@ -699,6 +689,32 @@ class Game:
             self.round += 1
             self.player.health = 100
             self.spawn()
+
+        w = 41
+
+        arrows = {}
+
+        self.arrow_img = pg.transform.scale(self.arrow_img, (41, 41))
+        for dir in [(41, 0), (0, 41), (-41, 0), (0, -41)]:
+            arrows[dir] = pg.transform.rotate(self.arrow_img, vector(dir).angle_to(vector(1, 0)))
+
+        self.grid.draw_grid()
+
+  #      path = breadth_first_search(self.grid, goal, start)
+
+        # draw path from start to goal
+        for enemy in self.enemy1s:
+            start = self.variables[0]
+            path = self.variables[2]
+            current = start + path[vector_conv(start)]
+            while current != goal:
+                x = current.x + 41 / 2
+                y = current.y + 41 / 2
+                img = arrows[vector_conv(path[current.x, current.y])]
+                enemy.rot = (vector(path[current.x, current.y]).angle_to(vector(1, 0))) - 180
+                r = img.get_rect(center=(x, y))
+                self.screen.blit(img, r)
+                current = current + path[vector_conv(current)]
 
 
 
@@ -714,6 +730,8 @@ class Game:
                     self.player.jump()
                 if event.key == pg.K_p:
                     self.paused = not self.paused
+
+      #  self.drawpath = True
 
     def draw_texty(self, text, font_name, size, colour, x, y, align="center"):
         font = pg.font.Font(font_name, size)
@@ -749,11 +767,7 @@ class Game:
             pg.mixer.music.unpause()
 
 
-
-
-
-
-
+        self.pathfind()
 
         # Flip display after drawing
         pg.display.flip()
@@ -827,6 +841,7 @@ while g.running:
 
 
     g.new()
+
     g.show_go_screen()
 
 

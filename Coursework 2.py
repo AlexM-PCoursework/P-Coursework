@@ -7,6 +7,7 @@ from random import randrange, uniform, choice
 import math
 import time
 from collections import deque
+import cProfile as profile
 
 
 #settings
@@ -450,11 +451,16 @@ class Enemy_1 (pg.sprite.Sprite):
 
 
     def update(self):
-      #  self.rot = (self.game.player.pos - self.pos).angle_to(vector(1,0))
+      #
         self.image = pg.transform.rotate(self.game.enemy1_img,self.rot)
         self.rect = self.image.get_rect()
         self.rect.midbottom = self.pos
-        self.acc = vector(1, 0).rotate(-self.rot)
+
+        dist = (self.pos - self.game.player.pos).length()
+        if dist > 50:
+            self.acc = vector(1, 0).rotate(-self.rot)
+        else:
+            self.rot = (self.game.player.pos - self.pos).angle_to(vector(1, 0))
       #  self.avoid_enemies()
         self.acc.scale_to_length(ENEMY1_SPEED)
         self.acc += self.vel * ENEMY1_FRICTION
@@ -463,7 +469,7 @@ class Enemy_1 (pg.sprite.Sprite):
         if self.health <= 0:
             self.kill()
 
-        dist = (self.pos - self.game.player.pos).length()
+
         if dist < 800:
             block_hit_list = pg.sprite.spritecollide(self, self.game.platforms, False)
             for block in block_hit_list:
@@ -656,8 +662,6 @@ class Game:
         self.togglebar_images = {}
         for image in TOGGLEBAR_IMAGES:
             self.togglebar_images[image] = pg.image.load(path.join(img_folder,TOGGLEBAR_IMAGES[image])).convert_alpha()
-        icon_dir = path.join(path.dirname(__file__), 'icons')
-        self.arrow_img = pg.image.load(path.join(icon_dir, 'arrow_right.png')).convert_alpha()
 
 
     def new(self):
@@ -768,10 +772,13 @@ class Game:
           y += 41
           x = 0
 
+
         self.camera = Camera(0, 0)
             
         self.map_width = len(self.PLATFORM_LIST[0]) * 41
         self.map_height = len(self.PLATFORM_LIST) * 41
+
+        self.grid = SquareGrid(self, self.map_width, self.map_height)
        
         self.run()
         
@@ -975,28 +982,26 @@ class Game:
 
         for enemy in self.enemy1s:
 
-            goal = vector(player_tile(enemy.pos))
-            arrows = {}
-
-            self.arrow_img = pg.transform.scale(self.arrow_img, (41, 41))
-            for dir in [(41, 0), (0, 41), (-41, 0), (0, -41)]:
-                arrows[dir] = pg.transform.rotate(self.arrow_img, vector(dir).angle_to(vector(1, 0)))
-
-            grid = SquareGrid(g, g.map_width, g.map_height)
+            dist = (enemy.pos - self.player.pos).length()
+            if dist > 50:
+                goal = vector(player_tile(enemy.pos))
 
 
-            path = breadth_first_search(grid, goal, start)
 
-            # draw path from start to goal
-            current = start + path[vector_conv(start)]
-            while current != goal:
-                x = current.x + 41 / 2
-                y = current.y + 41 / 2
-            #    img = arrows[vector_conv(path[current.x, current.y])]
-                enemy.rot = (vector(path[current.x, current.y]).angle_to(vector(1, 0))) - 180
-            #    r = img.get_rect(center=(x, y))
-            #    self.screen.blit(img, r)
-                current = current + path[vector_conv(current)]
+
+
+                path = breadth_first_search(self.grid, goal, start)
+
+                # draw path from start to goal
+                current = start + path[vector_conv(start)]
+                while current != goal:
+                    x = current.x + 41 / 2
+                    y = current.y + 41 / 2
+                #    img = arrows[vector_conv(path[current.x, current.y])]
+                    enemy.rot = (vector(path[current.x, current.y]).angle_to(vector(1, 0))) - 180
+                #    r = img.get_rect(center=(x, y))
+                #    self.screen.blit(img, r)
+                    current = current + path[vector_conv(current)]
 
 
 
@@ -1234,6 +1239,7 @@ while g.running:
 #    start = vector(8*w, 9*w)
 
     g.new()
+
     g.show_go_screen()
 
 
@@ -1245,11 +1251,12 @@ while g.running:
 
   #  grid.find_neighbours(start)
     pg.display.update()
+
+
    # grid.find_neighbours((5*w,4*w))
     
 
 pg.quit()
-
 
        
 
