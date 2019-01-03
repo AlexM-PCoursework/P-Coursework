@@ -101,8 +101,7 @@ class SquareGrid:
             neighbours.reverse()
         neighbours = filter(self.in_bounds, neighbours)
         neighbours = filter(self.passable, neighbours)
-        #     reference = [x / 41 for x in neighbours]
-        #      print(list(reference))
+
         return neighbours
 
     def draw_grid(self):
@@ -564,6 +563,68 @@ class Game:
         self.variables.insert(2,path)
 
 
+    def draw_path(self):
+
+        w = 41
+
+        arrows = {}
+
+        self.arrow_img = pg.transform.scale(self.arrow_img, (41, 41))
+        for dir in [(41, 0), (0, 41), (-41, 0), (0, -41)]:
+            arrows[dir] = pg.transform.rotate(self.arrow_img, vector(dir).angle_to(vector(1, 0)))
+
+        self.grid.draw_grid()
+
+
+        # draw path from start to goal
+        for enemy in self.enemy1s:
+            start = self.variables[0]
+            goal = self.variables[1]
+            path = self.variables[2]
+
+
+
+            dist = (enemy.pos - self.player.pos).length()
+            if dist > 50:
+
+
+                current = start + path[vector_conv(start)]
+
+
+
+                while current != goal:
+                    x = current.x + 41 / 2
+
+                    y = current.y + 41 / 2
+                    img = arrows[vector_conv(path[current.x, current.y])]
+               #     enemy.rot = (vector(path[current.x, current.y]).angle_to(vector(1, 0))) - 180
+                    #    r = img.get_rect(center=(x, y))
+                    #    self.screen.blit(img, r)
+                    current = current + path[vector_conv(current)]
+
+                    r = img.get_rect(center=(x, y))
+                    self.screen.blit(img, r)
+
+    def follow_path(self):
+
+        for enemy in self.enemy1s:
+
+           start = self.variables[0]
+           goal = self.variables[1]
+           path = self.variables[2]
+
+           current = start + path[vector_conv(start)]
+
+
+
+
+
+
+           enemy.rot = (vector(path[current.x, current.y]).angle_to(vector(1, 0)))
+           keystate = pg.key.get_pressed()
+           if keystate[ord('l')]:
+
+                current = current + path[vector_conv(current)]
 
 
 
@@ -719,62 +780,13 @@ class Game:
             if 0 < self.time < 200 or 0 < self.time % 1000 < 3:
                 self.pathfind(enemy)
 
-        w = 41
-
-        arrows = {}
-
-        self.arrow_img = pg.transform.scale(self.arrow_img, (41, 41))
-        for dir in [(41, 0), (0, 41), (-41, 0), (0, -41)]:
-            arrows[dir] = pg.transform.rotate(self.arrow_img, vector(dir).angle_to(vector(1, 0)))
-
-        self.grid.draw_grid()
-
-  #      path = breadth_first_search(self.grid, goal, start)
-       # print(list(self.variables))
-        # draw path from start to goal
-        for enemy in self.enemy1s:
-            start = self.variables[0]
-            goal = self.variables[1]
-            path = self.variables[2]
+        self.draw_path()
+        self.follow_path()
 
 
 
-            dist = (enemy.pos - self.player.pos).length()
-            if dist > 50:
 
 
-                current = start + path[vector_conv(start)]
-
-
-
-                while current != goal:
-                    x = current.x + 41 / 2
-
-                    y = current.y + 41 / 2
-                    img = arrows[vector_conv(path[current.x, current.y])]
-               #     enemy.rot = (vector(path[current.x, current.y]).angle_to(vector(1, 0))) - 180
-                    #    r = img.get_rect(center=(x, y))
-                    #    self.screen.blit(img, r)
-                    current = current + path[vector_conv(current)]
-
-                    r = img.get_rect(center=(x, y))
-                    self.screen.blit(img, r)
-
-
-                current = start + path[vector_conv(start)]
-
-
-                distance = 0
-                while current != goal:
-                    posnow = enemy.pos
-                    enemy.rot = (vector(path[current.x, current.y]).angle_to(vector(1, 0)))
-                    while distance < 41:
-                        if  0 < self.time % 1000 < 3:
-
-                                distance = (enemy.pos -posnow).length()
-                    current = current + path[vector_conv(current)]
-
-            
 
 
 
