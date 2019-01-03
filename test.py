@@ -768,11 +768,13 @@ class Game:
                 while current != goal:
                     posnow = enemy.pos
                     enemy.rot = (vector(path[current.x, current.y]).angle_to(vector(1, 0)))
-                    while distance != 41:
-                        distance = enemy.pos -posnow
+                    while distance < 41:
+                        if  0 < self.time % 1000 < 3:
+
+                                distance = (enemy.pos -posnow).length()
                     current = current + path[vector_conv(current)]
 
-
+            
 
 
 
