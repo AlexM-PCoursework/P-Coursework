@@ -552,10 +552,10 @@ class Game:
 
     def pathfind(self, enemy):
 
-        start = vector(player_tile(self.player.pos))
+        start = vector(player_tile(enemy.pos))
 
+        goal = vector(player_tile(self.player.pos))
 
-        goal = vector(player_tile(enemy.pos))
 
         path = breadth_first_search(self.grid,goal,start)
 
@@ -716,7 +716,7 @@ class Game:
         for enemy in self.enemy1s:
 #            timer = threading.timer(2, self.pathfind(enemy))
         #    timer.start()
-            if 0 < self.time < 200 or 0 < self.time % 100 > 20:
+            if 0 < self.time < 200 or 0 < self.time % 1000 < 3:
                 self.pathfind(enemy)
 
         w = 41
@@ -737,24 +737,45 @@ class Game:
             goal = self.variables[1]
             path = self.variables[2]
 
+
+
             dist = (enemy.pos - self.player.pos).length()
             if dist > 50:
 
 
                 current = start + path[vector_conv(start)]
 
+
+
                 while current != goal:
                     x = current.x + 41 / 2
 
                     y = current.y + 41 / 2
                     img = arrows[vector_conv(path[current.x, current.y])]
-                    enemy.rot = (vector(path[current.x, current.y]).angle_to(vector(1, 0))) - 180
+               #     enemy.rot = (vector(path[current.x, current.y]).angle_to(vector(1, 0))) - 180
                     #    r = img.get_rect(center=(x, y))
                     #    self.screen.blit(img, r)
                     current = current + path[vector_conv(current)]
 
                     r = img.get_rect(center=(x, y))
                     self.screen.blit(img, r)
+
+
+                current = start + path[vector_conv(start)]
+
+
+                distance = 0
+                while current != goal:
+                    posnow = enemy.pos
+                    enemy.rot = (vector(path[current.x, current.y]).angle_to(vector(1, 0)))
+                    while distance != 41:
+                        distance = enemy.pos -posnow
+                    current = current + path[vector_conv(current)]
+
+
+
+
+
 
 
 
