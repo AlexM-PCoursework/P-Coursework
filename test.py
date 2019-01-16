@@ -777,7 +777,7 @@ class Game:
         for enemy in self.enemy1s:
 #            timer = threading.timer(2, self.pathfind(enemy))
         #    timer.start()
-            if 0 < self.time < 200 or 0 < self.time % 1000 < 3:
+            if 0 < self.time < 200 or 0 < self.time % 1000 < 70:
                 self.pathfind(enemy)
 
         self.draw_path()
